@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: "${POSTGRES_USER}-db"
+    ports:
+      - "${POSTGRES_LOCAL_PORT}:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
