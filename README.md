@@ -3,7 +3,7 @@
 ## Event Planning Simplified
 
 Plan your next event with ease.
-Create lists, balance the books, enjoy your event.  
+Invite your friends, create lists, balance the books & enjoy your event.  
 All in one web app.
 
 ### Project Repository Structure
