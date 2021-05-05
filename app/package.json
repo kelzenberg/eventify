@@ -8,7 +8,8 @@
     "build-dev": "webpack --mode development",
     "build-prod": "webpack --mode production",
     "watch": "webpack --progress --watch",
-    "watch-server": "webpack serve --mode development --open"
+    "watch-server": "webpack serve --mode development --open",
+    "clean": "rm -rf ./dist ./node_modules"
   },
   "author": "",
   "license": "ISC",
