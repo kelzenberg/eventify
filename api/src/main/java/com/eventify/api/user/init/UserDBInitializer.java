@@ -14,7 +14,7 @@ import java.util.List;
 public class UserDBInitializer {
 
     @Bean
-    CommandLineRunner initDatabase(UserService userService) {
+    CommandLineRunner initUserDatabase(UserService userService) {
         String[][] users = {
                 {"admin@test.de", "password123", "Admin"},
                 {"test@test.de", "password123", "TestUser1"}
