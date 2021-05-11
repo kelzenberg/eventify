@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import LoadingPage from '../../pages/Loading';
+import "../../common.scss";
 
 const LandingPage = React.lazy(() => import('../../pages/Landing/Landing'));
 
