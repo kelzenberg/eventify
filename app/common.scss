@@ -1,0 +1,84 @@
+@use "sass:map";
+@import "./bootstrap.custom.scss";
+
+body {
+    margin: 0px;
+    font-family: 'Athiti', sans-serif;
+}
+
+.fancy-background {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: -5;
+    overflow: hidden;
+    background: linear-gradient(160deg, #F6CAA2, #F2B680);
+
+    &::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        top: 0px;
+        left: 0px;
+        width: 200vw;
+        height: 30vh;
+        transform: rotateZ(-20deg);
+        transform-origin: 0% 100%;
+        background: #f5ceaa;
+        filter: blur(5px);
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        bottom: 0px;
+        right: 0px;
+        width: 200vw;
+        height: 30vh;
+        transform: rotateZ(-20deg);
+        transform-origin: 100% 0%;
+        background: #F6CAA2;
+        filter: blur(5px);
+    }
+}
+
+.iconBox {
+    display: inline-block;
+    position: relative;
+    border-radius: 13px;
+    border: 1px solid map.get($theme-colors, "primary");
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    vertical-align: middle;
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
+
+    @each $color, $value in $theme-colors {
+        &.iconBox-#{$color} {
+            border-color: $value;
+        }
+    }
+
+    &.iconBox-removable:hover::after {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        border-radius: 13px;
+        background-color: rgba(255, 255, 255, 0.5);
+        background-image: url("/assets/icons/remove.svg");
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        pointer-events: none;
+    }
+}

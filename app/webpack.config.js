@@ -34,7 +34,9 @@ let config = {
         new CopyPlugin({
             patterns: [
                 { from: "entries/main/main.index.html", to: "main/index.html" },
-                { from: "entries/welcome/welcome.index.html", to: "welcome/index.html" }
+                { from: "entries/welcome/welcome.index.html", to: "welcome/index.html" },
+                { from: "assets/**", to: "" },
+                { from: "assets/favicon/favicon.ico", to: "favicon.ico" }
             ],
         }),
     ],

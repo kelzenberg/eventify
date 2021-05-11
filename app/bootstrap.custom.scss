@@ -1,0 +1,82 @@
+@use "sass:map";
+@import url('https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&display=swap');
+
+$text-color: rgb(17, 17, 17);
+
+$theme-colors: (
+    "primary": #6BB0BF,
+    "secondary": #D99873,
+    "warning": #735755,
+    "background": #F2B680,
+    "headline": #214057,
+    "gray": #D7D7D9,
+    "darkGray": #B1B1B4
+);
+
+$text-muted: #777;
+
+$font-family-base: 'Athiti', sans-serif;
+$font-size-base: 1.05rem;
+
+$link-decoration: none;
+
+$enable-rounded: true;
+$enable-gradients: false;
+$enable-shadows: true;
+$border-radius: 10px;
+$border-radius-sm: 10px;
+$border-radius-lg: 10px;
+$border-radius-pill: 10px;
+
+$card-border-radius: 8px;
+$card-border-color: rgba(0, 0, 0, .3);
+
+$form-label-margin-bottom: .2em;
+$form-text-color: $text-muted;
+
+.border-dashed {
+    border-style: dashed;
+}
+
+// ========================================== BUTTON ==========================================
+
+$btn-font-size: 1.2rem;
+$btn-font-weight: 600;
+$btn-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+
+body {
+    .btn-primary {
+        color: white;
+    }
+
+    .btn-icon:hover img {
+        filter: brightness(1000%); // make icon white
+    }
+}
+
+// ========================================== INPUT ==========================================
+
+$input-border-color: rgb(65, 65, 65);
+$input-border-width: 2px;
+$input-focus-border-color: map.get($theme-colors, "primary");
+
+label {
+    font-weight: 500;
+}
+
+// ============================================ CARD ============================================
+
+body {
+    .card {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-outline {
+        border: 1px dashed $card-border-color;
+        border-radius: $card-border-radius;
+    }
+}
+
+// ==============================================================================================
+
+@import "~bootstrap/scss/bootstrap";
