@@ -9,7 +9,7 @@ import java.util.Date;
 @Component
 public class JwtTokenUtil {
 
-    @Value("${jwt.signingKey}") // TODO: env var?
+    @Value("${jwt.signingKey}")
     private String signingKey;
 
     private final long timeToExpire = 2 * 60 * 60 * 1000; // in milliseconds => 2hrs
