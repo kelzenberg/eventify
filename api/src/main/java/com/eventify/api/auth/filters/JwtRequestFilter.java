@@ -1,12 +1,16 @@
 package com.eventify.api.auth.filters;
 
 import com.eventify.api.auth.utils.JwtTokenUtil;
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,21 +24,40 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
-        final String tokenHeader = req.getHeader("Authorization");
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        final String tokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing token in request header");
+            chain.doFilter(request, response);
+            return;
         }
 
-        String token = tokenHeader.substring(7);
+        String token = tokenHeader.split(" ")[1].trim();
+
+        if (!jwtTokenUtil.validateToken(token)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         try {
-            String[] parsedToken = jwtTokenUtil.parseToken(token);
-
-            ... // TODO
-
-            SecurityContextHolder.getContext().setAuthentication(emailPasswordAuthenticationToken); // TODO
+            UserDetails userDetails = userDetailsService.loadUserByUsername(
+                    jwtTokenUtil.parseToken(token).getSubject()
+            );
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        } catch (JwtException e) {
+            System.err.println("Token Parsing Failed: " + e.getMessage());
         }
+
+        chain.doFilter(request, response);
     }
 }

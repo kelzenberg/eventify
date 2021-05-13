@@ -7,7 +7,8 @@ import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
-public class JwtRequest implements Serializable {
+public class JwtRegisterRequest implements Serializable {
     private String email;
     private String password;
+    private String displayName;
 }

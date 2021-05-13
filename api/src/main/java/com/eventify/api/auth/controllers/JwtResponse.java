@@ -1,7 +1,6 @@
 package com.eventify.api.auth.controllers;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
