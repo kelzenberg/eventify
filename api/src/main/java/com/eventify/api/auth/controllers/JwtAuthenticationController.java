@@ -46,16 +46,21 @@ public class JwtAuthenticationController {
         String password = body.getPassword();
         String displayName = body.getDisplayName();
 
-        User newUser = userService.createUser(email, password, displayName);
+        User newUser;
+        try {
+            newUser = userService.createUser(email, password, displayName);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            String token = getToken(email);
 
-            return ResponseEntity.created(new URI("/user/" + newUser.getId()))
-                    .header(HttpHeaders.AUTHORIZATION, getToken(email))
-                    .body(new JwtResponse(getToken(email)));
-        } catch (BadCredentialsException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            return ResponseEntity
+                    .created(new URI("/user/" + newUser.getId()))
+                    .header(HttpHeaders.AUTHORIZATION, token)
+                    .body(new JwtResponse(token));
         } catch (Exception e) {
             userService.deleteUser(newUser.getId());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -69,10 +74,11 @@ public class JwtAuthenticationController {
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            String token = getToken(email);
 
             return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, getToken(email))
-                    .body(new JwtResponse(getToken(email)));
+                    .header(HttpHeaders.AUTHORIZATION, token)
+                    .body(new JwtResponse(token));
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {
