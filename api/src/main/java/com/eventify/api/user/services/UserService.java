@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -21,6 +22,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public User getUserById(UUID id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
     public User createUser(String email, String password, String displayName) {
         User user = User.builder()
                 .email(email)
@@ -28,5 +37,9 @@ public class UserService {
                 .displayName(displayName)
                 .build();
         return userRepository.save(user);
+    }
+
+    public void deleteUser(UUID id) {
+        userRepository.deleteById(id);
     }
 }

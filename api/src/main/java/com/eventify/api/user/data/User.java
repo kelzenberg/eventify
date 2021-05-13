@@ -33,4 +33,12 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    // solely for UserDetailsWrapper
+    public User(User user) {
+        this.id = user.getId();
+        this.displayName = user.getDisplayName();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+    }
 }
