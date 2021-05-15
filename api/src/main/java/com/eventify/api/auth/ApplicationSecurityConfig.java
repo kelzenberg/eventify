@@ -2,6 +2,7 @@ package com.eventify.api.auth;
 
 import com.eventify.api.auth.filters.JwtRequestFilter;
 import com.eventify.api.auth.provider.UserDetailsWrapperService;
+import com.eventify.api.constants.PublicPaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -55,9 +56,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 // public endpoints
-                .antMatchers("/register").permitAll()
-                .antMatchers("/authenticate").permitAll()
-                // private endpoints
+                .antMatchers(PublicPaths.REGISTER).permitAll()
+                .antMatchers(PublicPaths.LOGIN).permitAll()
+                // endpoints with authentication
                 .anyRequest().authenticated().and().formLogin();
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

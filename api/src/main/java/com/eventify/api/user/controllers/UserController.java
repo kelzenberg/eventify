@@ -1,5 +1,6 @@
 package com.eventify.api.user.controllers;
 
+import com.eventify.api.constants.AuthenticatedPaths;
 import com.eventify.api.user.data.User;
 import com.eventify.api.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping(AuthenticatedPaths.USERS)
     List<User> all() {
         return userService.getAllUsers();
     }
