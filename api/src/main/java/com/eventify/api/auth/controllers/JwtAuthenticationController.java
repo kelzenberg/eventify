@@ -41,7 +41,7 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerAuthToken(@RequestBody JwtRegisterRequest body) throws Exception {
+    public ResponseEntity<?> registerAuthToken(@RequestBody JwtRegisterRequest body) {
         String email = body.getEmail();
         String password = body.getPassword();
         String displayName = body.getDisplayName();
@@ -67,8 +67,8 @@ public class JwtAuthenticationController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> getAuthToken(@RequestBody JwtLoginRequest body) throws Exception {
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> getAuthToken(@RequestBody JwtAuthenticationRequest body) {
         String email = body.getEmail();
         String password = body.getPassword();
 
