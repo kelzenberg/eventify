@@ -1,5 +1,6 @@
 package com.eventify.api.auth.controllers;
 
+import com.eventify.api.auth.provider.UserDetailsWrapperService;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.user.data.User;
 import com.eventify.api.user.services.UserService;
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,13 +30,14 @@ public class JwtAuthenticationController {
     private UserService userService;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsWrapperService userDetailsWrapperService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    private String getToken(String email) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    private String authenticate(String email, String password) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        UserDetails userDetails = userDetailsWrapperService.loadUserByUsername(email);
         return jwtTokenUtil.generateToken(userDetails);
     }
 
@@ -54,13 +55,13 @@ public class JwtAuthenticationController {
         }
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            String token = getToken(email);
-
+            String token = authenticate(email, password);
             return ResponseEntity
                     .created(new URI("/user/" + newUser.getId()))
                     .header(HttpHeaders.AUTHORIZATION, token)
-                    .body(new JwtResponse(token));
+                    .body(new JwtResponse(token)); // TODO: token in body is debug for now
+        } catch (BadCredentialsException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {
             userService.deleteUser(newUser.getId());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -73,12 +74,10 @@ public class JwtAuthenticationController {
         String password = body.getPassword();
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            String token = getToken(email);
-
+            String token = authenticate(email, password);
             return ResponseEntity.ok()
                     .header(HttpHeaders.AUTHORIZATION, token)
-                    .body(new JwtResponse(token));
+                    .body(new JwtResponse(token)); // TODO: token in body is debug for now
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.eventify.api.auth.filters;
 
+import com.eventify.api.auth.provider.UserDetailsWrapperService;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,7 +25,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsWrapperService userDetailsWrapperService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -44,7 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         try {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(
+            UserDetails userDetails = userDetailsWrapperService.loadUserByUsername(
                     jwtTokenUtil.parseToken(token).getSubject()
             );
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
