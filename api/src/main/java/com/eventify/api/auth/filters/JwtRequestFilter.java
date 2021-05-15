@@ -31,14 +31,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         final String tokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
+        if (SecurityContextHolder.getContext().getAuthentication() != null // authenticated user exists already
+                || tokenHeader == null
+                || !tokenHeader.trim().startsWith("Bearer ")
+        ) {
             chain.doFilter(request, response);
             return;
         }
 
         String token = tokenHeader.split(" ")[1].trim();
 
-        if (!jwtTokenUtil.validateToken(token)) {
+        if (jwtTokenUtil.isTokenInvalid(token)) {
             chain.doFilter(request, response);
             return;
         }
@@ -55,7 +58,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         } catch (JwtException e) {
-            System.err.println("Token Parsing Failed: " + e.getMessage());
+            System.err.println("[DEBUG] Token Parsing Failed: " + e.getMessage() + "\n" + token);
+            // continue with chain
         }
 
         chain.doFilter(request, response);

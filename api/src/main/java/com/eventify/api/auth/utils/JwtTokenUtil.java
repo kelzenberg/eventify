@@ -25,7 +25,7 @@ public class JwtTokenUtil {
         final Date now = new Date();
 
         Claims claims = Jwts.claims()
-                .setSubject(userDetails.getUsername()) // subject is email
+                .setSubject(userDetails.getUsername()) // subject is email, getUsername() returns email
                 .setIssuer(issuer)
                 .setExpiration(new Date(now.getTime() + timeToExpire))
                 .setIssuedAt(now);
@@ -46,13 +46,12 @@ public class JwtTokenUtil {
     }
 
 
-    public Boolean validateToken(String token) {
+    public Boolean isTokenInvalid(String token) {
         Claims claims = parseToken(token);
-        List<Boolean> areClaimsValid = List.of(
+
+        return List.of(
                 claims.getExpiration().after(new Date()), // token is not expired
                 claims.getIssuer().equals(issuer) // token issuer is correct
-        );
-
-        return areClaimsValid.contains(false);
+        ).contains(false);
     }
 }
