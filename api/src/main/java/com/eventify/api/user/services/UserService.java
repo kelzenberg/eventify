@@ -32,9 +32,9 @@ public class UserService {
 
     public User createUser(String email, String password, String displayName) {
         User user = User.builder()
-                .email(email)
+                .email("" + email)
                 .password(passwordEncoder.encode(password))
-                .displayName(displayName)
+                .displayName("" + displayName)
                 .build();
         return userRepository.save(user);
     }

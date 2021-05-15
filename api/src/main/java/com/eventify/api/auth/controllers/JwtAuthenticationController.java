@@ -2,6 +2,7 @@ package com.eventify.api.auth.controllers;
 
 import com.eventify.api.auth.provider.UserDetailsWrapperService;
 import com.eventify.api.auth.utils.JwtTokenUtil;
+import com.eventify.api.constants.PublicPaths;
 import com.eventify.api.user.data.User;
 import com.eventify.api.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -41,11 +43,11 @@ public class JwtAuthenticationController {
         return jwtTokenUtil.generateToken(userDetails);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerAuthToken(@RequestBody JwtRegisterRequest body) {
-        String email = body.getEmail();
-        String password = body.getPassword();
-        String displayName = body.getDisplayName();
+    @PostMapping(PublicPaths.REGISTER)
+    public ResponseEntity<?> registerAuthToken(@Valid  @RequestBody JwtRegisterRequest body) {
+        String email = body.getEmail().trim();
+        String password = body.getPassword().trim();
+        String displayName = body.getDisplayName().trim();
 
         User newUser;
         try {
@@ -68,10 +70,10 @@ public class JwtAuthenticationController {
         }
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<?> getAuthToken(@RequestBody JwtAuthenticationRequest body) {
-        String email = body.getEmail();
-        String password = body.getPassword();
+    @PostMapping(PublicPaths.LOGIN)
+    public ResponseEntity<?> getAuthToken(@Valid @RequestBody JwtAuthenticationRequest body) {
+        String email = body.getEmail().trim();
+        String password = body.getPassword().trim();
 
         try {
             String token = authenticate(email, password);
