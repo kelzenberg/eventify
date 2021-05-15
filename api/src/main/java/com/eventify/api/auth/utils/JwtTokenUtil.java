@@ -1,0 +1,58 @@
+package com.eventify.api.auth.utils;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.List;
+
+@Component
+public class JwtTokenUtil {
+
+    @Value("${jwt.signingKey}")
+    private String signingKey;
+
+    private final long timeToExpire = 2 * 60 * 60 * 1000; // in milliseconds => 2hrs
+    private final long clockSkewBuffer = 2 * 60; // in seconds => 2s
+    private final String issuer = "api.eventify";
+
+    public String generateToken(UserDetails userDetails) {
+        final Date now = new Date();
+
+        Claims claims = Jwts.claims()
+                .setSubject(userDetails.getUsername()) // subject is email
+                .setIssuer(issuer)
+                .setExpiration(new Date(now.getTime() + timeToExpire))
+                .setIssuedAt(now);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS512, signingKey) // HS512: HMAC using SHA-512
+                .compact();
+    }
+
+    public Claims parseToken(String token) throws JwtException {
+        return Jwts.parserBuilder()
+                .setAllowedClockSkewSeconds(clockSkewBuffer)
+                .setSigningKey(signingKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+
+    public Boolean validateToken(String token) {
+        Claims claims = parseToken(token);
+        List<Boolean> areClaimsValid = List.of(
+                claims.getExpiration().after(new Date()), // token is not expired
+                claims.getIssuer().equals(issuer) // token issuer is correct
+        );
+
+        return areClaimsValid.contains(false);
+    }
+}
