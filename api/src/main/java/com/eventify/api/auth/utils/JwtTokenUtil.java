@@ -30,9 +30,14 @@ public class JwtTokenUtil {
                 .setExpiration(new Date(now.getTime() + timeToExpire))
                 .setIssuedAt(now);
 
+        // Deprecation is flawed, see: https://github.com/jwtk/jjwt/issues/617
+        // noinspection deprecation
         return Jwts.builder()
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, signingKey) // HS512: HMAC using SHA-512
+                .signWith(
+                        SignatureAlgorithm.HS512, // HS512: HMAC using SHA-512
+                        signingKey
+                )
                 .compact();
     }
 
