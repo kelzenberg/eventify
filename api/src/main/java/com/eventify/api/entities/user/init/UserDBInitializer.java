@@ -1,7 +1,7 @@
-package com.eventify.api.user.init;
+package com.eventify.api.entities.user.init;
 
-import com.eventify.api.user.data.User;
-import com.eventify.api.user.services.UserService;
+import com.eventify.api.entities.user.data.User;
+import com.eventify.api.entities.user.services.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

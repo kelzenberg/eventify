@@ -1,7 +1,7 @@
-package com.eventify.api.user.services;
+package com.eventify.api.entities.user.services;
 
-import com.eventify.api.user.data.User;
-import com.eventify.api.user.data.UserRepository;
+import com.eventify.api.entities.user.data.User;
+import com.eventify.api.entities.user.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

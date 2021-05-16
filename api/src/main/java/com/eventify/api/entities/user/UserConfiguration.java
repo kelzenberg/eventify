@@ -1,4 +1,4 @@
-package com.eventify.api.user;
+package com.eventify.api.entities.user;
 
 import org.springframework.context.annotation.Configuration;
 

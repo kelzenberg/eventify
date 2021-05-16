@@ -1,4 +1,4 @@
-package com.eventify.api.user.data;
+package com.eventify.api.entities.user.data;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

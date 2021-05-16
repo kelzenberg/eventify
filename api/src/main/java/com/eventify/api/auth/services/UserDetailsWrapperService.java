@@ -1,8 +1,8 @@
-package com.eventify.api.auth.provider;
+package com.eventify.api.auth.services;
 
-import com.eventify.api.user.data.User;
-import com.eventify.api.user.data.UserDetailsWrapper;
-import com.eventify.api.user.services.UserService;
+import com.eventify.api.entities.user.data.User;
+import com.eventify.api.entities.user.data.UserDetailsWrapper;
+import com.eventify.api.entities.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

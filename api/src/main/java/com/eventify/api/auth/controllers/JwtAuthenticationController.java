@@ -1,10 +1,10 @@
 package com.eventify.api.auth.controllers;
 
-import com.eventify.api.auth.provider.UserDetailsWrapperService;
+import com.eventify.api.auth.services.UserDetailsWrapperService;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.constants.PublicPaths;
-import com.eventify.api.user.data.User;
-import com.eventify.api.user.services.UserService;
+import com.eventify.api.entities.user.data.User;
+import com.eventify.api.entities.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

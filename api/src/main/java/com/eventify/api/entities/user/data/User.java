@@ -1,4 +1,4 @@
-package com.eventify.api.user.data;
+package com.eventify.api.entities.user.data;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;

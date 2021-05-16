@@ -1,8 +1,8 @@
-package com.eventify.api.user.controllers;
+package com.eventify.api.entities.user.controllers;
 
 import com.eventify.api.constants.AuthenticatedPaths;
-import com.eventify.api.user.data.User;
-import com.eventify.api.user.services.UserService;
+import com.eventify.api.entities.user.data.User;
+import com.eventify.api.entities.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

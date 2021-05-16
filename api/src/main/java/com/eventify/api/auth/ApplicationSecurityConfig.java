@@ -1,7 +1,7 @@
 package com.eventify.api.auth;
 
 import com.eventify.api.auth.filters.JwtRequestFilter;
-import com.eventify.api.auth.provider.UserDetailsWrapperService;
+import com.eventify.api.auth.services.UserDetailsWrapperService;
 import com.eventify.api.constants.PublicPaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
