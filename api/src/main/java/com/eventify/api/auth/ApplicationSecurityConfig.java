@@ -1,6 +1,8 @@
 package com.eventify.api.auth;
 
 import com.eventify.api.auth.filters.JwtRequestFilter;
+import com.eventify.api.auth.handlers.RestAccessDeniedHandler;
+import com.eventify.api.auth.handlers.RestAuthenticationEntryPoint;
 import com.eventify.api.auth.services.UserDetailsWrapperService;
 import com.eventify.api.constants.PublicPaths;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import javax.servlet.http.HttpServletResponse;
-
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -27,7 +27,14 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsWrapperService userDetailsWrapperService;
 
     @Autowired
+    private RestAccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private RestAuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired
     private JwtRequestFilter jwtRequestFilter;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,9 +57,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 
-        http.exceptionHandling().authenticationEntryPoint((request, response, e) -> {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-        }).and();
+        http.exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint).and();
 
         http.authorizeRequests()
                 // public endpoints
