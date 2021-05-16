@@ -5,6 +5,7 @@ import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.constants.AuthenticatedPaths;
 import com.eventify.api.constants.PublicPaths;
 import com.eventify.api.entities.user.data.User;
+import com.eventify.api.entities.user.exceptions.UserAlreadyExistsException;
 import com.eventify.api.entities.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -60,7 +61,7 @@ public class JwtAuthenticationController {
                     .created(new URI(AuthenticatedPaths.USERS + newUser.getId()))
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .body(new JwtResponse(token)); // TODO: token in body is debug for now
-        } catch (DataIntegrityViolationException e) {
+        } catch (UserAlreadyExistsException | DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already exists");
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

@@ -2,6 +2,7 @@ package com.eventify.api.entities.user.services;
 
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.data.UserRepository;
+import com.eventify.api.entities.user.exceptions.UserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,13 +31,17 @@ public class UserService {
         return userRepository.findByEmail("" + email).orElse(null);
     }
 
-    public User createUser(String email, String password, String displayName) {
-        User user = User.builder()
+    public User createUser(String email, String password, String displayName) throws UserAlreadyExistsException {
+        if (userRepository.findByEmail("" + email).isPresent()) {
+            throw new UserAlreadyExistsException("User with email '" + email + "' already exists");
+        }
+
+        User newUser = User.builder()
                 .email("" + email)
                 .password(passwordEncoder.encode(password))
                 .displayName("" + displayName)
                 .build();
-        return userRepository.save(user);
+        return userRepository.save(newUser);
     }
 
     public void deleteUser(UUID id) {
