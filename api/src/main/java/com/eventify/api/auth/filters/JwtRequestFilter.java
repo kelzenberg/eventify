@@ -44,12 +44,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String token = tokenHeader.split(" ")[1].trim();
 
-        if (jwtTokenUtil.isTokenInvalid(token)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
         try {
+            if (jwtTokenUtil.isTokenInvalid(token)) {
+                chain.doFilter(request, response);
+                return;
+            }
+
             UserDetails userDetails = userDetailsWrapperService.loadUserByUsername(
                     jwtTokenUtil.parseToken(token).getSubject()
             );
@@ -60,6 +60,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             );
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        } catch (ExpiredJwtException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expired");
         } catch (JwtException e) {
             System.err.println("[DEBUG] Token Parsing Failed: " + e.getMessage() + "\n" + token);
             // continue with chain

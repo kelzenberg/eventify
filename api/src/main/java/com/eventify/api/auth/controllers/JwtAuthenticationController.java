@@ -2,10 +2,12 @@ package com.eventify.api.auth.controllers;
 
 import com.eventify.api.auth.services.UserDetailsWrapperService;
 import com.eventify.api.auth.utils.JwtTokenUtil;
+import com.eventify.api.constants.AuthenticatedPaths;
 import com.eventify.api.constants.PublicPaths;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 @RestController
 @CrossOrigin
@@ -44,29 +47,23 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping(PublicPaths.REGISTER)
-    public ResponseEntity<?> registerAuthToken(@Valid  @RequestBody JwtRegisterRequest body) {
+    public ResponseEntity<?> registerAuthToken(@Valid @RequestBody JwtRegisterRequest body) throws URISyntaxException {
         String email = body.getEmail().trim();
         String password = body.getPassword().trim();
         String displayName = body.getDisplayName().trim();
 
-        User newUser;
         try {
-            newUser = userService.createUser(email, password, displayName);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-
-        try {
+            User newUser = userService.createUser(email, password, displayName);
             String token = authenticate(email, password);
+
             return ResponseEntity
-                    .created(new URI("/user/" + newUser.getId()))
+                    .created(new URI(AuthenticatedPaths.USERS + newUser.getId()))
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .body(new JwtResponse(token)); // TODO: token in body is debug for now
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already exists");
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (Exception e) {
-            userService.deleteUser(newUser.getId());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -82,8 +79,6 @@ public class JwtAuthenticationController {
                     .body(new JwtResponse(token)); // TODO: token in body is debug for now
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }
