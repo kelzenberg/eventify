@@ -4,5 +4,6 @@
       "name": "jwt.signingKey",
       "type": "java.lang.String",
       "description": "Secret key to sign JWTs."
-  }
-] }
+    }
+  ]
+}
