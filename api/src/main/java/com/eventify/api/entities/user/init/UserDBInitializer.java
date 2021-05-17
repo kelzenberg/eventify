@@ -1,12 +1,16 @@
 package com.eventify.api.entities.user.init;
 
 import com.eventify.api.entities.user.data.User;
+import com.eventify.api.entities.user.exceptions.UserAlreadyExistsException;
 import com.eventify.api.entities.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,12 +39,14 @@ public class UserDBInitializer {
                     return;
                 }
 
+                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("INIT_USER_DATABASE", null));
+
                 for (String[] user : users) {
                     try {
                         User newUser = userService.createUser(user[0], user[1], user[2]);
                         System.out.println("[DEBUG] Created user: " + newUser.getDisplayName());
-                    } catch (Exception e) {
-                        System.err.println(e.getMessage());
+                    } catch (UserAlreadyExistsException | DataIntegrityViolationException e) {
+                        System.out.println("[DEBUG] User already exists: " + user[0]);
                     }
                 }
 

@@ -1,19 +1,32 @@
 package com.eventify.api.entities.user.data;
 
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class UserDetailsWrapper extends User implements UserDetails {
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+public class UserDetailsWrapper implements UserDetails {
+
+    private User user;
 
     public UserDetailsWrapper(User user) {
-        super(user);
+        this.user = user;
     }
 
     @Override
     public String getUsername() {
-        return super.getEmail();
+        return user.getEmail();
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getPassword();
     }
 
     @Override

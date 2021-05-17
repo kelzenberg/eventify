@@ -1,46 +1,42 @@
 package com.eventify.api.entities.user.data;
 
+import com.eventify.api.entities.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
-// User is reserved keyword. Fix by manually escaping: https://stackoverflow.com/a/50222377
-@Table(name = "\"User\"")
-@Data
-@Builder
+// Users is reserved keyword. Fix by manually escaping: https://stackoverflow.com/a/50222377
+@Table(name = "\"users\"")
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString
-@EqualsAndHashCode
 @Getter
 @Setter
-public class User {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class User extends BaseEntity {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(updatable = false, nullable = false)
-    private UUID id;
-
-    @Column(nullable = false)
-    private String displayName;
-
+    @NonNull
     @Column(unique = true, nullable = false)
     private String email;
 
+    @NonNull
     @JsonIgnore
+    @ToString.Exclude
     @Column(nullable = false)
     private String password;
 
-    // solely for UserDetailsWrapper
-    public User(User user) {
-        this.id = user.getId();
-        this.displayName = user.getDisplayName();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
+    @NonNull
+    @Column(nullable = false)
+    private String displayName;
+
+    @Builder
+    public User(@NonNull String email, @NonNull String password, @NonNull String displayName) {
+        super();
+        this.email = email;
+        this.password = password;
+        this.displayName = displayName;
     }
 }
