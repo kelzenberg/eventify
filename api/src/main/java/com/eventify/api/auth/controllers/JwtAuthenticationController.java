@@ -1,11 +1,11 @@
 package com.eventify.api.auth.controllers;
 
-import com.eventify.api.auth.services.UserDetailsWrapperService;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.constants.AuthenticatedPaths;
 import com.eventify.api.constants.PublicPaths;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.exceptions.UserAlreadyExistsException;
+import com.eventify.api.entities.user.services.UserDetailsWrapperService;
 import com.eventify.api.entities.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;

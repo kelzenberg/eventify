@@ -1,9 +1,10 @@
 package com.eventify.api.auth.filters;
 
-import com.eventify.api.auth.services.UserDetailsWrapperService;
 import com.eventify.api.auth.utils.JwtTokenUtil;
+import com.eventify.api.entities.user.services.UserDetailsWrapperService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private UserDetailsWrapperService userDetailsWrapperService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
         final String tokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (SecurityContextHolder.getContext().getAuthentication() != null // authenticated user exists already
