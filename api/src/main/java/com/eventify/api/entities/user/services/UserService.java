@@ -28,19 +28,20 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail("" + email).orElse(null);
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     public User createUser(String email, String password, String displayName) throws UserAlreadyExistsException {
-        if (userRepository.findByEmail("" + email).isPresent()) {
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new UserAlreadyExistsException("User with email '" + email + "' already exists");
         }
 
         User newUser = User.builder()
-                .email("" + email)
+                .email(email)
                 .password(passwordEncoder.encode(password))
-                .displayName("" + displayName)
+                .displayName(displayName)
                 .build();
+
         return userRepository.save(newUser);
     }
 
