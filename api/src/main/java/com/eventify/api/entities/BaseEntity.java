@@ -1,9 +1,7 @@
 package com.eventify.api.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -31,11 +29,15 @@ public abstract class BaseEntity {
 
     @CreatedBy
     @NonNull
+    @JsonIgnore
+    @ToString.Exclude
     @Column(name = "created_by", nullable = false, updatable = false)
     protected String createdBy;
 
     @LastModifiedBy
     @NonNull
+    @JsonIgnore
+    @ToString.Exclude
     @Column(name = "updated_by")
     protected String lastModifiedBy;
 
