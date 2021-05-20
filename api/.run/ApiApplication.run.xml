@@ -9,7 +9,7 @@
       <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
       <ENTRIES>
         <ENTRY IS_ENABLED="true" PARSER="runconfig" />
-        <ENTRY IS_ENABLED="true" PARSER="env" PATH="local.env" />
+        <ENTRY IS_ENABLED="true" PARSER="env" PATH="../local.env" />
       </ENTRIES>
     </extension>
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.eventify.api.ApiApplication" />

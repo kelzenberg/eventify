@@ -12,7 +12,15 @@ services:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     volumes:
       - db_data:/var/lib/postgresql/data
-    # command: ["postgres", "-c", "log_statement=all"]
+    # command: ["postgres", "-c", "log_statement=all"] # to log SQL
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: "mailhog"
+    ports:
+      - "1025:${MAIL_PORT}"
+      - "8025:8025"
+    restart: always
 
 volumes:
   db_data:
