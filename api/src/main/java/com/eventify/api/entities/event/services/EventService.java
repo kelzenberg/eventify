@@ -15,15 +15,15 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
-    public List<Event> getAllEvents() {
+    public List<Event> getAll() {
         return eventRepository.findAll();
     }
 
-    public Event getEventById(UUID id) {
+    public Event getById(UUID id) {
         return eventRepository.findById(id).orElse(null);
     }
 
-    public Event createEvent(String title, String description, Date startedAt) {
+    public Event create(String title, String description, Date startedAt) {
         Event.EventBuilder newEvent = Event.builder()
                 .title(title)
                 .description(description);
@@ -35,7 +35,7 @@ public class EventService {
         return eventRepository.save(newEvent.build());
     }
 
-    public void deleteEvent(UUID id) {
+    public void deleteById(UUID id) {
         eventRepository.deleteById(id);
     }
 }

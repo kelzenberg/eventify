@@ -20,8 +20,8 @@ public class EventController {
     private EventService eventService;
 
     @GetMapping(AuthenticatedPaths.EVENTS)
-    List<Event> all() {
-        return eventService.getAllEvents();
+    List<Event> getAll() {
+        return eventService.getAll();
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS)
@@ -30,6 +30,6 @@ public class EventController {
         String description = body.getDescription();
         Date startedAt = body.getStartedAt();
 
-        return eventService.createEvent(title, description, startedAt);
+        return eventService.create(title, description, startedAt);
     }
 }
