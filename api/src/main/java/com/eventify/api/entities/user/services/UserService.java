@@ -5,8 +5,6 @@ import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.data.UserRepository;
 import com.eventify.api.entities.user.exceptions.UserAlreadyExistsException;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
