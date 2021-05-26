@@ -1,7 +1,7 @@
 package com.eventify.api.entities.modules.expensesharing.controllers;
 
 import com.eventify.api.constants.AuthenticatedPaths;
-import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharing;
+import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
 import com.eventify.api.entities.modules.expensesharing.services.ExpenseSharingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +19,12 @@ public class ExpenseSharingController {
     private ExpenseSharingService expenseSharingService;
 
     @GetMapping(AuthenticatedPaths.EXPENSESHARING)
-    List<ExpenseSharing> getAll() {
+    List<ExpenseSharingModule> getAll() {
         return expenseSharingService.getAll();
     }
 
     @PostMapping(AuthenticatedPaths.EXPENSESHARING)
-    ExpenseSharing create(@Valid @RequestBody ExpenseSharingCreateRequest body) {
+    ExpenseSharingModule create(@Valid @RequestBody ExpenseSharingCreateRequest body) {
         String title = body.getTitle();
         String description = body.getDescription();
 

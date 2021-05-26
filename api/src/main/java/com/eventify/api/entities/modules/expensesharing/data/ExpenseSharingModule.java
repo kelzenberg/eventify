@@ -8,13 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table
+@Table(name = "expense_sharing_modules")
 @NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class ExpenseSharing extends BaseEntity {
+public class ExpenseSharingModule extends BaseEntity {
 
     @NonNull
     @Column(nullable = false)
@@ -24,7 +24,7 @@ public class ExpenseSharing extends BaseEntity {
     private String description;
 
     @Builder
-    public ExpenseSharing(@NonNull String title, @NonNull String description) {
+    public ExpenseSharingModule(@NonNull String title, @NonNull String description) {
         super();
         this.title = title;
         this.description = description;
