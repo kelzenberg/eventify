@@ -14,9 +14,9 @@ export function authenticate(email, password) {
             path: "authenticate",
             expect: "json",
             body: {"email": email, "password": password},
-            allowedStatuses: fetcher.status.unauthorized
+            allowedStatuses: [fetcher.status.unauthorized]
         })
-        .then((responseData, rawResponse) => {
+        .then(([responseData, rawResponse]) => {
             if(rawResponse == fetcher.status.unauthorized) {
                 reject();
             } else {
