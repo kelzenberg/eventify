@@ -11,10 +11,15 @@ h2 {
 .user {
     width: 54px;
     height: 54px;
-    background: #D99873;
+    background-color: #D99873;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
     border-radius: 13px;
     background-image: url("/assets/icons/user.svg");
     background-repeat: no-repeat;
     background-position: 50% 50%;
+    cursor: pointer;
+
+    &:hover {
+        background-color: lighten(#D99873, 10%);
+    }
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from "../../components/Header/Header";
 import Title from "../../components/Title/Title";
 import Timespan from "../../components/Timespan/Timespan";
@@ -57,8 +58,8 @@ export default function EventPage() {
 
     return <>
         <Header/>
-        <Title title={event.name} breadcrumbs={["Events", event.name]}>
-            <button className="btn btn-outline-primary me-4" hidden={editing}>GO BACK</button>
+        <Title title={event.name} breadcrumbs={[{name: "Events", link: "/you"}, event.name]}>
+            <Link to="/you/events"><button className="btn btn-outline-primary me-4" hidden={editing}>GO BACK</button></Link>
             <button className="btn btn-outline-secondary" onClick={() => setEditing(true)} hidden={editing}>EDIT</button>
             <button className="btn btn-outline-secondary me-4" onClick={() => setEditing(false)} hidden={!editing}>CANCEL</button>
             <button className="btn btn-primary" onClick={() => setEditing(false)} hidden={!editing}>SAVE</button>

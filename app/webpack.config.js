@@ -44,6 +44,7 @@ let config = {
         contentBase: path.join(__dirname, "dist"),
         publicPath: "/", // needs to be the same as output.publicPath
         host: '127.0.0.1',
+        port: 8081,
         hot: true,
         historyApiFallback: {
             rewrites: [

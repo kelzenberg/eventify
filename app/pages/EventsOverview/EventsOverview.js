@@ -1,34 +1,41 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from "../../components/Header/Header";
 import Timespan from '../../components/Timespan/Timespan';
 import Title from "../../components/Title/Title";
+import * as api from '../../common/api';
 import "./EventsOverview";
 
 export default function EventsOverviewPage() {
-    let events = [{
-        id: 0,
-        name: "My first Event",
-        start: new Date(),
-        end: new Date(),
-        memberCount: 3,
-        description: "We are going to go somewhere where it is really nice and then we are gonna have an exciting time, all while I can organze the event easily!"
-    }, {
-        id: 1,
-        name: "My first Event",
-        start: new Date(),
-        end: new Date(),
-        memberCount: 3,
-        description: "Now THIS is an awesome event! Can you imagine an event better than this one? I bet you can't! It's just unbelievably good. You absolutely dont't want to miss the event of the century! So get onboard and start planning like you have never planned any event before."
-    }];
+    const [events, setEvents] = React.useState(null);
+
+    React.useEffect(() => {
+        api.getAllUserEvents()
+        .then(events => setEvents(events))
+        .catch(err => {
+            console.warn(err);
+            // TODO: show error to user
+        })
+    }, []);
 
     return <>
         <Header/>
         <Title title="Your Events"/>
         <div className="container">
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-                {events.map(e => <div className="col" key={e.id}>
+                {/* Loading indicator */}
+                <div className="col" hidden={events !== null}>
+                    <div className="d-flex justify-content-center">
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                {/* Events */}
+                {(events === null ? [] : events).map(e => <div className="col" key={e.id}>
                     <Event event={e}/>
                 </div>)}
+                {/* New Event */}
                 <div className="col">
                     <NewEvent />
                 </div>
@@ -53,7 +60,11 @@ function Event({event}) {
             <p className="card-text">{event.description}</p>
         </div>
         <div className="card-footer">
-            <button className="btn btn-primary me-3" aria-label="Edit Event">Edit</button>
+            <Link to="/you/event/0">
+                <button className="btn btn-primary me-3" aria-label="Edit Event">
+                    Edit
+                </button>
+            </Link>
             <button className="btn btn-outline-secondary btn-icon" aria-label="Delete Event">
                 <img src="/assets/icons/trash.svg"/>
             </button>
