@@ -14,15 +14,15 @@ public class ExpenseSharingService {
     @Autowired
     private ExpenseSharingRepository expenseSharingRepository;
 
-    public List<ExpenseSharing> getAllExpenseSharingModules() {
+    public List<ExpenseSharing> getAll() {
         return expenseSharingRepository.findAll();
     }
 
-    public ExpenseSharing getExpenseSharingModuleById(UUID id) {
+    public ExpenseSharing getById(UUID id) {
         return expenseSharingRepository.findById(id).orElse(null);
     }
 
-    public ExpenseSharing createExpenseSharingModule(String title, String description) {
+    public ExpenseSharing create(String title, String description) {
         ExpenseSharing.ExpenseSharingBuilder newExpenseSharing = ExpenseSharing.builder()
                 .title(title)
                 .description(description);
@@ -30,7 +30,7 @@ public class ExpenseSharingService {
         return expenseSharingRepository.save(newExpenseSharing.build());
     }
 
-    public void deleteExpenseSharingModule(UUID id) {
+    public void deleteById(UUID id) {
         expenseSharingRepository.deleteById(id);
     }
 }

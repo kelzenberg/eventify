@@ -19,8 +19,8 @@ public class ExpenseSharingController {
     private ExpenseSharingService expenseSharingService;
 
     @GetMapping(AuthenticatedPaths.EXPENSESHARING)
-    List<ExpenseSharing> all() {
-        return expenseSharingService.getAllExpenseSharingModules();
+    List<ExpenseSharing> getAll() {
+        return expenseSharingService.getAll();
     }
 
     @PostMapping(AuthenticatedPaths.EXPENSESHARING)
@@ -28,6 +28,6 @@ public class ExpenseSharingController {
         String title = body.getTitle();
         String description = body.getDescription();
 
-        return expenseSharingService.createExpenseSharingModule(title, description);
+        return expenseSharingService.create(title, description);
     }
 }
