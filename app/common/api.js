@@ -42,7 +42,7 @@ export function register(email, password, displayName) {
         "displayName": displayName
     };
     return fetcher.request({method: "POST", path: "register", expect: "json", body: body})
-    .then((responseData, rawResponse) => {
+    .then(([responseData, rawResponse]) => {
         console.log(rawResponse.headers.get("Authorization"));
         stateKeeper.setCredentials(rawResponse.headers.get("Authorization"));
         return Promise.resolve();

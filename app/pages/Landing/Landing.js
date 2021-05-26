@@ -109,11 +109,14 @@ function Register() {
     const register = () => {
         if(email == "" || password == "") return;
         setLoading(true);
-        api.register(email, password, email)
+        let displayName = email;
+        if(email.split("@").length != 0) displayName = email.split("@")[0];
+        api.register(email, password, displayName)
         .then(() => {
             window.location = "/you";
         })
-        .catch(() => {
+        .catch((err) => {
+            console.warn(err);
             setLoading(false);
             setErrorMessage("Unfortunately an error occured and the registration could not be completed. Please try again.");
         })
