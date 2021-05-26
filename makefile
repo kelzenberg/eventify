@@ -22,7 +22,7 @@ mail-reset:
 app-install:
 	cd ./app && npm install && npm run build-dev
 
-app:
+app-watch:
 	cd ./app && npm run watch-server
 
 app-reset:
