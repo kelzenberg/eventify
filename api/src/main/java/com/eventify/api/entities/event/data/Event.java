@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "events")
+@Table
 @NoArgsConstructor
 @Getter
 @Setter

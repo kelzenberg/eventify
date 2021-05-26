@@ -1,6 +1,5 @@
 package com.eventify.api.entities.event.controllers;
 
-import com.eventify.api.auth.controllers.JwtAuthenticationRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
