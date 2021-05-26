@@ -20,6 +20,11 @@ All in one web app.
 ### Quick Start
 
 ```sh
-cp .env.example .env # declare environment values (required once)
+make setup # declare environment values (required once)
+
 make db # start PostgreSQL database in a Docker container
+make app-install # install dependencies for the `/app`
+make app-watch # start the frontend app in development mode
 ```
+
+Then run the ***API*** as described in the [`/api/README.md`](https://github.com/kelzenberg/eventify/blob/master/api/README.md).
