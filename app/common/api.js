@@ -20,8 +20,7 @@ export function authenticate(email, password) {
             if(rawResponse == fetcher.status.unauthorized) {
                 reject();
             } else {
-                console.log(rawResponse.headers.get("Authorization"));
-                stateKeeper.setCredentials(rawResponse.headers.get("Authorization"));
+                stateKeeper.setCredentials(responseData.token);
                 resolve();
             }
         })
@@ -43,8 +42,7 @@ export function register(email, password, displayName) {
     };
     return fetcher.request({method: "POST", path: "register", expect: "json", body: body})
     .then(([responseData, rawResponse]) => {
-        console.log(rawResponse.headers.get("Authorization"));
-        stateKeeper.setCredentials(rawResponse.headers.get("Authorization"));
+        stateKeeper.setCredentials(responseData.token);
         return Promise.resolve();
     })
 }
