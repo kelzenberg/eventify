@@ -43,14 +43,14 @@ public class UserDBInitializer {
 
                 for (String[] user : users) {
                     try {
-                        User newUser = userService.createUser(user[0], user[1], user[2]);
+                        User newUser = userService.create(user[0], user[1], user[2]);
                         System.out.println("[DEBUG] Created user: " + newUser.getDisplayName());
                     } catch (UserAlreadyExistsException | DataIntegrityViolationException e) {
                         System.out.println("[DEBUG] User already exists: " + user[0]);
                     }
                 }
 
-                List<User> allUsers = userService.getAllUsers();
+                List<User> allUsers = userService.getAll();
                 System.out.println("[DEBUG] All users: " + allUsers.stream().map(user -> "(" +
                         user.getId() + ", " +
                         user.getDisplayName() + ", " +

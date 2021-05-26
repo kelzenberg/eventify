@@ -18,12 +18,12 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(AuthenticatedPaths.USERS)
-    List<User> all() {
-        return userService.getAllUsers();
+    List<User> getAll() {
+        return userService.getAll();
     }
 
     @GetMapping(AuthenticatedPaths.USERS + "/me")
-    User me(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+    User getMe(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         return userService.getMe(authHeader);
     }
 }

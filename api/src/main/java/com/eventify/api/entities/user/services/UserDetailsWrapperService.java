@@ -16,7 +16,7 @@ public class UserDetailsWrapperService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userService.getUserByEmail(email);
+        User user = userService.getByEmail(email);
 
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);

@@ -54,7 +54,7 @@ public class JwtAuthenticationController {
         String displayName = body.getDisplayName().trim();
 
         try {
-            User newUser = userService.createUser(email, password, displayName);
+            User newUser = userService.create(email, password, displayName);
             String token = authenticate(email, password);
 
             return ResponseEntity

@@ -26,15 +26,15 @@ public class UserService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    public List<User> getAllUsers() {
+    public List<User> getAll() {
         return userRepository.findAll();
     }
 
-    public User getUserById(UUID id) {
+    public User getById(UUID id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User getUserByEmail(String email) {
+    public User getByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
 
@@ -50,7 +50,7 @@ public class UserService {
         }
     }
 
-    public User createUser(String email, String password, String displayName) throws UserAlreadyExistsException {
+    public User create(String email, String password, String displayName) throws UserAlreadyExistsException {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new UserAlreadyExistsException("User with email '" + email + "' already exists");
         }
@@ -64,7 +64,7 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    public void deleteUser(UUID id) {
+    public void deleteById(UUID id) {
         userRepository.deleteById(id);
     }
 }
