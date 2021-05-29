@@ -60,8 +60,8 @@ public class UserDBInitializer {
                         System.out.println("[DEBUG] User already exists: " + user[0]);
                     }
                 }
-                
-                jdbcTemplate.update("UPDATE users SET role='ADMIN' WHERE email=?;", adminEmail);
+
+                jdbcTemplate.update("UPDATE users SET auth_role='ADMIN' WHERE email=?;", adminEmail);
 
                 List<User> allUsers = userService.getAll();
                 System.out.println("[DEBUG] All users: " + allUsers.stream().map(user -> "(" +

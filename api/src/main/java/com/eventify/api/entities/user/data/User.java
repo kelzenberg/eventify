@@ -34,7 +34,7 @@ public class User extends BaseEntity {
     @Setter(AccessLevel.PRIVATE)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    AuthorizationRole role;
+    AuthorizationRole authRole;
 
     @Builder
     public User(@NonNull String email, @NonNull String password, @NonNull String displayName) {
@@ -42,6 +42,6 @@ public class User extends BaseEntity {
         this.email = email;
         this.password = password;
         this.displayName = displayName;
-        this.role = AuthorizationRole.USER;
+        this.authRole = AuthorizationRole.USER;
     }
 }
