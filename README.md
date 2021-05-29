@@ -16,6 +16,9 @@ All in one web app.
 - Java 14+
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - (optional) a PostgreSQL client, e.g. [Postico](https://eggerapps.at/postico)
+- (optional) allow invalid SSL certificates for resources loaded from localhost.  
+  For Chrome, enable this flag [`chrome://flags/#allow-insecure-localhost`](chrome://flags/#allow-insecure-localhost)
+- (optional) [Setup Postman](https://learning.postman.com/docs/sending-requests/certificates/) to work with certificates
 
 ### Quick Start
 

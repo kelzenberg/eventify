@@ -17,6 +17,8 @@ This will ensure that the run configuration for the _IntelliJ IDEA_ in the `.run
 automatically loads the correct environment profile and its env values from `../local.env`.  
 We are using Java 14 with language level 11.
 
+**The API will run on [https://localhost:8443](https://localhost:8443), with a self signed certificate.**
+
 [comment]: <> (## Entities Schema &#40;outdated&#41;)
 
 [comment]: <> (![Data Layer]&#40;../.github/data_layer.svg&#41;)
