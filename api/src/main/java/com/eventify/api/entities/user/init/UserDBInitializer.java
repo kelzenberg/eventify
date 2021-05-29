@@ -4,6 +4,7 @@ import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.exceptions.UserAlreadyExistsException;
 import com.eventify.api.entities.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,12 @@ public class UserDBInitializer {
     @Autowired
     Environment env;
 
+    @Value("${admin.email}")
+    private String adminEmail;
+
+    @Value("${admin.password}")
+    private String adminPassword;
+
     @Bean
     CommandLineRunner initUserDatabase(UserService userService) {
         List<String> environments = Arrays.asList(env.getActiveProfiles());
@@ -29,7 +36,7 @@ public class UserDBInitializer {
 
         if (environments.contains("local")) {
             String[][] users = {
-                    {"admin@test.de", "password123", "Admin"},
+                    {adminEmail, adminPassword, "Admin"},
                     {"user1@test.de", "password123", "TestUser1"}
             };
 
