@@ -2,9 +2,11 @@ package com.eventify.api.entities.user.data;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -12,7 +14,7 @@ import java.util.Collection;
 @EqualsAndHashCode
 @ToString
 public class UserDetailsWrapper implements UserDetails {
-
+    String ROLE_PREFIX = "ROLE_";
     private User user;
 
     public UserDetailsWrapper(User user) {
@@ -31,7 +33,7 @@ public class UserDetailsWrapper implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority(ROLE_PREFIX + user.getRole()));
     }
 
     @Override

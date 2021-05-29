@@ -1,6 +1,6 @@
 package com.eventify.api.mail.controllers;
 
-import com.eventify.api.constants.AuthenticatedPaths;
+import com.eventify.api.constants.AdminPaths;
 import com.eventify.api.mail.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class MailController {
     @Autowired
     private MailService mailService;
 
-    @PostMapping(AuthenticatedPaths.MAIL + "/send")
+    @PostMapping(AdminPaths.MAIL + "/send")
     public ResponseEntity<String> send(@Valid @RequestBody MailSendRequest body) throws MessagingException {
         try {
             mailService.sendEmail(body.getRecipients(), body.getSubject(), body.getContent());

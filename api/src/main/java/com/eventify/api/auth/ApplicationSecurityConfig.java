@@ -3,6 +3,7 @@ package com.eventify.api.auth;
 import com.eventify.api.auth.filters.JwtRequestFilter;
 import com.eventify.api.auth.handlers.RestAccessDeniedHandler;
 import com.eventify.api.auth.handlers.RestAuthenticationEntryPoint;
+import com.eventify.api.constants.AdminPaths;
 import com.eventify.api.constants.PublicPaths;
 import com.eventify.api.entities.user.services.UserDetailsWrapperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +64,12 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 // public endpoints
                 .antMatchers(PublicPaths.REGISTER).permitAll()
                 .antMatchers(PublicPaths.LOGIN).permitAll()
-                // endpoints with authentication
-                .anyRequest().authenticated().and().formLogin();
+                // endpoints with authenticated Admin role
+                .antMatchers(AdminPaths.USERS).hasRole("ADMIN")
+                .antMatchers(AdminPaths.MAIL).hasRole("ADMIN")
+                // endpoints with authenticated
+                .anyRequest().hasAnyRole("ADMIN", "USER")
+                .and().formLogin();
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }

@@ -1,5 +1,6 @@
 package com.eventify.api.entities.user.controllers;
 
+import com.eventify.api.constants.AdminPaths;
 import com.eventify.api.constants.AuthenticatedPaths;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserService;
@@ -17,13 +18,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(AuthenticatedPaths.USERS)
+    @GetMapping(AuthenticatedPaths.ME)
+    User getMe(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        return userService.getMe(authHeader);
+    }
+
+    @GetMapping(AdminPaths.USERS)
     List<User> getAll() {
         return userService.getAll();
     }
 
-    @GetMapping(AuthenticatedPaths.USERS + "/me")
-    User getMe(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
-        return userService.getMe(authHeader);
-    }
 }

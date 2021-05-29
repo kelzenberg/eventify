@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -22,6 +23,9 @@ public class UserDBInitializer {
 
     @Autowired
     Environment env;
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @Value("${admin.email}")
     private String adminEmail;
@@ -56,6 +60,8 @@ public class UserDBInitializer {
                         System.out.println("[DEBUG] User already exists: " + user[0]);
                     }
                 }
+                
+                jdbcTemplate.update("UPDATE users SET role='ADMIN' WHERE email=?;", adminEmail);
 
                 List<User> allUsers = userService.getAll();
                 System.out.println("[DEBUG] All users: " + allUsers.stream().map(user -> "(" +

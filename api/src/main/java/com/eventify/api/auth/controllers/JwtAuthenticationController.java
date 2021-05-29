@@ -1,7 +1,7 @@
 package com.eventify.api.auth.controllers;
 
 import com.eventify.api.auth.utils.JwtTokenUtil;
-import com.eventify.api.constants.AuthenticatedPaths;
+import com.eventify.api.constants.AdminPaths;
 import com.eventify.api.constants.PublicPaths;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.exceptions.UserAlreadyExistsException;
@@ -58,7 +58,7 @@ public class JwtAuthenticationController {
             String token = authenticate(email, password);
 
             return ResponseEntity
-                    .created(new URI(AuthenticatedPaths.USERS + newUser.getId()))
+                    .created(new URI(AdminPaths.USERS + newUser.getId()))
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .body(new JwtResponse(token)); // TODO: token in body is debug for now
         } catch (UserAlreadyExistsException | DataIntegrityViolationException e) {
