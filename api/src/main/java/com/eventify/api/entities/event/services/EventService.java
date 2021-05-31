@@ -20,7 +20,7 @@ public class EventService {
     }
 
     public Event getById(UUID id) {
-        return eventRepository.findById(id).orElse(null);
+        return eventRepository.getOne(id);
     }
 
     public Event create(String title, String description, Date startedAt) {

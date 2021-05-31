@@ -19,15 +19,15 @@ public class ExpenseSharingService {
     }
 
     public ExpenseSharingModule getById(UUID id) {
-        return expenseSharingRepository.findById(id).orElse(null);
+        return expenseSharingRepository.getOne(id);
     }
 
     public ExpenseSharingModule create(String title, String description) {
-        ExpenseSharingModule.ExpenseSharingModuleBuilder newExpenseSharing = ExpenseSharingModule.builder()
+        ExpenseSharingModule.ExpenseSharingModuleBuilder newEntity = ExpenseSharingModule.builder()
                 .title(title)
                 .description(description);
 
-        return expenseSharingRepository.save(newExpenseSharing.build());
+        return expenseSharingRepository.save(newEntity.build());
     }
 
     public void deleteById(UUID id) {

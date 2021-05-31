@@ -18,12 +18,12 @@ public class ExpenseSharingController {
     @Autowired
     private ExpenseSharingService expenseSharingService;
 
-    @GetMapping(AuthenticatedPaths.EXPENSESHARING)
+    @GetMapping(AuthenticatedPaths.EXPENSE_SHARING)
     List<ExpenseSharingModule> getAll() {
         return expenseSharingService.getAll();
     }
 
-    @PostMapping(AuthenticatedPaths.EXPENSESHARING)
+    @PostMapping(AuthenticatedPaths.EXPENSE_SHARING)
     ExpenseSharingModule create(@Valid @RequestBody ExpenseSharingCreateRequest body) {
         String title = body.getTitle();
         String description = body.getDescription();
