@@ -19,8 +19,6 @@ We are using Java 14 with language level 11.
 
 **The API will run on [https://localhost:8443](https://localhost:8443), with a self signed certificate.**
 
-[comment]: <> (## Entities Schema &#40;outdated&#41;)
+## Entities Schema
 
-[comment]: <> (![Data Layer]&#40;../.github/data_layer.svg&#41;)
-
-[comment]: <> (&#40;Work In Progress&#41;)
+![Data Layer](../.github/data_layer.svg)
