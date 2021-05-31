@@ -31,8 +31,6 @@ public class PaymentContributionController {
         Double amount = body.getAmount();
         ShareType shareType = body.getShareType();
 
-        System.out.println("FOO\n" + body);
-
         try {
             return paymentContributionService.create(expenseSharingId, title, amount, shareType);
         } catch (EntityNotFoundException e) {
