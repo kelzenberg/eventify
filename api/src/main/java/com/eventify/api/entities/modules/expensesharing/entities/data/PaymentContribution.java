@@ -16,11 +16,11 @@ import javax.persistence.*;
 public class PaymentContribution extends BaseEntity {
 
     @NonNull
-    @Column
+    @Column(nullable = false)
     private String title;
 
     @NonNull
-    @Column
+    @Column(nullable = false)
     private Float amount;
 
     @NonNull

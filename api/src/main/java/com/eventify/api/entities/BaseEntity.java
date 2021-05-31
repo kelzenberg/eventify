@@ -50,6 +50,6 @@ public abstract class BaseEntity {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     @NonNull
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     protected Date updatedAt;
 }

@@ -17,7 +17,7 @@ import javax.persistence.Table;
 public class ExpenseSharingModule extends EventModule {
 
     @NonNull
-    @Column
+    @Column(nullable = false)
     private String description;
 
     @Builder
