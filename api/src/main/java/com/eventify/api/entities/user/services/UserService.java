@@ -4,7 +4,7 @@ import com.eventify.api.auth.exceptions.TokenIsInvalidException;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.data.UserRepository;
-import com.eventify.api.entities.user.exceptions.UserAlreadyExistsException;
+import com.eventify.api.exceptions.EntityAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,9 +50,9 @@ public class UserService {
         }
     }
 
-    public User create(String email, String password, String displayName) throws UserAlreadyExistsException {
+    public User create(String email, String password, String displayName) throws EntityAlreadyExistsException {
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new UserAlreadyExistsException("User with email '" + email + "' already exists");
+            throw new EntityAlreadyExistsException("User with email '" + email + "' already exists");
         }
 
         User newUser = User.builder()
