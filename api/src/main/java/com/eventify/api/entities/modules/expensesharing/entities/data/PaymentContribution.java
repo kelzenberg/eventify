@@ -7,7 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "expense_sharing_modules")
+@Table(name = "payment_contributions")
 @NoArgsConstructor
 @Getter
 @Setter
