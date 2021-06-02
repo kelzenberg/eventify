@@ -37,7 +37,7 @@ public class PaymentContribution extends BaseEntity {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "expense_sharing_modules_id", nullable = false)
-    private ExpenseSharingModule expenseSharingModule;
+    private ExpenseSharingModule expenseModule;
 
     @NonNull
     @Enumerated(EnumType.STRING)
@@ -46,7 +46,7 @@ public class PaymentContribution extends BaseEntity {
 
     @Builder
     public PaymentContribution(
-            @NonNull ExpenseSharingModule expenseSharingModule,
+            @NonNull ExpenseSharingModule expenseModule,
             @NonNull String title,
             @NonNull Double amount,
             @NonNull User payer,
@@ -56,7 +56,7 @@ public class PaymentContribution extends BaseEntity {
         this.title = title;
         this.amount = amount;
         this.payer = payer;
-        this.expenseSharingModule = expenseSharingModule;
+        this.expenseModule = expenseModule;
         this.shareType = shareType;
     }
 }

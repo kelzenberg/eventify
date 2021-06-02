@@ -25,7 +25,7 @@ public class ExpenseSharingModule extends EventModule {
     private String description;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "expenseSharingModule")
+    @OneToMany(mappedBy = "expenseModule")
     private List<PaymentContribution> payments;
 
     @Builder

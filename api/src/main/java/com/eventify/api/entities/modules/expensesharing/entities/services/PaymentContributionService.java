@@ -33,7 +33,7 @@ public class PaymentContributionService {
             throw new EntityNotFoundException("Expense Sharing Module with ID '" + expenseSharingId + "' cannot be found.");
         }
 
-        return repository.findAllByExpenseSharingModuleId(expenseSharingId);
+        return repository.findAllByExpenseModuleId(expenseSharingId);
     }
 
     public PaymentContribution getReferenceById(UUID id) {
@@ -45,10 +45,10 @@ public class PaymentContributionService {
     }
 
     public PaymentContribution create(UUID expenseSharingId, String title, Double amount, UUID userId, ShareType shareType) throws EntityNotFoundException {
-        ExpenseSharingModule expenseSharingRef = expenseSharingService.getReferenceById(expenseSharingId);
+        ExpenseSharingModule expenseModuleRef = expenseSharingService.getReferenceById(expenseSharingId);
         User userRef = userService.getReferenceById(userId);
 
-        if (expenseSharingRef == null ) {
+        if (expenseModuleRef == null ) {
             throw new EntityNotFoundException("Expense Sharing Module with ID '" + expenseSharingId + "' cannot be found.");
         }
 
@@ -60,7 +60,7 @@ public class PaymentContributionService {
                 .title(title)
                 .amount(amount)
                 .payer(userRef)
-                .expenseSharingModule(expenseSharingRef)
+                .expenseModule(expenseModuleRef)
                 .shareType(shareType);
 
         return repository.save(newEntity.build());

@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface PaymentContributionRepository extends BaseRepository<PaymentContribution> {
-    List<PaymentContribution> findAllByExpenseSharingModuleId(@NonNull UUID expenseSharingModule_id);
+    List<PaymentContribution> findAllByExpenseModuleId(@NonNull UUID expenseSharingModule_id);
 }
