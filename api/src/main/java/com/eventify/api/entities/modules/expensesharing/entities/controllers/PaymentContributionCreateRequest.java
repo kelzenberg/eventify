@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -22,6 +23,9 @@ public class PaymentContributionCreateRequest implements Serializable {
     @PositiveOrZero
     @Max(100000)
     private Double amount;
+
+    @NotNull
+    private UUID userId;
 
     @NotNull
     private ShareType shareType;

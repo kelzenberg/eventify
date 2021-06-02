@@ -30,9 +30,10 @@ public class PaymentContributionController {
         String title = body.getTitle();
         Double amount = body.getAmount();
         ShareType shareType = body.getShareType();
+        UUID userId = body.getUserId();
 
         try {
-            return service.create(expenseSharingId, title, amount, shareType);
+            return service.create(expenseSharingId, title, amount, userId, shareType);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
