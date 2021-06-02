@@ -1,14 +1,13 @@
 package com.eventify.api.entities.modules.expensesharing.data;
 
+import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.modules.EventModule;
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContribution;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -28,9 +27,16 @@ public class ExpenseSharingModule extends EventModule {
     @OneToMany(mappedBy = "expenseModule")
     private List<PaymentContribution> payments;
 
+    @NonNull
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "events_id", nullable = false)
+    private Event event;
+
     @Builder
-    public ExpenseSharingModule(@NonNull String title, @NonNull String description) {
+    public ExpenseSharingModule(@NonNull String title, @NonNull String description, @NonNull Event event) {
         super(title);
         this.description = description;
+        this.event = event;
     }
 }

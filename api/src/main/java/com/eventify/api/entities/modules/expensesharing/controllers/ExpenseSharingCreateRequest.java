@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -23,4 +24,7 @@ public class ExpenseSharingCreateRequest implements Serializable {
     @NotEmpty
     @Size(min = 1, max = 1000)
     private String description;
+
+    @NotNull
+    private UUID eventId;
 }

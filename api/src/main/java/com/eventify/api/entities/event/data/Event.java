@@ -1,12 +1,16 @@
 package com.eventify.api.entities.event.data;
 
 import com.eventify.api.entities.BaseEntity;
+import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "events")
@@ -29,6 +33,10 @@ public class Event extends BaseEntity {
 
     @Column
     private Date endedAt;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "event")
+    private List<ExpenseSharingModule> expenseSharingModules;
 
     @Builder
     public Event(@NonNull String title, @NonNull String description, Date startedAt) {

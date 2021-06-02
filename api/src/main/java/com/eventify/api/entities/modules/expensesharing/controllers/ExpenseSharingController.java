@@ -30,7 +30,8 @@ public class ExpenseSharingController {
     ExpenseSharingModule create(@Valid @RequestBody ExpenseSharingCreateRequest body) {
         String title = body.getTitle();
         String description = body.getDescription();
+        UUID eventId = body.getEventId();
 
-        return service.create(title, description);
+        return service.create(title, description, eventId);
     }
 }

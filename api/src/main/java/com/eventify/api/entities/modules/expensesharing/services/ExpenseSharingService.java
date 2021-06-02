@@ -1,7 +1,10 @@
 package com.eventify.api.entities.modules.expensesharing.services;
 
+import com.eventify.api.entities.event.data.Event;
+import com.eventify.api.entities.event.services.EventService;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingRepository;
+import com.eventify.api.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,9 @@ public class ExpenseSharingService {
 
     @Autowired
     private ExpenseSharingRepository repository;
+
+    @Autowired
+    private EventService eventService;
 
     public List<ExpenseSharingModule> getAll() {
         return repository.findAll();
@@ -26,10 +32,17 @@ public class ExpenseSharingService {
         return repository.findById(id).orElse(null);
     }
 
-    public ExpenseSharingModule create(String title, String description) {
+    public ExpenseSharingModule create(String title, String description, UUID eventId) {
+        Event eventRef = eventService.getReferenceById(eventId);
+
+        if (eventRef == null ) {
+            throw new EntityNotFoundException("Event with ID '" + eventId + "' cannot be found.");
+        }
+
         ExpenseSharingModule.ExpenseSharingModuleBuilder newEntity = ExpenseSharingModule.builder()
                 .title(title)
-                .description(description);
+                .description(description)
+                .event(eventRef);
 
         return repository.save(newEntity.build());
     }
