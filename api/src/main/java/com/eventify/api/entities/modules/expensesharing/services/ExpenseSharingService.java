@@ -33,16 +33,16 @@ public class ExpenseSharingService {
     }
 
     public ExpenseSharingModule create(String title, String description, UUID eventId) {
-        Event eventRef = eventService.getReferenceById(eventId);
+        Event event = eventService.getById(eventId);
 
-        if (eventRef == null ) {
+        if (event == null ) {
             throw new EntityNotFoundException("Event with ID '" + eventId + "' cannot be found.");
         }
 
         ExpenseSharingModule.ExpenseSharingModuleBuilder newEntity = ExpenseSharingModule.builder()
                 .title(title)
                 .description(description)
-                .event(eventRef);
+                .event(event);
 
         return repository.save(newEntity.build());
     }
