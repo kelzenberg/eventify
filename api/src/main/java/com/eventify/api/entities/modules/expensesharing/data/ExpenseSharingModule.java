@@ -29,6 +29,7 @@ public class ExpenseSharingModule extends EventModule {
 
     @NonNull
     @JsonBackReference
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "events_id", nullable = false)
     private Event event;

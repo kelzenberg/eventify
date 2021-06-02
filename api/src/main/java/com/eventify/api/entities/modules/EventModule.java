@@ -10,11 +10,17 @@ import javax.persistence.MappedSuperclass;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public abstract class EventModule extends BaseEntity {
 
     @NonNull
     @Column(nullable = false)
     private String title;
+
+    public EventModule(@NonNull String title) {
+        super();
+        this.title = title;
+    }
 
 }

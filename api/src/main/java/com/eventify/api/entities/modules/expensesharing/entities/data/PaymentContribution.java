@@ -36,6 +36,7 @@ public class PaymentContribution extends BaseEntity {
 
     @NonNull
     @JsonBackReference
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "expense_sharing_modules_id", nullable = false)
     private ExpenseSharingModule expenseModule;

@@ -29,6 +29,7 @@ public class CostShare extends BaseEntity {
 
     @NonNull
     @JsonBackReference
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "payment_contributions_id", nullable = false)
     private PaymentContribution paymentContribution;
