@@ -2,6 +2,7 @@ package com.eventify.api.entities.modules.expensesharing.entities.services;
 
 import com.eventify.api.entities.modules.expensesharing.constants.ShareType;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
+import com.eventify.api.entities.modules.expensesharing.entities.data.CostShare;
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContribution;
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContributionRepository;
 import com.eventify.api.entities.modules.expensesharing.services.ExpenseSharingService;
@@ -44,24 +45,34 @@ public class PaymentContributionService {
         return repository.findById(id).orElse(null);
     }
 
-    public PaymentContribution create(UUID expenseSharingId, String title, Double amount, UUID userId, ShareType shareType) throws EntityNotFoundException {
+    public PaymentContribution create(
+            UUID expenseSharingId,
+            String title,
+            Double amount,
+            UUID userId,
+            ShareType shareType,
+            List<CostShare> shares
+    ) throws EntityNotFoundException {
         ExpenseSharingModule expenseModuleRef = expenseSharingService.getReferenceById(expenseSharingId);
         User userRef = userService.getReferenceById(userId);
 
-        if (expenseModuleRef == null ) {
+        if (expenseModuleRef == null) {
             throw new EntityNotFoundException("Expense Sharing Module with ID '" + expenseSharingId + "' cannot be found.");
         }
 
-        if (userRef == null ) {
+        if (userRef == null) {
             throw new EntityNotFoundException("User with ID '" + userId + "' cannot be found.");
         }
+
+        // TODO: create CostShare shares out of the Request shares
 
         PaymentContribution.PaymentContributionBuilder newEntity = PaymentContribution.builder()
                 .title(title)
                 .amount(amount)
                 .payer(userRef)
                 .expenseModule(expenseModuleRef)
-                .shareType(shareType);
+                .shareType(shareType)
+                .shares(shares);
 
         return repository.save(newEntity.build());
     }

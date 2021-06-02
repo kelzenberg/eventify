@@ -1,12 +1,14 @@
 package com.eventify.api.entities.modules.expensesharing.entities.controllers;
 
 import com.eventify.api.entities.modules.expensesharing.constants.ShareType;
+import com.eventify.api.entities.modules.expensesharing.entities.data.CostShare;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -29,4 +31,7 @@ public class PaymentContributionCreateRequest implements Serializable {
 
     @NotNull
     private ShareType shareType;
+
+    @NotNull
+    private List<CostShare> shares;
 }

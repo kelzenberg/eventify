@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "payment_contributions")
@@ -44,13 +45,18 @@ public class PaymentContribution extends BaseEntity {
     @Column(nullable = false)
     private ShareType shareType;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "paymentContribution")
+    private List<CostShare> shares;
+
     @Builder
     public PaymentContribution(
             @NonNull ExpenseSharingModule expenseModule,
             @NonNull String title,
             @NonNull Double amount,
             @NonNull User payer,
-            @NonNull ShareType shareType
+            @NonNull ShareType shareType,
+            @NonNull List<CostShare> shares
     ) {
         super();
         this.title = title;
@@ -58,5 +64,6 @@ public class PaymentContribution extends BaseEntity {
         this.payer = payer;
         this.expenseModule = expenseModule;
         this.shareType = shareType;
+        this.shares = shares;
     }
 }
