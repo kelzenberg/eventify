@@ -31,7 +31,7 @@ export function authenticate(email, password) {
 }
 
 export function getUserInfo() {
-    return fetcher.request({method: "GET", path: "users/me", expect: "json"}).then(([response]) => response);
+    return fetcher.request({method: "GET", path: "me", expect: "json"}).then(([response]) => response);
 }
 
 export function register(email, password, displayName) {
@@ -52,6 +52,8 @@ export function logout() {
 }
 
 export function getAllUserEvents() {
+    // return fetcher.request({method: "GET", path: "events", expect: "json"}).then(([response]) => response);
+    
     return Promise.resolve([{
         id: 0,
         name: "My first Event",

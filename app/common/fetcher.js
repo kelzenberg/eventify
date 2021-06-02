@@ -1,7 +1,6 @@
 import * as stateKeeper from "./stateKeeper";
 
-const apiHost = "http://localhost:8080/";
-const authorization = "Bearer " + "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMUB0ZXN0LmRlIiwiaXNzIjoiYXBpLmV2ZW50aWZ5IiwiZXhwIjoxNjIxOTY5NDE4LCJpYXQiOjE2MjE5NjIyMTh9.RKgAQzhxVZOqoaArN7C6EGkftB_j9ZIHa2JpdhsQfO0DAPlzB4lMbFQF4ST5GQjPfRswB99fuISr7RPnlWXm2g";
+const apiHost = "https://localhost:8443/";
 
 class FetchError extends Error {
     constructor(msg, code) {
