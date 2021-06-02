@@ -16,12 +16,12 @@ import java.util.Arrays;
 public class MailController {
 
     @Autowired
-    private MailService mailService;
+    private MailService service;
 
     @PostMapping(AdminPaths.MAIL + "/send")
     public ResponseEntity<String> send(@Valid @RequestBody MailSendRequest body) throws MessagingException {
         try {
-            mailService.sendEmail(body.getRecipients(), body.getSubject(), body.getContent());
+            service.sendEmail(body.getRecipients(), body.getSubject(), body.getContent());
 
             return ResponseEntity.ok("Emails sent to " + Arrays.toString(body.getRecipients()));
         } catch (MessagingException e) {

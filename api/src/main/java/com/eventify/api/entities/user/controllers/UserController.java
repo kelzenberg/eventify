@@ -16,16 +16,16 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserService service;
 
     @GetMapping(AuthenticatedPaths.ME)
     User getMe(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
-        return userService.getMe(authHeader);
+        return service.getMe(authHeader);
     }
 
     @GetMapping(AdminPaths.USERS)
     List<User> getAll() {
-        return userService.getAll();
+        return service.getAll();
     }
 
 }

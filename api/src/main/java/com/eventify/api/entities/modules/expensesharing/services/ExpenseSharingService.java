@@ -12,18 +12,18 @@ import java.util.UUID;
 public class ExpenseSharingService {
 
     @Autowired
-    private ExpenseSharingRepository expenseSharingRepository;
+    private ExpenseSharingRepository repository;
 
     public List<ExpenseSharingModule> getAll() {
-        return expenseSharingRepository.findAll();
+        return repository.findAll();
     }
 
     public ExpenseSharingModule getReferenceById(UUID id) {
-        return expenseSharingRepository.getOne(id);
+        return repository.getOne(id);
     }
 
     public ExpenseSharingModule getById(UUID id) {
-        return expenseSharingRepository.findById(id).orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     public ExpenseSharingModule create(String title, String description) {
@@ -31,10 +31,10 @@ public class ExpenseSharingService {
                 .title(title)
                 .description(description);
 
-        return expenseSharingRepository.save(newEntity.build());
+        return repository.save(newEntity.build());
     }
 
     public void deleteById(UUID id) {
-        expenseSharingRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }

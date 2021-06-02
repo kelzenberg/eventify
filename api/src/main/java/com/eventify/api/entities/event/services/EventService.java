@@ -13,18 +13,18 @@ import java.util.UUID;
 public class EventService {
 
     @Autowired
-    private EventRepository eventRepository;
+    private EventRepository repository;
 
     public List<Event> getAll() {
-        return eventRepository.findAll();
+        return repository.findAll();
     }
 
     public Event getReferenceById(UUID id) {
-        return eventRepository.getOne(id);
+        return repository.getOne(id);
     }
 
     public Event getById(UUID id) {
-        return eventRepository.findById(id).orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     public Event create(String title, String description, Date startedAt) {
@@ -36,10 +36,10 @@ public class EventService {
             newEntity.startedAt(startedAt);
         }
 
-        return eventRepository.save(newEntity.build());
+        return repository.save(newEntity.build());
     }
 
     public void deleteById(UUID id) {
-        eventRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }

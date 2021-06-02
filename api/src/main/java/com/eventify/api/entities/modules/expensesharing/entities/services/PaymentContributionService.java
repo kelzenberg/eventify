@@ -16,7 +16,7 @@ import java.util.UUID;
 public class PaymentContributionService {
 
     @Autowired
-    private PaymentContributionRepository paymentContributionRepository;
+    private PaymentContributionRepository repository;
 
     @Autowired
     private ExpenseSharingService expenseSharingService;
@@ -28,15 +28,15 @@ public class PaymentContributionService {
             throw new EntityNotFoundException("Expense Sharing Module with ID '" + expenseSharingId + "' cannot be found.");
         }
 
-        return paymentContributionRepository.findAllByExpenseSharingModuleId(expenseSharingId);
+        return repository.findAllByExpenseSharingModuleId(expenseSharingId);
     }
 
     public PaymentContribution getReferenceById(UUID id) {
-        return paymentContributionRepository.getOne(id);
+        return repository.getOne(id);
     }
 
     public PaymentContribution getById(UUID id) {
-        return paymentContributionRepository.findById(id).orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     public PaymentContribution create(UUID expenseSharingId, String title, Double amount, ShareType shareType) throws EntityNotFoundException {
@@ -52,10 +52,10 @@ public class PaymentContributionService {
                 .expenseSharingModule(expenseSharingRef)
                 .shareType(shareType);
 
-        return paymentContributionRepository.save(newEntity.build());
+        return repository.save(newEntity.build());
     }
 
     public void deleteById(UUID id) {
-        paymentContributionRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }

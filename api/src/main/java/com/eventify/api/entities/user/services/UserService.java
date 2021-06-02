@@ -18,7 +18,7 @@ import java.util.UUID;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository repository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,26 +27,26 @@ public class UserService {
     private JwtTokenUtil jwtTokenUtil;
 
     public List<User> getAll() {
-        return userRepository.findAll();
+        return repository.findAll();
     }
 
     public User getReferenceById(UUID id) {
-        return userRepository.getOne(id);
+        return repository.getOne(id);
     }
 
     public User getById(UUID id) {
-        return userRepository.findById(id).orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     public User getByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+        return repository.findByEmail(email).orElse(null);
     }
 
     public User getMe(String authHeader) {
         String token = authHeader.split(" ")[1].trim();
 
         try {
-            return userRepository
+            return repository
                     .findByEmail(jwtTokenUtil.getSubject(token))
                     .orElse(null);
         } catch (TokenIsInvalidException e) {
@@ -64,10 +64,10 @@ public class UserService {
                 .password(passwordEncoder.encode(password))
                 .displayName(displayName);
 
-        return userRepository.save(newEntity.build());
+        return repository.save(newEntity.build());
     }
 
     public void deleteById(UUID id) {
-        userRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }

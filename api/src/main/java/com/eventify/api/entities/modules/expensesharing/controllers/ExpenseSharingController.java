@@ -14,16 +14,16 @@ import java.util.UUID;
 public class ExpenseSharingController {
 
     @Autowired
-    private ExpenseSharingService expenseSharingService;
+    private ExpenseSharingService service;
 
     @GetMapping(AuthenticatedPaths.EXPENSE_SHARING)
     List<ExpenseSharingModule> getAll() {
-        return expenseSharingService.getAll();
+        return service.getAll();
     }
 
     @GetMapping(AuthenticatedPaths.EXPENSE_SHARING + "/{id}")
     ExpenseSharingModule getById(@PathVariable UUID id) {
-        return expenseSharingService.getById(id);
+        return service.getById(id);
     }
 
     @PostMapping(AuthenticatedPaths.EXPENSE_SHARING)
@@ -31,6 +31,6 @@ public class ExpenseSharingController {
         String title = body.getTitle();
         String description = body.getDescription();
 
-        return expenseSharingService.create(title, description);
+        return service.create(title, description);
     }
 }

@@ -18,11 +18,11 @@ import java.util.UUID;
 public class PaymentContributionController {
 
     @Autowired
-    private PaymentContributionService paymentContributionService;
+    private PaymentContributionService service;
 
     @GetMapping(AuthenticatedPaths.PAYMENT_CONTRIBUTION)
     List<PaymentContribution> getAll(@PathVariable UUID expenseSharingId) {
-        return paymentContributionService.getAll(expenseSharingId);
+        return service.getAll(expenseSharingId);
     }
 
     @PostMapping(AuthenticatedPaths.PAYMENT_CONTRIBUTION)
@@ -32,7 +32,7 @@ public class PaymentContributionController {
         ShareType shareType = body.getShareType();
 
         try {
-            return paymentContributionService.create(expenseSharingId, title, amount, shareType);
+            return service.create(expenseSharingId, title, amount, shareType);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

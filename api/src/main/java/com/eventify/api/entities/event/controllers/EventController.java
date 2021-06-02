@@ -17,11 +17,11 @@ import java.util.List;
 public class EventController {
 
     @Autowired
-    private EventService eventService;
+    private EventService service;
 
     @GetMapping(AuthenticatedPaths.EVENTS)
     List<Event> getAll() {
-        return eventService.getAll();
+        return service.getAll();
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS)
@@ -30,6 +30,6 @@ public class EventController {
         String description = body.getDescription();
         Date startedAt = body.getStartedAt();
 
-        return eventService.create(title, description, startedAt);
+        return service.create(title, description, startedAt);
     }
 }
