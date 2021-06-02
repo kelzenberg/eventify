@@ -67,7 +67,7 @@ function UserLogin() {
                     <label htmlFor="loginPassword" className="form-label">Password</label>
                     <input type="password" className="form-control" id="loginPassword" value={password} onChange={e => setPassword(e.target.value)}/>
                 </div>
-                <p className="text-error" hidden={!wrongLogin}>The entered credendials were wrong.</p>
+                <p className="text-error" hidden={!wrongLogin}>The entered credentials were wrong.</p>
             </Modal.Body>
             <Modal.Footer>
                 <button type="button" className="btn btn-primary" onClick={login}>Login</button>
