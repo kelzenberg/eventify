@@ -30,8 +30,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getById(UUID id) {
+    public User getReferenceById(UUID id) {
         return userRepository.getOne(id);
+    }
+
+    public User getById(UUID id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     public User getByEmail(String email) {
@@ -51,17 +55,16 @@ public class UserService {
     }
 
     public User create(String email, String password, String displayName) throws EntityAlreadyExistsException {
-        if (userRepository.findByEmail(email).isPresent()) {
+        if (getByEmail(email) != null) {
             throw new EntityAlreadyExistsException("User with email '" + email + "' already exists");
         }
 
-        User newUser = User.builder()
+        User.UserBuilder newEntity = User.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .displayName(displayName)
-                .build();
+                .displayName(displayName);
 
-        return userRepository.save(newUser);
+        return userRepository.save(newEntity.build());
     }
 
     public void deleteById(UUID id) {

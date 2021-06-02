@@ -1,5 +1,6 @@
 package com.eventify.api.entities.modules.expensesharing.services;
 
+import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,12 @@ public class ExpenseSharingService {
         return expenseSharingRepository.findAll();
     }
 
-    public ExpenseSharingModule getById(UUID id) {
+    public ExpenseSharingModule getReferenceById(UUID id) {
         return expenseSharingRepository.getOne(id);
+    }
+
+    public ExpenseSharingModule getById(UUID id) {
+        return expenseSharingRepository.findById(id).orElse(null);
     }
 
     public ExpenseSharingModule create(String title, String description) {

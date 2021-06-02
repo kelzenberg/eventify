@@ -19,20 +19,24 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public Event getById(UUID id) {
+    public Event getReferenceById(UUID id) {
         return eventRepository.getOne(id);
     }
 
+    public Event getById(UUID id) {
+        return eventRepository.findById(id).orElse(null);
+    }
+
     public Event create(String title, String description, Date startedAt) {
-        Event.EventBuilder newEvent = Event.builder()
+        Event.EventBuilder newEntity = Event.builder()
                 .title(title)
                 .description(description);
 
         if (startedAt != null) {
-            newEvent.startedAt(startedAt);
+            newEntity.startedAt(startedAt);
         }
 
-        return eventRepository.save(newEvent.build());
+        return eventRepository.save(newEntity.build());
     }
 
     public void deleteById(UUID id) {

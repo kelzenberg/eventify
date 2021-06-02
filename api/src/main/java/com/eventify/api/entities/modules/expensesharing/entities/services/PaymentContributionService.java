@@ -31,21 +31,25 @@ public class PaymentContributionService {
         return paymentContributionRepository.findAllByExpenseSharingModuleId(expenseSharingId);
     }
 
-    public PaymentContribution getById(UUID id) {
+    public PaymentContribution getReferenceById(UUID id) {
         return paymentContributionRepository.getOne(id);
     }
 
-    public PaymentContribution create(UUID expenseSharingId, String title, Double amount, ShareType shareType) throws EntityNotFoundException {
-        ExpenseSharingModule expenseSharing = expenseSharingService.getById(expenseSharingId);
+    public PaymentContribution getById(UUID id) {
+        return paymentContributionRepository.findById(id).orElse(null);
+    }
 
-        if (expenseSharing == null) {
+    public PaymentContribution create(UUID expenseSharingId, String title, Double amount, ShareType shareType) throws EntityNotFoundException {
+        ExpenseSharingModule expenseSharingRef = expenseSharingService.getReferenceById(expenseSharingId);
+
+        if (expenseSharingRef == null) {
             throw new EntityNotFoundException("Expense Sharing Module with ID '" + expenseSharingId + "' cannot be found.");
         }
 
         PaymentContribution.PaymentContributionBuilder newEntity = PaymentContribution.builder()
                 .title(title)
                 .amount(amount)
-                .expenseSharingModule(expenseSharing)
+                .expenseSharingModule(expenseSharingRef)
                 .shareType(shareType);
 
         return paymentContributionRepository.save(newEntity.build());
