@@ -2,7 +2,6 @@ package com.eventify.api.entities.modules.expensesharing.entities.controllers;
 
 import com.eventify.api.constants.AuthenticatedPaths;
 import com.eventify.api.entities.modules.expensesharing.constants.ShareType;
-import com.eventify.api.entities.modules.expensesharing.entities.data.CostShare;
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContribution;
 import com.eventify.api.entities.modules.expensesharing.entities.services.PaymentContributionService;
 import com.eventify.api.exceptions.EntityNotFoundException;
@@ -32,7 +31,7 @@ public class PaymentContributionController {
         Double amount = body.getAmount();
         ShareType shareType = body.getShareType();
         UUID userId = body.getUserId();
-        List<CostShare> shares = body.getShares();
+        List<RequestCostShare> shares = body.getShares();
 
         try {
             return service.create(expenseSharingId, title, amount, userId, shareType, shares);

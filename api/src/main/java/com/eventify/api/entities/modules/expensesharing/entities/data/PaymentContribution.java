@@ -52,12 +52,11 @@ public class PaymentContribution extends BaseEntity {
 
     @Builder
     public PaymentContribution(
-            @NonNull ExpenseSharingModule expenseModule,
             @NonNull String title,
             @NonNull Double amount,
             @NonNull User payer,
-            @NonNull ShareType shareType,
-            @NonNull List<CostShare> shares
+            @NonNull ExpenseSharingModule expenseModule,
+            @NonNull ShareType shareType
     ) {
         super();
         this.title = title;
@@ -65,6 +64,5 @@ public class PaymentContribution extends BaseEntity {
         this.payer = payer;
         this.expenseModule = expenseModule;
         this.shareType = shareType;
-        this.shares = shares;
     }
 }
