@@ -59,44 +59,42 @@ public class PaymentContributionService {
             ShareType shareType,
             List<RequestCostShare> shares
     ) throws EntityNotFoundException {
-        ExpenseSharingModule expenseModule = expenseSharingService.getById(expenseSharingId);
         User payer = userService.getById(userId);
-
-
-        if (expenseModule == null) {
-            throw new EntityNotFoundException("Expense Sharing Module with ID '" + expenseSharingId + "' cannot be found.");
-        }
+        ExpenseSharingModule expenseModule = expenseSharingService.getById(expenseSharingId);
 
         if (payer == null) {
             throw new EntityNotFoundException("User with ID '" + userId + "' cannot be found.");
         }
 
-        PaymentContribution newPaymentContribution = PaymentContribution.builder()
+        if (expenseModule == null) {
+            throw new EntityNotFoundException("Expense Sharing Module with ID '" + expenseSharingId + "' cannot be found.");
+        }
+
+        PaymentContribution.PaymentContributionBuilder newPaymentContribution = PaymentContribution.builder()
                 .title(title)
                 .amount(amount)
                 .payer(payer)
                 .expenseModule(expenseModule)
-                .shareType(shareType)
-                .build();
+                .shareType(shareType);
 
-        PaymentContribution createdPaymentContribution = paymentContributionRepository.save(newPaymentContribution);
-
+        PaymentContribution createdPaymentContribution = paymentContributionRepository.save(newPaymentContribution.build());
         List<CostShare> costShares = new ArrayList<>();
+
         for (RequestCostShare costShare : shares) {
             User shareHolder = userService.getById(costShare.getUserId());
 
-            CostShare newCostShare = CostShare.builder()
+            CostShare.CostShareBuilder newCostShare = CostShare.builder()
                     .amount(costShare.getAmount())
                     .shareHolder(shareHolder)
-                    .paymentContribution(createdPaymentContribution)
-                    .build();
+                    .paymentContribution(createdPaymentContribution);
 
-            costShares.add(newCostShare);
+            costShares.add(newCostShare.build());
         }
 
-        costShareRepository.saveAll(costShares);
+        List<CostShare> createdShares = costShareRepository.saveAll(costShares);
+        createdPaymentContribution.setShares(createdShares);
 
-        return getById(createdPaymentContribution.getId());
+        return createdPaymentContribution;
     }
 
     public void deleteById(UUID id) {
