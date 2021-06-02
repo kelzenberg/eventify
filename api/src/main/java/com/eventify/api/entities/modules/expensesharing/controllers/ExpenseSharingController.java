@@ -4,13 +4,11 @@ import com.eventify.api.constants.AuthenticatedPaths;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
 import com.eventify.api.entities.modules.expensesharing.services.ExpenseSharingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class ExpenseSharingController {
@@ -21,6 +19,11 @@ public class ExpenseSharingController {
     @GetMapping(AuthenticatedPaths.EXPENSE_SHARING)
     List<ExpenseSharingModule> getAll() {
         return expenseSharingService.getAll();
+    }
+
+    @GetMapping(AuthenticatedPaths.EXPENSE_SHARING + "/{id}")
+    ExpenseSharingModule getById(@PathVariable UUID id) {
+        return expenseSharingService.getById(id);
     }
 
     @PostMapping(AuthenticatedPaths.EXPENSE_SHARING)

@@ -1,6 +1,5 @@
 package com.eventify.api.entities.modules.expensesharing.services;
 
-import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
