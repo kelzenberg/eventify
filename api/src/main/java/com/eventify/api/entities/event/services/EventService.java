@@ -27,6 +27,10 @@ public class EventService {
         return repository.findById(id).orElse(null);
     }
 
+    public List<Event> getMyEvents(UUID userId) {
+        return repository.findAll();
+    }
+
     public Event create(String title, String description, Date startedAt) {
         Event.EventBuilder newEntity = Event.builder()
                 .title(title)
