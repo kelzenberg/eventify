@@ -20,7 +20,8 @@ public class UserController {
 
     @GetMapping(AuthenticatedPaths.ME)
     User getMe(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
-        return service.getMe(authHeader);
+        String token = authHeader.split(" ")[1].trim();
+        return service.getByToken(token);
     }
 
     @GetMapping(AdminPaths.USERS)

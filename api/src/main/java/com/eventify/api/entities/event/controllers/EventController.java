@@ -23,9 +23,10 @@ public class EventController {
     private UserService userService;
 
     @GetMapping(AuthenticatedPaths.MY_EVENTS)
-    List<Event> getMe(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
-        UUID userId = userService.getMe(authHeader).getId();
-        return eventService.getMyEvents(userId);
+    List<Event> getMyEvents(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        String token = authHeader.split(" ")[1].trim();
+        UUID userId = userService.getByToken(token).getId();
+        return eventService.getAllByUserId(userId);
     }
 
     @GetMapping(AuthenticatedPaths.EVENTS)

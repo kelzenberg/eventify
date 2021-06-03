@@ -42,9 +42,7 @@ public class UserService {
         return repository.findByEmail(email).orElse(null);
     }
 
-    public User getMe(String authHeader) {
-        String token = authHeader.split(" ")[1].trim();
-
+    public User getByToken(String token) {
         try {
             return repository
                     .findByEmail(jwtTokenUtil.getSubject(token))

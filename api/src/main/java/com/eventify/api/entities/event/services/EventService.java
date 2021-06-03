@@ -2,18 +2,24 @@ package com.eventify.api.entities.event.services;
 
 import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.data.EventRepository;
+import com.eventify.api.entities.usereventrole.data.UserEventRole;
+import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
 
     @Autowired
     private EventRepository repository;
+
+    @Autowired
+    private UserEventRoleService userEventRoleService;
 
     public List<Event> getAll() {
         return repository.findAll();
@@ -27,8 +33,9 @@ public class EventService {
         return repository.findById(id).orElse(null);
     }
 
-    public List<Event> getMyEvents(UUID userId) {
-        return repository.findAll();
+    public List<Event> getAllByUserId(UUID userId) {
+        List<UserEventRole> userEventRoles = userEventRoleService.getByUserId(userId);
+        return userEventRoles.stream().map(UserEventRole::getEvent).collect(Collectors.toList());
     }
 
     public Event create(String title, String description, Date startedAt) {
