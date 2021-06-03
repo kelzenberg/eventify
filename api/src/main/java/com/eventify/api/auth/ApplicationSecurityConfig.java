@@ -72,6 +72,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 // endpoints with authenticated Admin role
                 .antMatchers(AdminPaths.USERS).hasRole("ADMIN")
                 .antMatchers(AdminPaths.MAIL).hasRole("ADMIN")
+                .antMatchers(AdminPaths.EVENT_ROLES).hasRole("ADMIN")
                 // endpoints with authenticated
                 .anyRequest().hasAnyRole("ADMIN", "USER")
                 .and().formLogin();
