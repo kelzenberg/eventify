@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface UserEventRoleRepository extends BaseRepository<UserEventRole> {
-    List<UserEventRole> findAllByUserId(UUID userId);
-    List<UserEventRole> findAllByEventId(UUID eventId);
+    List<UserEventRole> findAllByIdUserId(UUID userId);
+
+    List<UserEventRole> findAllByIdEventId(UUID eventId);
 }
