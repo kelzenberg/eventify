@@ -1,9 +1,11 @@
 package com.eventify.api.entities.event.controllers;
 
 import com.eventify.api.constants.AuthenticatedPaths;
+import com.eventify.api.entities.Views;
 import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.services.EventService;
 import com.eventify.api.entities.user.services.UserService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ public class EventController {
     private UserService userService;
 
     @GetMapping(AuthenticatedPaths.MY_EVENTS)
+    @JsonView(Views.Short.class)
     List<Event> getMyEvents(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         String token = authHeader.split(" ")[1].trim();
         UUID userId = userService.getByToken(token).getId();

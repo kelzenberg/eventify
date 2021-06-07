@@ -1,8 +1,10 @@
 package com.eventify.api.entities.event.data;
 
 import com.eventify.api.entities.BaseEntity;
+import com.eventify.api.entities.Views;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -22,15 +24,19 @@ import java.util.List;
 public class Event extends BaseEntity {
 
     @NonNull
+    @JsonView(Views.Short.class)
     @Column(nullable = false)
     private String title;
 
+    @JsonView(Views.Short.class)
     @Column
     private String description;
 
+    @JsonView(Views.Short.class)
     @Column
     private Date startedAt;
 
+    @JsonView(Views.Short.class)
     @Column
     private Date endedAt;
 
