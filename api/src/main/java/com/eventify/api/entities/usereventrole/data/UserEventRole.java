@@ -22,7 +22,7 @@ import java.util.Date;
 @Setter
 @EqualsAndHashCode
 @ToString
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AuditingEntityListener.class) // Exception as @EmbeddedId prevents inheritance from BaseEntity
 public class UserEventRole {
 
     @NonNull
@@ -55,26 +55,26 @@ public class UserEventRole {
     @JsonIgnore
     @ToString.Exclude
     @Column(name = "created_by", nullable = false, updatable = false)
-    protected String createdBy;
+    protected String createdBy; // Exception as @EmbeddedId prevents inheritance from BaseEntity
 
     @LastModifiedBy
     @NonNull
     @JsonIgnore
     @ToString.Exclude
     @Column(name = "updated_by")
-    protected String lastModifiedBy;
+    protected String lastModifiedBy; // Exception as @EmbeddedId prevents inheritance from BaseEntity
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @NonNull
     @Column(name = "created_at", nullable = false, updatable = false)
-    protected Date createdAt;
+    protected Date createdAt; // Exception as @EmbeddedId prevents inheritance from BaseEntity
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     @NonNull
     @Column(name = "updated_at", nullable = false)
-    protected Date updatedAt;
+    protected Date updatedAt; // Exception as @EmbeddedId prevents inheritance from BaseEntity
 
     @Builder
     public UserEventRole(@NonNull UserEventRoleId id, @NonNull User user, @NonNull Event event, @NonNull EventRole role) {

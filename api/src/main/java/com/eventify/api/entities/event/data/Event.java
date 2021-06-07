@@ -7,12 +7,10 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "events")
@@ -22,6 +20,24 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class Event extends BaseEntity {
+
+    @Override // To also include parent's attributes for JsonView 'Short'
+    @JsonView(Views.Short.class)
+    public @NonNull UUID getId() {
+        return super.getId();
+    }
+
+    @Override // To also include parent's attributes for JsonView 'Short'
+    @JsonView(Views.Short.class)
+    public @NonNull Date getCreatedAt() {
+        return super.getCreatedAt();
+    }
+
+    @Override // To also include parent's attributes for JsonView 'Short'
+    @JsonView(Views.Short.class)
+    public @NonNull Date getUpdatedAt() {
+        return super.getUpdatedAt();
+    }
 
     @NonNull
     @JsonView(Views.Short.class)
@@ -43,6 +59,11 @@ public class Event extends BaseEntity {
     @JsonManagedReference
     @OneToMany(mappedBy = "event")
     private List<ExpenseSharingModule> expenseSharingModules;
+
+    @JsonView(Views.Short.class)
+    @Transient
+//    @Formula("SELECT count(events_id) FROM user_event_roles WHERE events_id=id::string") // TODO: this would work if super.id is reachable within @Formula
+    private int amountOfUsers;
 
     @Builder
     public Event(@NonNull String title, @NonNull String description, Date startedAt) {
