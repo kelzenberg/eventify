@@ -6,8 +6,12 @@ import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModul
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -56,14 +60,13 @@ public class Event extends BaseEntity {
     @Column
     private Date endedAt;
 
+    @JsonView(Views.Short.class)
+    @Formula("(SELECT count(uer.events_id) FROM user_event_roles uer WHERE uer.events_id = id)")
+    private int amountOfUsers;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "event")
     private List<ExpenseSharingModule> expenseSharingModules;
-
-    @JsonView(Views.Short.class)
-    @Transient
-//    @Formula("SELECT count(events_id) FROM user_event_roles WHERE events_id=id::string") // TODO: this would work if super.id is reachable within @Formula
-    private int amountOfUsers;
 
     @Builder
     public Event(@NonNull String title, @NonNull String description, Date startedAt) {

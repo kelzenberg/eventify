@@ -37,6 +37,12 @@ public class EventController {
         return eventService.getAll();
     }
 
+    @GetMapping(AuthenticatedPaths.EVENTS + "/{id}")
+    Event getById(@PathVariable UUID id) {
+        return eventService.getById(id);
+    }
+
+
     @PostMapping(AuthenticatedPaths.EVENTS)
     Event create(@Valid @RequestBody EventCreateRequest body) {
         String title = body.getTitle();

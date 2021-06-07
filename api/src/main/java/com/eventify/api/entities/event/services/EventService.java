@@ -4,7 +4,6 @@ import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.data.EventRepository;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,11 +36,7 @@ public class EventService {
     public List<Event> getAllByUserId(UUID userId) {
         List<UserEventRole> userEventRoles = userEventRoleService.getByUserId(userId);
 
-        return userEventRoles.stream().map(userEventRole -> {
-            @NonNull Event event = userEventRole.getEvent();
-            event.setAmountOfUsers(userEventRoleService.countUserByEventId(event.getId())); // workaround for @Formula on Event.amountOfUsers
-            return event;
-        }).collect(Collectors.toList());
+        return userEventRoles.stream().map(UserEventRole::getEvent).collect(Collectors.toList());
     }
 
     public Event create(String title, String description, Date startedAt) {
