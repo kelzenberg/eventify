@@ -1,15 +1,12 @@
 package com.eventify.api.entities.user.services;
 
-import com.eventify.api.auth.exceptions.TokenIsInvalidException;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.data.UserRepository;
 import com.eventify.api.exceptions.EntityAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -43,13 +40,7 @@ public class UserService {
     }
 
     public User getByToken(String token) {
-        try {
-            return repository
-                    .findByEmail(jwtTokenUtil.getSubject(token))
-                    .orElse(null);
-        } catch (TokenIsInvalidException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is invalid");
-        }
+        return repository.findByEmail(jwtTokenUtil.getSubject(token)).orElse(null);
     }
 
     public User create(String email, String password, String displayName) throws EntityAlreadyExistsException {
