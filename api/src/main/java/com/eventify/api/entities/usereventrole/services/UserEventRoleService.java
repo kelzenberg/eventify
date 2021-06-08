@@ -12,6 +12,7 @@ import com.eventify.api.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,24 +40,20 @@ public class UserEventRoleService {
         return repository.findAllByIdEventId(eventId);
     }
 
-    public int countUserByEventId(UUID eventId) {
-        return repository.countAllByIdEventId(eventId);
-    }
-
     public UserEventRole create(UUID userId, UUID eventId, EventRole role) throws EntityNotFoundException {
         User user = userService.getById(userId);
         Event event = eventService.getById(eventId);
 
-        if (user == null ) {
+        if (user == null) {
             throw new EntityNotFoundException("User with ID '" + userId + "' cannot be found.");
         }
 
-        if (event == null ) {
+        if (event == null) {
             throw new EntityNotFoundException("Event with ID '" + eventId + "' cannot be found.");
         }
 
         UserEventRole.UserEventRoleBuilder newEntity = UserEventRole.builder()
-                .id(new UserEventRoleId(user.getId(),event.getId()))
+                .id(new UserEventRoleId(user.getId(), event.getId()))
                 .user(user)
                 .event(event)
                 .role(role);
@@ -66,5 +63,11 @@ public class UserEventRoleService {
 
     public void deleteById(UUID id) {
         repository.deleteById(id);
+    }
+
+    @Transactional
+    public void deleteByUserIdAndEventId(UUID userId, UUID eventId) {
+        long deletedAmount = repository.deleteByIdUserIdAndIdEventId(userId, eventId);
+        System.out.println("[DEBUG] Deleted " + deletedAmount + " UserEventRole (" + userId + ", " + eventId + ")");
     }
 }

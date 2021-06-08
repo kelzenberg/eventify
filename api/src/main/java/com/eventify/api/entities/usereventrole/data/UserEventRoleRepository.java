@@ -12,5 +12,7 @@ public interface UserEventRoleRepository extends BaseRepository<UserEventRole> {
 
     List<UserEventRole> findAllByIdEventId(UUID eventId);
 
-    int countAllByIdEventId(UUID eventId);
+    long deleteByIdUserIdAndIdEventId(UUID userId, UUID eventId);
+
+//    int countAllByIdEventId(UUID eventId);
 }
