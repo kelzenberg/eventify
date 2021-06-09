@@ -118,7 +118,7 @@ function Register() {
         .catch((err) => {
             console.warn(err);
             setLoading(false);
-            setErrorMessage("Unfortunately an error occured and the registration could not be completed. Please try again.");
+            setErrorMessage("Unfortunately an error occurred and the registration could not be completed. Please try again.");
         })
     };
 
