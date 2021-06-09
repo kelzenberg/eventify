@@ -11,6 +11,7 @@ let config = {
     output: {
         filename: "[name]/bundle.js",
         path: path.resolve(__dirname, "dist"),
+        chunkFilename: "chunk-[name].[contenthash].js",
         publicPath: "/" // needs to be the same as devServer.publicPath
     },
     module: {
