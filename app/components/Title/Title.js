@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-export default function Header(props) {
+export default function Title(props) {
     let breadcrumbs = [];
     
     if(props.breadcrumbs != undefined && props.breadcrumbs.length != 0) {
@@ -27,7 +27,7 @@ export default function Header(props) {
     </div>
 }
 
-Header.propTypes = {
+Title.propTypes = {
     title: PropTypes.string.isRequired,
     breadcrumbs: PropTypes.arrayOf(
         PropTypes.oneOfType([PropTypes.string, PropTypes.object])
