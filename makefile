@@ -28,3 +28,9 @@ app-watch:
 app-reset:
 	cd ./app && npm run clean
 	make app-install
+
+api-clean:
+	cd ./api && mvn clean:clean
+
+api-run:
+	cd ./api && ./mvnw spring-boot:run
