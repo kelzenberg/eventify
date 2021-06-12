@@ -1,6 +1,7 @@
 package com.eventify.api.entities.event.controllers;
 
 import com.eventify.api.constants.AuthenticatedPaths;
+import com.eventify.api.constants.EventRole;
 import com.eventify.api.entities.Views;
 import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.services.EventService;
@@ -56,12 +57,23 @@ public class EventController {
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS)
-    Event create(@Valid @RequestBody EventCreateRequest body) {
+    Event create(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @Valid @RequestBody EventCreateRequest body) {
+        String token = authHeader.split(" ")[1].trim();
         String title = body.getTitle();
         String description = body.getDescription();
         Date startedAt = body.getStartedAt();
 
-        return eventService.create(title, description, startedAt);
+        try {
+            UUID userId = userService.getByToken(token).getId();
+
+            Event event = eventService.create(title, description, startedAt);
+            userEventRoleService.create(userId, event.getId(), EventRole.ORGANISER);
+
+            event.setAmountOfUsers(1); // manual overwrite as attribute is transient
+            return event;
+        } catch (TokenIsInvalidException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is invalid");
+        }
     }
 
     @JsonView(Views.Short.class)

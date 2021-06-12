@@ -76,6 +76,8 @@ public class EventService {
     public void leave(UUID eventId, String email) throws EntityNotFoundException {
         User user = userService.getByEmail(email);
 
+        // TODO: check if last ORGANISER is leaving -> delete Event(?)
+
         if (user == null) {
             throw new EntityNotFoundException("User with email '" + email + "' cannot be found."); // TODO: temporary, needs to trigger email sending
         }
