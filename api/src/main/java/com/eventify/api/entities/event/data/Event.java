@@ -3,18 +3,18 @@ package com.eventify.api.entities.event.data;
 import com.eventify.api.entities.BaseEntity;
 import com.eventify.api.entities.Views;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
+import com.eventify.api.entities.user.data.User;
+import com.eventify.api.entities.usereventrole.data.UserEventRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
-import org.hibernate.annotations.Formula;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "events")
@@ -60,9 +60,30 @@ public class Event extends BaseEntity {
     @Column
     private Date endedAt;
 
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(mappedBy = "event")
+    private List<UserEventRole> userEventRoles;
+
+    @Transient
     @JsonView(Views.Short.class)
-    @Formula("(SELECT count(uer.events_id) FROM user_event_roles uer WHERE uer.events_id = id)")
     private int amountOfUsers;
+
+    public int getAmountOfUsers() {
+        return this.userEventRoles == null ? 0 : this.userEventRoles.size();
+    }
+
+    @Transient
+    private List<User> users;
+
+    public List<User> getUsers() {
+        return this.userEventRoles == null ? null :
+                this.userEventRoles.stream().map(userEventRole -> {
+                    User user = userEventRole.getUser();
+                    user.setEventRole(userEventRole.getRole());
+                    return user;
+                }).collect(Collectors.toList());
+    }
 
     @JsonManagedReference
     @OneToMany(mappedBy = "event")

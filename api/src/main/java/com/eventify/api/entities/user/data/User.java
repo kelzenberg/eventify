@@ -1,6 +1,7 @@
 package com.eventify.api.entities.user.data;
 
 import com.eventify.api.constants.AuthorizationRole;
+import com.eventify.api.constants.EventRole;
 import com.eventify.api.entities.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -35,6 +36,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     AuthorizationRole authRole;
+    @Transient
+    EventRole eventRole;
 
     @Builder
     public User(@NonNull String email, @NonNull String password, @NonNull String displayName) {
