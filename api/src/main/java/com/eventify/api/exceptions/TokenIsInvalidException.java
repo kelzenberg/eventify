@@ -1,4 +1,4 @@
-package com.eventify.api.auth.exceptions;
+package com.eventify.api.exceptions;
 
 import lombok.NoArgsConstructor;
 

@@ -1,5 +1,6 @@
-package com.eventify.api.exceptions;
+package com.eventify.api;
 
+import com.eventify.api.exceptions.ErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;

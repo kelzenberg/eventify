@@ -2,6 +2,7 @@ package com.eventify.api.auth.filters;
 
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.entities.user.services.UserDetailsWrapperService;
+import com.eventify.api.exceptions.TokenIsInvalidException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.NonNull;
@@ -32,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private UserDetailsWrapperService userDetailsWrapperService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException, ResponseStatusException {
         final String tokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (SecurityContextHolder.getContext().getAuthentication() != null // authenticated user exists already
@@ -62,10 +63,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         } catch (ExpiredJwtException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expired");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expired", e);
+        } catch (TokenIsInvalidException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is invalid", e);
         } catch (JwtException e) {
             System.err.println("[DEBUG] Token Parsing Failed: " + e.getMessage() + "\n" + token);
-            // continue with chain
+            // do nothing but continue with chain
         }
 
         chain.doFilter(request, response);

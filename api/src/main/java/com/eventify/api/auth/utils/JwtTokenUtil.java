@@ -1,6 +1,6 @@
 package com.eventify.api.auth.utils;
 
-import com.eventify.api.auth.exceptions.TokenIsInvalidException;
+import com.eventify.api.exceptions.TokenIsInvalidException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -52,27 +52,22 @@ public class JwtTokenUtil {
     }
 
 
-    public Boolean isTokenInvalid(String token) {
-        Claims claims = parseToken(token);
-
-        return List.of(
-                claims.getExpiration().after(new Date()), // token is not expired
-                claims.getIssuer().equals(issuer) // token issuer is correct
-        ).contains(false);
+    public Boolean isTokenInvalid(String token) throws TokenIsInvalidException {
+        try {
+            Claims claims = parseToken(token);
+            return List.of(
+                    claims.getExpiration().after(new Date()), // token is not expired
+                    claims.getIssuer().equals(issuer) // token issuer is correct
+            ).contains(false);
+        } catch (JwtException e) {
+            System.err.println("[DEBUG] Token Parsing Failed: " + e.getMessage() + "\n" + token);
+            throw new TokenIsInvalidException();
+        }
     }
 
     // Convenience Token Methods:
 
     public String getSubject(String token) throws TokenIsInvalidException {
-        if (isTokenInvalid(token)) {
-            throw new TokenIsInvalidException();
-        }
-
-        try {
-            return parseToken(token).getSubject();
-        } catch (JwtException e) {
-            System.err.println("[DEBUG] Token Parsing Failed: " + e.getMessage() + "\n" + token);
-            throw new TokenIsInvalidException();
-        }
+        return isTokenInvalid(token) ? null : parseToken(token).getSubject();
     }
 }

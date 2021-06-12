@@ -4,6 +4,7 @@ import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.data.UserRepository;
 import com.eventify.api.exceptions.EntityAlreadyExistsException;
+import com.eventify.api.exceptions.TokenIsInvalidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class UserService {
         return repository.findByEmail(email).orElse(null);
     }
 
-    public User getByToken(String token) {
+    public User getByToken(String token) throws TokenIsInvalidException {
         return repository.findByEmail(jwtTokenUtil.getSubject(token)).orElse(null);
     }
 

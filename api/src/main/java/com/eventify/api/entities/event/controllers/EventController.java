@@ -1,6 +1,5 @@
 package com.eventify.api.entities.event.controllers;
 
-import com.eventify.api.auth.exceptions.TokenIsInvalidException;
 import com.eventify.api.constants.AuthenticatedPaths;
 import com.eventify.api.entities.Views;
 import com.eventify.api.entities.event.data.Event;
@@ -8,6 +7,7 @@ import com.eventify.api.entities.event.services.EventService;
 import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
 import com.eventify.api.exceptions.EntityNotFoundException;
+import com.eventify.api.exceptions.TokenIsInvalidException;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +41,7 @@ public class EventController {
             UUID userId = userService.getByToken(token).getId();
             return eventService.getAllByUserId(userId);
         } catch (TokenIsInvalidException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is invalid");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is invalid");
         }
     }
 
