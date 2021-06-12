@@ -25,9 +25,10 @@ All in one web app.
 ```sh
 make setup # declare environment values (required once)
 
-make db # start PostgreSQL database in a Docker container
+make db-run # start PostgreSQL database in a Docker container
+make api-run # build and run the Spring API
 make app-install # install dependencies for the `/app`
 make app-watch # start the frontend app in development mode
 ```
 
-Then run the ***API*** as described in the [`/api/README.md`](https://github.com/kelzenberg/eventify/blob/master/api/README.md).
+To run the Spring API in IntelliJ IDEA please see the [`/api/README.md`](https://github.com/kelzenberg/eventify/blob/master/api/README.md).

@@ -7,7 +7,7 @@ docker:
 docker-stop:
 	docker-compose --env-file local.env down --remove-orphans
 
-db:
+db-run:
 	docker-compose --env-file local.env up postgres
 
 db-reset:

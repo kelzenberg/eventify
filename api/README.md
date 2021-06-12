@@ -2,10 +2,11 @@
 
 The eventify REST API, build with Spring.
 
-## Quickstart
+**To quickstart, follow the README in
+the [repository root](https://github.com/kelzenberg/eventify/blob/master/README.md).**
 
-For the initial start, follow the README in
-the [repository root](https://github.com/kelzenberg/eventify/blob/master/README.md).
+
+## Run API within IntelliJ IDEA
 
 It is recommended to use IntelliJ IDEA Ultimate (not CE) with plugins:
 
