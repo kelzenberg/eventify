@@ -19,6 +19,8 @@ import javax.persistence.*;
 public class User extends BaseEntity {
 
     @NonNull
+    @JsonIgnore
+    @ToString.Exclude // TODO: make View out of this for certain request (/me)
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -32,10 +34,14 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String displayName;
 
+    @NonNull
+    @JsonIgnore
+    @ToString.Exclude
     @Setter(AccessLevel.PRIVATE)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    AuthorizationRole authRole;
+    AuthorizationRole authRole = AuthorizationRole.USER;
+
     @Transient
     EventRole eventRole;
 
@@ -45,6 +51,5 @@ public class User extends BaseEntity {
         this.email = email;
         this.password = password;
         this.displayName = displayName;
-        this.authRole = AuthorizationRole.USER;
     }
 }
