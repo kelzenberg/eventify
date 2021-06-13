@@ -38,6 +38,10 @@ $form-text-color: $text-muted;
     border-style: dashed;
 }
 
+.fw-slightly-bold {
+    font-weight: 600;
+}
+
 // ========================================== BUTTON ==========================================
 
 $btn-font-size: 1.2rem;
@@ -56,7 +60,7 @@ body {
 
 // ========================================== INPUT ==========================================
 
-$input-border-color: rgb(65, 65, 65);
+$input-border-color: rgb(105, 105, 105);
 $input-border-width: 2px;
 $input-focus-border-color: map.get($theme-colors, "primary");
 

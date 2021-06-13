@@ -17,7 +17,7 @@ export function authenticate(email, password) {
             allowedStatuses: [fetcher.status.unauthorized]
         })
         .then(([responseData, rawResponse]) => {
-            if(rawResponse == fetcher.status.unauthorized) {
+            if(rawResponse.status === fetcher.status.unauthorized) {
                 reject();
             } else {
                 stateKeeper.setCredentials(responseData.token);
@@ -51,23 +51,53 @@ export function logout() {
     console.warn("TODO: api logout");
 }
 
+// =========================================== EVENTS =========================================== //
+
 export function getAllUserEvents() {
-    // return fetcher.request({method: "GET", path: "events", expect: "json"}).then(([response]) => response);
-    
-    return Promise.resolve([{
-        id: 0,
-        name: "My first Event",
-        start: new Date(),
-        end: new Date(),
-        memberCount: 3,
-        description: "We are going to go somewhere where it is really nice and then we are gonna have an exciting time, all while I can organze the event easily!"
-    }, {
-        id: 1,
-        name: "My first Event",
-        start: new Date(),
-        end: new Date(),
-        memberCount: 3,
-        description: "Now THIS is an awesome event! Can you imagine an event better than this one? I bet you can't! It's just unbelievably good. You absolutely dont't want to miss the event of the century! So get onboard and start planning like you have never planned any event before."
-    }]);
+    return fetcher.request({method: "GET", path: "events", expect: "json"}).then(([response]) => response);
 }
 
+export function getEvent(eventID) {
+    return fetcher.request({method: "GET", path: `event/${eventID}`, expect: "json"}).then(([response]) => response);
+
+    return Promise.resolve({
+        "id": "22f7c93e-cfdc-491f-baa2-732fa298d8f6",
+        "createdAt": "2021-06-02T15:42:16.478+00:00",
+        "updatedAt": "2021-06-02T15:42:16.478+00:00",
+        "title": "TestEvent 1",
+        "description": "This is a test description",
+        "startedAt": "2021-12-24T13:33:37.111+00:00",
+        "endedAt": null,
+        "expenseSharingModules": [
+            {
+                "id": "0f994c11-58ba-4718-ae18-5fe099177329",
+                "createdAt": "2021-06-02T15:42:40.985+00:00",
+                "updatedAt": "2021-06-02T15:42:40.985+00:00",
+                "title": "Expense Sharing Module 1",
+                "description": "This is a test description",
+                "payments": [
+                    {
+                        "id": "e2ba702a-3713-4804-9b67-de5f9f99b3a8",
+                        "createdAt": "2021-06-02T15:43:05.301+00:00",
+                        "updatedAt": "2021-06-02T15:43:05.301+00:00",
+                        "title": "Payment 1",
+                        "amount": 13.37,
+                        "payer": {
+                            "id": "1798a949-1f72-45ff-b83c-d8e796add4cc",
+                            "createdAt": "2021-05-29T17:01:31.716+00:00",
+                            "updatedAt": "2021-05-29T17:01:31.716+00:00",
+                            "email": "admin@test.de",
+                            "displayName": "Admin",
+                            "authRole": "ADMIN"
+                        },
+                        "shareType": "FIXED"
+                    }
+                ]
+            }
+        ]
+    });
+}
+
+export function saveEvent(event) {
+    return fetcher.request({method: "PUT", path: `event/${event.id}`, expect: "json"}).then(([response]) => response);
+}

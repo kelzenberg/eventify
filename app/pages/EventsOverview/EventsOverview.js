@@ -47,10 +47,10 @@ export default function EventsOverviewPage() {
 function Event({event}) {
     return <div className="card h-100">
         <div className="card-body p-4">
-            <h5 className="card-title fw-bolder fs-4 mb-4">{event.name}</h5>
+            <h5 className="card-title fw-bolder fs-4 mb-4">{event.title}</h5>
             <h6 className="card-subtitle mb-2 text-muted">
                 <div className="d-flex">
-                    <Timespan from={event.start} to={event.end}/>
+                    <Timespan from={event.startedAt} to={event.endedAt}/>
                     <div className="text-end pt-2">
                         <span>3</span>
                         <img src="/assets/icons/members.svg" alt="attendees" className="ms-1"/>
@@ -60,7 +60,7 @@ function Event({event}) {
             <p className="card-text">{event.description}</p>
         </div>
         <div className="card-footer">
-            <Link to="/you/event/0">
+            <Link to={`/you/event/${event.id}`}>
                 <button className="btn btn-primary me-3" aria-label="Edit Event">
                     Edit
                 </button>

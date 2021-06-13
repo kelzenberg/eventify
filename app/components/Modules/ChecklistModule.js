@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default function ChecklistModule(props) {
-    let moduleID = props.moduleData.type + "_"+props.moduleData.name;
-
     return <>
         <table className="table table-borderless table-hover align-middle">
             <thead>
@@ -15,12 +13,12 @@ export default function ChecklistModule(props) {
                 </tr>
             </thead>
             <tbody>
-                {props.moduleData.items.map(item => <tr key={item.name} aria-labelledby={moduleID + "_name"}>
+                {props.moduleData.items.map(item => <tr key={item.name} aria-labelledby={props.htmlID + "_name"}>
                     <th scope="row">
                         <input className="form-check-input" type="checkbox" aria-label="Item Done"/>
                     </th>
                     <td>
-                        <span style={{fontWeight: 500}} id={moduleID + "_name"}>{item.name}</span>
+                        <span style={{fontWeight: 500}} id={props.htmlID + "_name"}>{item.name}</span>
                         <br/>
                         <span>{item.description}</span>
                     </td>
