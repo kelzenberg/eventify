@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Header from "../../components/Header/Header";
 import Timespan from '../../components/Timespan/Timespan';
 import Title from "../../components/Title/Title";
 import * as api from '../../common/api';
-import "./EventsOverview";
+import "./EventsOverview.scss";
 
 export default function EventsOverviewPage() {
     const [events, setEvents] = React.useState(null);
@@ -45,14 +45,20 @@ export default function EventsOverviewPage() {
 }
 
 function Event({event}) {
+    let history = useHistory();
+
+    function openEvent() {
+        history.push(`/you/event/${event.id}`);
+    }
+
     return <div className="card h-100">
-        <div className="card-body p-4">
+        <div className="card-body p-4 eventCardBody" onClick={openEvent}>
             <h5 className="card-title fw-bolder fs-4 mb-4">{event.title}</h5>
             <h6 className="card-subtitle mb-2 text-muted">
                 <div className="d-flex">
                     <Timespan from={event.startedAt} to={event.endedAt}/>
                     <div className="text-end pt-2">
-                        <span>3</span>
+                        <span>{event.amountOfUsers}</span>
                         <img src="/assets/icons/members.svg" alt="attendees" className="ms-1"/>
                     </div>
                 </div>
