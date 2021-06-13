@@ -54,11 +54,11 @@ export function logout() {
 // =========================================== EVENTS =========================================== //
 
 export function getAllUserEvents() {
-    return fetcher.request({method: "GET", path: "events", expect: "json"}).then(([response]) => response);
+    return fetcher.request({method: "GET", path: "me/events", expect: "json"}).then(([response]) => response);
 }
 
 export function getEvent(eventID) {
-    return fetcher.request({method: "GET", path: `event/${eventID}`, expect: "json"}).then(([response]) => response);
+    return fetcher.request({method: "GET", path: `events/${eventID}`, expect: "json"}).then(([response]) => response);
 
     return Promise.resolve({
         "id": "22f7c93e-cfdc-491f-baa2-732fa298d8f6",
@@ -99,5 +99,5 @@ export function getEvent(eventID) {
 }
 
 export function saveEvent(event) {
-    return fetcher.request({method: "PUT", path: `event/${event.id}`, expect: "json"}).then(([response]) => response);
+    return fetcher.request({method: "PUT", path: `events/${event.id}`, expect: "json"}).then(([response]) => response);
 }
