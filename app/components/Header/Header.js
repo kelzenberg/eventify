@@ -3,7 +3,7 @@ import * as api from '../../common/api';
 import * as stateKeeper from '../../common/stateKeeper';
 
 export default function Header() {
-    let userInfo = stateKeeper.getUserInfo();
+    let userInfo = React.useContext(stateKeeper.UserContext);
 
     return <div className="container-fluid p-4">
         <div className="d-flex">
