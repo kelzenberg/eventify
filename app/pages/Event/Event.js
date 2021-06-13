@@ -208,6 +208,15 @@ function ModuleList(props) {
         }
     }
 
+    if(moduleComponents.length == 0) {
+        moduleComponents.push(<h4 class="text-center">This event does not have any modules yet.</h4>);
+    }
+
+    moduleComponents.push(<div className="rounded border-dashed border-gray w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item" onClick={null}>
+        <img src="/assets/icons/add.svg" alt="" className="pe-2" style={{verticalAlign: "sub"}}/>
+        ADD NEW MODULE
+    </div>);
+
     return moduleComponents;
 }
 
