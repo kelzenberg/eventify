@@ -34,7 +34,7 @@ public class EventController {
     private UserEventRoleService userEventRoleService;
 
     @GetMapping(AuthenticatedPaths.MY_EVENTS)
-    @JsonView(Views.Short.class)
+    @JsonView(Views.PublicShort.class)
     List<Event> getMyEvents(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         String token = authHeader.split(" ")[1].trim();
 
@@ -47,16 +47,19 @@ public class EventController {
     }
 
     @GetMapping(AuthenticatedPaths.EVENTS)
+    @JsonView(Views.PublicExtended.class)
     List<Event> getAll() {
         return eventService.getAll();
     }
 
     @GetMapping(AuthenticatedPaths.EVENTS + "/{id}")
+    @JsonView(Views.PublicExtended.class)
     Event getById(@PathVariable UUID id) {
         return eventService.getById(id);
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS)
+    @JsonView(Views.PublicExtended.class)
     Event create(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @Valid @RequestBody EventCreateRequest body) {
         String token = authHeader.split(" ")[1].trim();
         String title = body.getTitle();
@@ -76,8 +79,8 @@ public class EventController {
         }
     }
 
-    @JsonView(Views.Short.class)
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/join")
+    @JsonView(Views.PublicExtended.class)
     Event joinById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) {
         String email = body.getEmail().trim();
 
@@ -88,8 +91,8 @@ public class EventController {
         }
     }
 
-
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/leave")
+    @JsonView(Views.PublicExtended.class)
     void leaveById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) {
         String email = body.getEmail().trim();
 

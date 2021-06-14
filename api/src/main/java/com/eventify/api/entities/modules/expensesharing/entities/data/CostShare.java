@@ -1,9 +1,11 @@
 package com.eventify.api.entities.modules.expensesharing.entities.data;
 
 import com.eventify.api.entities.BaseEntity;
+import com.eventify.api.entities.Views;
 import com.eventify.api.entities.user.data.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,10 +20,12 @@ import javax.persistence.*;
 public class CostShare extends BaseEntity {
 
     @NonNull
+    @JsonView(Views.PublicExtended.class)
     @Column(nullable = false)
     private Double amount;
 
     @NonNull
+    @JsonView(Views.PublicExtended.class)
     @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "users_id", nullable = false)

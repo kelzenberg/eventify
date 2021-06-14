@@ -1,7 +1,9 @@
 package com.eventify.api.mail.controllers;
 
 import com.eventify.api.constants.AdminPaths;
+import com.eventify.api.entities.Views;
 import com.eventify.api.mail.services.MailService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +21,7 @@ public class MailController {
     private MailService service;
 
     @PostMapping(AdminPaths.MAIL + "/send")
+    @JsonView(Views.PublicExtended.class)
     public ResponseEntity<String> send(@Valid @RequestBody MailSendRequest body) throws MessagingException {
         try {
             service.sendEmail(body.getRecipients(), body.getSubject(), body.getContent());

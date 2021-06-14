@@ -1,10 +1,12 @@
 package com.eventify.api.entities.usereventrole.data;
 
 import com.eventify.api.constants.EventRole;
+import com.eventify.api.entities.Views;
 import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.user.data.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,6 +28,7 @@ import java.util.Date;
 public class UserEventRole {
 
     @NonNull
+    @JsonView(Views.Meta.class)
     @EmbeddedId
     private UserEventRoleId id;
 
@@ -46,6 +49,7 @@ public class UserEventRole {
     private Event event;
 
     @NonNull
+    @JsonView(Views.PublicExtended.class)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EventRole role;
@@ -67,12 +71,14 @@ public class UserEventRole {
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @NonNull
+    @JsonView(Views.Meta.class)
     @Column(name = "created_at", nullable = false, updatable = false)
     protected Date createdAt; // Exception as @EmbeddedId prevents inheritance from BaseEntity
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     @NonNull
+    @JsonView(Views.Meta.class)
     @Column(name = "updated_at", nullable = false)
     protected Date updatedAt; // Exception as @EmbeddedId prevents inheritance from BaseEntity
 

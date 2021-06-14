@@ -3,7 +3,9 @@ package com.eventify.api.entities.user.data;
 import com.eventify.api.constants.AuthorizationRole;
 import com.eventify.api.constants.EventRole;
 import com.eventify.api.entities.BaseEntity;
+import com.eventify.api.entities.Views;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,8 +21,7 @@ import javax.persistence.*;
 public class User extends BaseEntity {
 
     @NonNull
-    @JsonIgnore
-    @ToString.Exclude // TODO: make View out of this for certain request (/me)
+    @JsonView(Views.Me.class)
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -31,6 +32,7 @@ public class User extends BaseEntity {
     private String password;
 
     @NonNull
+    @JsonView(Views.PublicExtended.class)
     @Column(nullable = false)
     private String displayName;
 
@@ -42,6 +44,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     AuthorizationRole authRole = AuthorizationRole.USER;
 
+    @JsonView(Views.PublicExtended.class)
     @Transient
     EventRole eventRole;
 
