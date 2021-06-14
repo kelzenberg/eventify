@@ -79,11 +79,10 @@ public class EventService {
         }
     }
 
-    public void leave(UUID eventId, String email) throws EntityNotFoundException {
-        User user = userService.getByEmail(email);
+    public void leave(UUID userId, UUID eventId) throws EntityNotFoundException {
 
         // TODO: check if last ORGANISER is leaving -> delete Event(?)
 
-        userEventRoleService.deleteByUserIdAndEventId(user.getId(), eventId);
+        userEventRoleService.deleteByUserIdAndEventId(userId, eventId);
     }
 }

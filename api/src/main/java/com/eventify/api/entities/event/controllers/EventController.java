@@ -76,8 +76,10 @@ public class EventController {
 
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/leave")
     @JsonView(Views.PublicExtended.class)
-    void leaveById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) {
-        String email = body.getEmail().trim();
-        eventService.leave(eventId, email);
+    void leaveById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @PathVariable UUID eventId) {
+        String token = authHeader.split(" ")[1].trim();
+        UUID userId = userService.getByToken(token).getId();
+
+        eventService.leave(userId, eventId);
     }
 }
