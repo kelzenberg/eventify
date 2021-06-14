@@ -23,13 +23,7 @@ public class MailController {
     @PostMapping(AdminPaths.MAIL + "/send")
     @JsonView(Views.PublicExtended.class)
     public ResponseEntity<String> send(@Valid @RequestBody MailSendRequest body) throws MessagingException {
-        try {
-            service.sendEmail(body.getRecipients(), body.getSubject(), body.getContent());
-
-            return ResponseEntity.ok("Emails sent to " + Arrays.toString(body.getRecipients()));
-        } catch (MessagingException e) {
-            System.out.println("[DEBUG] Sending email failed: " + e.getMessage());
-            throw e;
-        }
+        service.sendEmail(body.getRecipients(), body.getSubject(), body.getContent());
+        return ResponseEntity.ok("Emails sent to " + Arrays.toString(body.getRecipients()));
     }
 }

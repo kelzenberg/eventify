@@ -6,21 +6,16 @@ import com.eventify.api.constants.PublicPaths;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserDetailsWrapperService;
 import com.eventify.api.entities.user.services.UserService;
-import com.eventify.api.exceptions.EntityAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -52,34 +47,23 @@ public class JwtAuthenticationController {
         String email = body.getEmail().trim();
         String password = body.getPassword().trim();
         String displayName = body.getDisplayName().trim();
+        User newUser = userService.create(email, password, displayName);
+        String token = authenticate(email, password);
 
-        try {
-            User newUser = userService.create(email, password, displayName);
-            String token = authenticate(email, password);
-
-            return ResponseEntity
-                    .created(new URI(AdminPaths.USERS + newUser.getId()))
-                    .header(HttpHeaders.AUTHORIZATION, token)
-                    .body(new JwtResponse(token)); // TODO: token in body is debug for now
-        } catch (EntityAlreadyExistsException | DataIntegrityViolationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (BadCredentialsException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        return ResponseEntity
+                .created(new URI(AdminPaths.USERS + newUser.getId()))
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .body(new JwtResponse(token));
     }
 
     @PostMapping(PublicPaths.LOGIN)
     public ResponseEntity<?> getAuthToken(@Valid @RequestBody JwtAuthenticationRequest body) {
         String email = body.getEmail().trim();
         String password = body.getPassword().trim();
+        String token = authenticate(email, password);
 
-        try {
-            String token = authenticate(email, password);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, token)
-                    .body(new JwtResponse(token)); // TODO: token in body is debug for now
-        } catch (BadCredentialsException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .body(new JwtResponse(token));
     }
 }

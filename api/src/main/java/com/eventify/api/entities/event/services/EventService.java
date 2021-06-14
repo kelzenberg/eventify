@@ -37,12 +37,13 @@ public class EventService {
     }
 
     public Event getById(UUID id) {
-        return repository.findById(id).orElse(null);
+        return repository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Event with ID '" + id + "' cannot be found."));
     }
 
     public List<Event> getAllByUserId(UUID userId) {
-        List<UserEventRole> userEventRoles = userEventRoleService.getByUserId(userId);
-
+        List<UserEventRole> userEventRoles = userEventRoleService.getAllByUserId(userId);
         return userEventRoles.stream().map(UserEventRole::getEvent).collect(Collectors.toList());
     }
 
@@ -64,11 +65,6 @@ public class EventService {
 
     public Event join(UUID eventId, String email) throws EntityNotFoundException {
         User user = userService.getByEmail(email);
-
-        if (user == null) {
-            throw new EntityNotFoundException("User with email '" + email + "' cannot be found."); // TODO: temporary, needs to trigger email sending
-        }
-
         UserEventRole userEventRole = userEventRoleService.create(user.getId(), eventId, EventRole.ATTENDEE);
         return userEventRole.getEvent();
     }
@@ -77,10 +73,6 @@ public class EventService {
         User user = userService.getByEmail(email);
 
         // TODO: check if last ORGANISER is leaving -> delete Event(?)
-
-        if (user == null) {
-            throw new EntityNotFoundException("User with email '" + email + "' cannot be found."); // TODO: temporary, needs to trigger email sending
-        }
 
         userEventRoleService.deleteByUserIdAndEventId(user.getId(), eventId);
     }

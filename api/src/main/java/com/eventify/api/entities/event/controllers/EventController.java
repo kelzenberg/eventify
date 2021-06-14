@@ -7,14 +7,10 @@ import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.services.EventService;
 import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
-import com.eventify.api.exceptions.EntityNotFoundException;
-import com.eventify.api.exceptions.TokenIsInvalidException;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -37,13 +33,8 @@ public class EventController {
     @JsonView(Views.PublicShort.class)
     List<Event> getMyEvents(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         String token = authHeader.split(" ")[1].trim();
-
-        try {
-            UUID userId = userService.getByToken(token).getId();
-            return eventService.getAllByUserId(userId);
-        } catch (TokenIsInvalidException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is invalid");
-        }
+        UUID userId = userService.getByToken(token).getId();
+        return eventService.getAllByUserId(userId);
     }
 
     @GetMapping(AuthenticatedPaths.EVENTS)
@@ -66,40 +57,26 @@ public class EventController {
         String description = body.getDescription();
         Date startedAt = body.getStartedAt();
 
-        try {
-            UUID userId = userService.getByToken(token).getId();
+        UUID userId = userService.getByToken(token).getId();
 
-            Event event = eventService.create(title, description, startedAt);
-            userEventRoleService.create(userId, event.getId(), EventRole.ORGANISER);
+        Event event = eventService.create(title, description, startedAt);
+        userEventRoleService.create(userId, event.getId(), EventRole.ORGANISER);
 
-            event.setAmountOfUsers(1); // manual overwrite as attribute is transient
-            return event;
-        } catch (TokenIsInvalidException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is invalid");
-        }
+        event.setAmountOfUsers(1); // manual overwrite as attribute is transient
+        return event;
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/join")
     @JsonView(Views.PublicExtended.class)
     Event joinById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) {
         String email = body.getEmail().trim();
-
-        try {
-            return eventService.join(eventId, email);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        return eventService.join(eventId, email);
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/leave")
     @JsonView(Views.PublicExtended.class)
     void leaveById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) {
         String email = body.getEmail().trim();
-
-        try {
-            eventService.leave(eventId, email);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        eventService.leave(eventId, email);
     }
 }

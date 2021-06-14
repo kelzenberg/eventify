@@ -28,12 +28,12 @@ public class UserEventRoleController {
     @GetMapping(AdminPaths.EVENT_ROLES + "/user/{userId}")
     @JsonView(Views.PublicExtended.class)
     List<UserEventRole> getAllByUserId(@PathVariable UUID userId) {
-        return service.getByUserId(userId);
+        return service.getAllByUserId(userId);
     }
     @GetMapping(AdminPaths.EVENT_ROLES + "/event/{eventId}")
     @JsonView(Views.PublicExtended.class)
     List<UserEventRole> getAllByEventId(@PathVariable UUID eventId) {
-        return service.getByEventId(eventId);
+        return service.getAllByEventId(eventId);
     }
 
     @PostMapping(AdminPaths.EVENT_ROLES)
