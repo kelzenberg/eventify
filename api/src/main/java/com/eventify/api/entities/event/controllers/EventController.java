@@ -82,4 +82,13 @@ public class EventController {
 
         eventService.leave(userId, eventId);
     }
+
+    @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/bounce")
+    @JsonView(Views.PublicExtended.class)
+    void bounceById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @PathVariable UUID eventId, @Valid @RequestBody EventBounceRequest body) {
+        String token = authHeader.split(" ")[1].trim();
+        UUID actorId = userService.getByToken(token).getId();
+        UUID userId = body.getUserId();
+        eventService.bounce(actorId, userId, eventId);
+    }
 }

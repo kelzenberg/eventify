@@ -71,6 +71,8 @@ public class EventService {
     public Event join(UUID eventId, String email) throws EntityNotFoundException, MessagingException {
         try {
             User user = userService.getByEmail(email);
+
+            // TODO: check Role differences (otherwise produces two UER entries)
             UserEventRole userEventRole = userEventRoleService.create(user.getId(), eventId, EventRole.ATTENDEE);
             return userEventRole.getEvent();
         } catch (EntityNotFoundException e) {
@@ -82,6 +84,15 @@ public class EventService {
     public void leave(UUID userId, UUID eventId) throws EntityNotFoundException {
 
         // TODO: check if last ORGANISER is leaving -> delete Event(?)
+        // TODO: check if 'deleteAll...' is possible
+
+        userEventRoleService.deleteByUserIdAndEventId(userId, eventId);
+    }
+
+    public void bounce(UUID actorId, UUID userId, UUID eventId) throws EntityNotFoundException {
+
+        // TODO: check if actorId is Organiser
+        // TODO: check if 'deleteAll...' is possible
 
         userEventRoleService.deleteByUserIdAndEventId(userId, eventId);
     }
