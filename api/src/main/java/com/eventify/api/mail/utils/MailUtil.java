@@ -11,19 +11,20 @@ import javax.mail.internet.MimeMessage;
 public class MailUtil {
 
     private static final String senderEmail = "noreply@eventify.com";
-    private static final String htmlTemplate = "<html><body>%s</body></html>";
+    private static final String htmlTemplate = "<html><body><h1>Eventify</h1><p>%s</p></body></html>";
 
-    public SimpleMailMessage getMessageTemplate(String templateKey) {
+    public SimpleMailMessage getMessageTemplate(MailTemplate templateKey) {
         SimpleMailMessage message = new SimpleMailMessage();
 
         switch (templateKey) {
-            case "INVITE":
-                message.setSubject("Invited to Eventify");
-                message.setText(String.format(htmlTemplate, "Invite Email: %s\nEventId: %s"));
+            case REGISTER:
+                message.setSubject("Welcome to Eventify");
+                message.setText(String.format(htmlTemplate, "You (%s) registered on Eventify."));
                 break;
-            case "REGISTER":
-                message.setSubject("Registered to Eventify");
-                message.setText(String.format(htmlTemplate, "Register: %s"));
+            case INVITE:
+                message.setSubject("You were invited to Eventify");
+                message.setText(String.format(htmlTemplate, "You (%s) were invited to join the event:<br><i>%s</i>"));
+                break;
             default:
                 message.setSubject("%s");
                 message.setText(String.format(htmlTemplate, "%s"));
