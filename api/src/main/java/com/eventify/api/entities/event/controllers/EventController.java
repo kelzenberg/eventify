@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +69,7 @@ public class EventController {
 
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/join")
     @JsonView(Views.PublicExtended.class)
-    Event joinById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) {
+    Event joinById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) throws MessagingException {
         String email = body.getEmail().trim();
         return eventService.join(eventId, email);
     }

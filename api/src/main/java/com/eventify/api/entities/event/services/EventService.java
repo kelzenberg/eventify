@@ -8,9 +8,11 @@ import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
 import com.eventify.api.exceptions.EntityNotFoundException;
+import com.eventify.api.mail.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +29,9 @@ public class EventService {
 
     @Autowired
     private UserEventRoleService userEventRoleService;
+
+    @Autowired
+    private MailService mailService;
 
     public List<Event> getAll() {
         return repository.findAll();
@@ -63,10 +68,15 @@ public class EventService {
         repository.deleteById(id);
     }
 
-    public Event join(UUID eventId, String email) throws EntityNotFoundException {
-        User user = userService.getByEmail(email);
-        UserEventRole userEventRole = userEventRoleService.create(user.getId(), eventId, EventRole.ATTENDEE);
-        return userEventRole.getEvent();
+    public Event join(UUID eventId, String email) throws EntityNotFoundException, MessagingException {
+        try {
+            User user = userService.getByEmail(email);
+            UserEventRole userEventRole = userEventRoleService.create(user.getId(), eventId, EventRole.ATTENDEE);
+            return userEventRole.getEvent();
+        } catch (EntityNotFoundException e) {
+            mailService.sendInvite(email, eventId);
+            return null;
+        }
     }
 
     public void leave(UUID eventId, String email) throws EntityNotFoundException {
