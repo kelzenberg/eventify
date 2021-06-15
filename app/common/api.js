@@ -101,3 +101,12 @@ export function getEvent(eventID) {
 export function saveEvent(event) {
     return fetcher.request({method: "PUT", path: `events/${event.id}`, expect: "json"}).then(([response]) => response);
 }
+
+export function leaveEvent(eventID) {
+    let userInfo = stateKeeper.getUserInfo();
+    return fetcher.request({
+        method: "POST", 
+        path: `events/${eventID}/leave`, 
+        expect: "empty"
+    }).then(([response]) => response);
+}

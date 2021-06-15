@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useParams } from "react-router-dom";
-import { Modal } from 'react-bootstrap';
+import { Modal, Dropdown, DropdownButton, ButtonGroup } from 'react-bootstrap';
 import update from 'immutability-helper';
 import Header from "../../components/Header/Header";
 import Title from "../../components/Title/Title";
@@ -19,6 +19,7 @@ export default function EventPage() {
     const [saving, setSaving] = React.useState(false);
     const [modal, setModal] = React.useState(null);
 
+    let history = useHistory();
     let { eventID } = useParams();
 
     React.useEffect(() => {
@@ -62,6 +63,17 @@ export default function EventPage() {
         })
     }
 
+    function leave() {
+        api.leaveEvent(event.id)
+        .then(() => {
+            history.push(`/you`);
+        })
+        .catch(err => {
+            console.warn(err);
+            setModal({title: "Could not leave event", message: "Unfortunately leaving the event was not possible."});
+        });
+    }
+
     if(errorMessage !== null) {
         return <>
             <Header/>
@@ -97,6 +109,9 @@ export default function EventPage() {
                 <span className="pe-2">Saving...</span>
                 <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             </button>
+            <DropdownButton title="..." as={ButtonGroup} variant="outline-secondary">
+                <Dropdown.Item onClick={leave}>Leave</Dropdown.Item>
+            </DropdownButton>
         </Title>
         <div className="container">
             <div className="row gx-5">
@@ -108,7 +123,7 @@ export default function EventPage() {
                     </div>
                     <div className="row mb-3">
                         <div className="col">
-                        <Members event={event}/>
+                            <Members event={event}/>
                         </div>
                     </div>
                 </div>
@@ -167,7 +182,7 @@ function Details({event, onChange, editing}) {
     </div>
 }
 
-function Members({event}) {
+function Members({event}) {    
     return <div className="card">
         <div className="card-body">
             <div className="d-flex">
