@@ -1,6 +1,7 @@
 package com.eventify.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
@@ -23,6 +24,7 @@ public abstract class BaseEntity {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @JsonView(Views.Meta.class)
     @NonNull
     @Column(updatable = false, nullable = false)
     private UUID id;
@@ -42,12 +44,14 @@ public abstract class BaseEntity {
     protected String lastModifiedBy;
 
     @CreatedDate
+    @JsonView(Views.Meta.class)
     @Temporal(TemporalType.TIMESTAMP)
     @NonNull
     @Column(name = "created_at", nullable = false, updatable = false)
     protected Date createdAt;
 
     @LastModifiedDate
+    @JsonView(Views.Meta.class)
     @Temporal(TemporalType.TIMESTAMP)
     @NonNull
     @Column(name = "updated_at", nullable = false)

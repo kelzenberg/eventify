@@ -4,6 +4,7 @@ import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.data.UserRepository;
 import com.eventify.api.exceptions.EntityAlreadyExistsException;
+import com.eventify.api.exceptions.EntityNotFoundException;
 import com.eventify.api.exceptions.TokenIsInvalidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,15 +34,21 @@ public class UserService {
     }
 
     public User getById(UUID id) {
-        return repository.findById(id).orElse(null);
+        return repository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User with ID '" + id + "' cannot be found."));
     }
 
     public User getByEmail(String email) {
-        return repository.findByEmail(email).orElse(null);
+        return repository
+                .findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User with email '" + email + "' cannot be found."));
     }
 
     public User getByToken(String token) throws TokenIsInvalidException {
-        return repository.findByEmail(jwtTokenUtil.getSubject(token)).orElse(null);
+        return repository
+                .findByEmail(jwtTokenUtil.getSubject(token))
+                .orElseThrow(() -> new EntityNotFoundException("User with token '" + token + "' cannot be found."));
     }
 
     public User create(String email, String password, String displayName) throws EntityAlreadyExistsException {

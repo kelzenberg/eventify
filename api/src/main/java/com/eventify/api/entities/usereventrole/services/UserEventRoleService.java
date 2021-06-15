@@ -32,25 +32,17 @@ public class UserEventRoleService {
         return repository.findAll();
     }
 
-    public List<UserEventRole> getByUserId(UUID userId) {
+    public List<UserEventRole> getAllByUserId(UUID userId) {
         return repository.findAllByIdUserId(userId);
     }
 
-    public List<UserEventRole> getByEventId(UUID eventId) {
+    public List<UserEventRole> getAllByEventId(UUID eventId) {
         return repository.findAllByIdEventId(eventId);
     }
 
     public UserEventRole create(UUID userId, UUID eventId, EventRole role) throws EntityNotFoundException {
         User user = userService.getById(userId);
         Event event = eventService.getById(eventId);
-
-        if (user == null) {
-            throw new EntityNotFoundException("User with ID '" + userId + "' cannot be found.");
-        }
-
-        if (event == null) {
-            throw new EntityNotFoundException("Event with ID '" + eventId + "' cannot be found.");
-        }
 
         UserEventRole.UserEventRoleBuilder newEntity = UserEventRole.builder()
                 .id(new UserEventRoleId(user.getId(), event.getId()))

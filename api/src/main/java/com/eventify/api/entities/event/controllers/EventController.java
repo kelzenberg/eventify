@@ -7,15 +7,12 @@ import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.services.EventService;
 import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
-import com.eventify.api.exceptions.EntityNotFoundException;
-import com.eventify.api.exceptions.TokenIsInvalidException;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
@@ -34,69 +31,64 @@ public class EventController {
     private UserEventRoleService userEventRoleService;
 
     @GetMapping(AuthenticatedPaths.MY_EVENTS)
-    @JsonView(Views.Short.class)
+    @JsonView(Views.PublicShort.class)
     List<Event> getMyEvents(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         String token = authHeader.split(" ")[1].trim();
-
-        try {
-            UUID userId = userService.getByToken(token).getId();
-            return eventService.getAllByUserId(userId);
-        } catch (TokenIsInvalidException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is invalid");
-        }
+        UUID userId = userService.getByToken(token).getId();
+        return eventService.getAllByUserId(userId);
     }
 
     @GetMapping(AuthenticatedPaths.EVENTS)
+    @JsonView(Views.PublicExtended.class)
     List<Event> getAll() {
         return eventService.getAll();
     }
 
     @GetMapping(AuthenticatedPaths.EVENTS + "/{id}")
+    @JsonView(Views.PublicExtended.class)
     Event getById(@PathVariable UUID id) {
         return eventService.getById(id);
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS)
+    @JsonView(Views.PublicExtended.class)
     Event create(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @Valid @RequestBody EventCreateRequest body) {
         String token = authHeader.split(" ")[1].trim();
         String title = body.getTitle();
         String description = body.getDescription();
         Date startedAt = body.getStartedAt();
 
-        try {
-            UUID userId = userService.getByToken(token).getId();
+        UUID userId = userService.getByToken(token).getId();
 
-            Event event = eventService.create(title, description, startedAt);
-            userEventRoleService.create(userId, event.getId(), EventRole.ORGANISER);
+        Event event = eventService.create(title, description, startedAt);
+        userEventRoleService.create(userId, event.getId(), EventRole.ORGANISER);
 
-            event.setAmountOfUsers(1); // manual overwrite as attribute is transient
-            return event;
-        } catch (TokenIsInvalidException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is invalid");
-        }
+        event.setAmountOfUsers(1); // manual overwrite as attribute is transient
+        return event;
     }
 
-    @JsonView(Views.Short.class)
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/join")
-    Event joinById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) {
+    @JsonView(Views.PublicExtended.class)
+    Event joinById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) throws MessagingException {
         String email = body.getEmail().trim();
-
-        try {
-            return eventService.join(eventId, email);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        return eventService.join(eventId, email);
     }
-
 
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/leave")
-    void leaveById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) {
-        String email = body.getEmail().trim();
+    @JsonView(Views.PublicExtended.class)
+    void leaveById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @PathVariable UUID eventId) {
+        String token = authHeader.split(" ")[1].trim();
+        UUID userId = userService.getByToken(token).getId();
 
-        try {
-            eventService.leave(eventId, email);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        eventService.leave(userId, eventId);
+    }
+
+    @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/bounce")
+    @JsonView(Views.PublicExtended.class)
+    void bounceById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @PathVariable UUID eventId, @Valid @RequestBody EventBounceRequest body) {
+        String token = authHeader.split(" ")[1].trim();
+        UUID actorId = userService.getByToken(token).getId();
+        UUID userId = body.getUserId();
+        eventService.bounce(actorId, userId, eventId);
     }
 }

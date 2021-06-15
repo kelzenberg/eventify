@@ -34,12 +34,6 @@ public class PaymentContributionService {
     private UserService userService;
 
     public List<PaymentContribution> getAll(UUID expenseSharingId) {
-        ExpenseSharingModule expenseSharing = expenseSharingService.getById(expenseSharingId);
-
-        if (expenseSharing == null) {
-            throw new EntityNotFoundException("Expense Sharing Module with ID '" + expenseSharingId + "' cannot be found.");
-        }
-
         return paymentContributionRepository.findAllByExpenseModuleId(expenseSharingId);
     }
 
@@ -48,7 +42,9 @@ public class PaymentContributionService {
     }
 
     public PaymentContribution getById(UUID id) {
-        return paymentContributionRepository.findById(id).orElse(null);
+        return paymentContributionRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Payment contribution with ID '" + id + "' cannot be found."));
     }
 
     public PaymentContribution create(
@@ -61,15 +57,6 @@ public class PaymentContributionService {
     ) throws EntityNotFoundException {
         User payer = userService.getById(userId);
         ExpenseSharingModule expenseModule = expenseSharingService.getById(expenseSharingId);
-
-        if (payer == null) {
-            throw new EntityNotFoundException("User with ID '" + userId + "' cannot be found.");
-        }
-
-        if (expenseModule == null) {
-            throw new EntityNotFoundException("Expense Sharing Module with ID '" + expenseSharingId + "' cannot be found.");
-        }
-
         PaymentContribution.PaymentContributionBuilder newPaymentContribution = PaymentContribution.builder()
                 .title(title)
                 .amount(amount)

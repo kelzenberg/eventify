@@ -1,6 +1,8 @@
 package com.eventify.api.entities.modules;
 
 import com.eventify.api.entities.BaseEntity;
+import com.eventify.api.entities.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -15,6 +17,7 @@ import javax.persistence.MappedSuperclass;
 public abstract class EventModule extends BaseEntity {
 
     @NonNull
+    @JsonView(Views.PublicExtended.class)
     @Column(nullable = false)
     private String title;
 

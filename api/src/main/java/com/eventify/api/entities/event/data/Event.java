@@ -13,7 +13,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
@@ -25,38 +24,20 @@ import java.util.stream.Collectors;
 @ToString(callSuper = true)
 public class Event extends BaseEntity {
 
-    @Override // To also include parent's attributes for JsonView 'Short'
-    @JsonView(Views.Short.class)
-    public @NonNull UUID getId() {
-        return super.getId();
-    }
-
-    @Override // To also include parent's attributes for JsonView 'Short'
-    @JsonView(Views.Short.class)
-    public @NonNull Date getCreatedAt() {
-        return super.getCreatedAt();
-    }
-
-    @Override // To also include parent's attributes for JsonView 'Short'
-    @JsonView(Views.Short.class)
-    public @NonNull Date getUpdatedAt() {
-        return super.getUpdatedAt();
-    }
-
     @NonNull
-    @JsonView(Views.Short.class)
+    @JsonView(Views.PublicShort.class)
     @Column(nullable = false)
     private String title;
 
-    @JsonView(Views.Short.class)
+    @JsonView(Views.PublicShort.class)
     @Column
     private String description;
 
-    @JsonView(Views.Short.class)
+    @JsonView(Views.PublicShort.class)
     @Column
     private Date startedAt;
 
-    @JsonView(Views.Short.class)
+    @JsonView(Views.PublicShort.class)
     @Column
     private Date endedAt;
 
@@ -66,16 +47,15 @@ public class Event extends BaseEntity {
     private List<UserEventRole> userEventRoles;
 
     @Transient
-    @JsonView(Views.Short.class)
+    @JsonView(Views.PublicShort.class)
     private int amountOfUsers;
-
     public int getAmountOfUsers() {
         return this.userEventRoles == null ? 0 : this.userEventRoles.size();
     }
 
+    @JsonView(Views.PublicExtended.class)
     @Transient
     private List<User> users;
-
     public List<User> getUsers() {
         return this.userEventRoles == null ? null :
                 this.userEventRoles.stream().map(userEventRole -> {
@@ -85,6 +65,7 @@ public class Event extends BaseEntity {
                 }).collect(Collectors.toList());
     }
 
+    @JsonView(Views.PublicExtended.class)
     @JsonManagedReference
     @OneToMany(mappedBy = "event")
     private List<ExpenseSharingModule> expenseSharingModules;
