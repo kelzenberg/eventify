@@ -21,7 +21,7 @@ export default function EventsOverviewPage() {
     return <>
         <Header/>
         <Title title="Your Events"/>
-        <div className="container">
+        <div className="container mb-5">
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
                 {/* Loading indicator */}
                 <div className="col" hidden={events !== null}>

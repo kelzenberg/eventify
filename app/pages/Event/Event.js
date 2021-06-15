@@ -89,9 +89,9 @@ export default function EventPage() {
     return <>
         <Header/>
         <Title title={event.title} breadcrumbs={[{name: "Events", link: "/you"}, event.title]}>
-            <Link to="/you/events"><button className="btn btn-outline-primary me-4" hidden={editing || saving}>GO BACK</button></Link>
+            <Link to="/you/events"><button className="btn btn-outline-primary" hidden={editing || saving}>GO BACK</button></Link>
             <button className="btn btn-outline-secondary" onClick={startEditing} hidden={editing || saving}>EDIT</button>
-            <button className="btn btn-outline-secondary me-4" onClick={abortEditing} hidden={!editing}>CANCEL</button>
+            <button className="btn btn-outline-secondary" onClick={abortEditing} hidden={!editing}>CANCEL</button>
             <button className="btn btn-primary" onClick={save} hidden={!editing}>SAVE</button>
             <button className="btn btn-primary" disabled hidden={!saving}>
                 <span className="pe-2">Saving...</span>
@@ -106,9 +106,11 @@ export default function EventPage() {
                             <Details event={event} editing={editing} onChange={handleChange}/>
                         </div>
                     </div>
-                    {/* <div className="row mb-3">
+                    <div className="row mb-3">
+                        <div className="col">
                         <Members event={event}/>
-                    </div> */}
+                        </div>
+                    </div>
                 </div>
                 <div className="col">
                     <ModuleList event={event}/>
@@ -159,7 +161,7 @@ function Details({event, onChange, editing}) {
             <p className="mt-3" hidden={editing}>{event.description}</p>
             <div hidden={!editing}>
                 <label>Description</label>
-                <textarea className="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style={{minHeight: "100px"}} value={event.description} onChange={handleDescriptionChange}></textarea>
+                <textarea className="form-control" style={{minHeight: "100px"}} value={event.description} onChange={handleDescriptionChange}></textarea>
             </div>
         </div>
     </div>
@@ -174,15 +176,15 @@ function Members({event}) {
                     <img src="/assets/icons/member-add.svg" className="ps-2"/>
                 </p>
                 <p className="fw-bold text-muted">
-                    {event.members.length}
+                    {event.users.length}
                     <img src="/assets/icons/members.svg" className="ps-2"/>
                 </p>
             </div>
-            {event.members.map(m => <div className="my-3" key={m.id}>
+            {event.users.map(u => <div className="my-3" key={u.id}>
                 <div className="iconBox iconBox-gray me-2" style={{backgroundImage: "url(/assets/icons/user-image.svg)"}}>
                     {/* <img src={`/api/users/${m.id}/image`}/> */}
                 </div>
-                <span className="align-middle">{m.name}</span>
+                <span className="align-middle">{u.displayName}</span>
             </div>)}
         </div>
     </div>
@@ -209,10 +211,10 @@ function ModuleList(props) {
     }
 
     if(moduleComponents.length == 0) {
-        moduleComponents.push(<h4 class="text-center">This event does not have any modules yet.</h4>);
+        moduleComponents.push(<h4 className="text-center" key="no_event">This event does not have any modules yet.</h4>);
     }
 
-    moduleComponents.push(<div className="rounded border-dashed border-gray w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item" onClick={null}>
+    moduleComponents.push(<div className="rounded border-dashed border-gray w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item" onClick={null} key="add_event">
         <img src="/assets/icons/add.svg" alt="" className="pe-2" style={{verticalAlign: "sub"}}/>
         ADD NEW MODULE
     </div>);

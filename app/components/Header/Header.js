@@ -11,7 +11,7 @@ export default function Header() {
                 <img src="/assets/logo_text.svg" className="bi me-2" height="40" aria-label="Eventify"/>
             </a>
             <div className="col-md-3 text-end">
-                <span className="text-muted">Logged in as {userInfo.email}</span>
+                <span className="text-muted">Logged in as {userInfo.displayName}</span>
                 <button className="btn btn-outline-darkGray ms-3" onClick={logout}>Logout</button>
             </div>
         </div>

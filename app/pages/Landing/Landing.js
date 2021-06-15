@@ -65,7 +65,7 @@ function UserLogin() {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="loginPassword" className="form-label">Password</label>
-                    <input type="password" className="form-control" id="loginPassword" value={password} onChange={e => setPassword(e.target.value)}/>
+                    <input type="password" className="form-control" id="loginPassword" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={event => event.keyCode == 13 ? login() : {}}/>
                 </div>
                 <p className="text-error" hidden={!wrongLogin}>The entered credentials were wrong.</p>
             </Modal.Body>
