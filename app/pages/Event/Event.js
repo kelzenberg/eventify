@@ -41,6 +41,11 @@ export default function EventPage() {
         setEvent(newEvent);
     }
 
+    function handleEventUpdate(newEvent) {
+        setEvent(newEvent);
+        setOriginalEvent(newEvent);
+    }
+
     function startEditing() {
         setEditing(true);
     }
@@ -123,7 +128,7 @@ export default function EventPage() {
                     </div>
                     <div className="row mb-3">
                         <div className="col">
-                            <Members event={event}/>
+                            <Members event={event} onEventChanged={handleChange}/>
                         </div>
                     </div>
                 </div>
@@ -182,27 +187,76 @@ function Details({event, onChange, editing}) {
     </div>
 }
 
-function Members({event}) {    
-    return <div className="card">
-        <div className="card-body">
-            <div className="d-flex">
-                <p className="fw-bold me-auto">
-                    Attendees 
-                    <img src="/assets/icons/member-add.svg" className="ps-2"/>
-                </p>
-                <p className="fw-bold text-muted">
-                    {event.users.length}
-                    <img src="/assets/icons/members.svg" className="ps-2"/>
-                </p>
-            </div>
-            {event.users.map(u => <div className="my-3" key={u.id}>
-                <div className="iconBox iconBox-gray me-2" style={{backgroundImage: "url(/assets/icons/user-image.svg)"}}>
-                    {/* <img src={`/api/users/${m.id}/image`}/> */}
+function Members({event, onEventChanged}) {
+    const [showDialog, setShowDialog] = React.useState(false);
+    const [emailAddress, setEmailAddress] = React.useState("");
+    const [showValidation, setShowValidation] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState(null);
+
+    function reset() {
+        setShowDialog(false);
+        setEmailAddress("");
+        setShowValidation(false);
+        setErrorMessage(null);
+    }
+
+    function addMember() {
+        if(emailAddress === "") {
+            setShowValidation(true);
+            return;
+        }
+
+        api.inviteToEvent(event.id, emailAddress)
+        .then(eventData => {
+            onEventChanged(eventData)
+            reset();
+        })
+        .catch(err => {
+            console.warn(err);
+            setErrorMessage("An unexpected problem prevented us from inviting the person. Please try again.");
+        });
+    }
+
+    return <>
+        <div className="card">
+            <div className="card-body">
+                <div className="d-flex">
+                    <p className="fw-bold me-auto">
+                        Attendees 
+                        <img src="/assets/icons/member-add.svg" className="ps-2" onClick={() => setShowDialog(true)} style={{cursor: "pointer"}}/>
+                    </p>
+                    <p className="fw-bold text-muted">
+                        {event.users.length}
+                        <img src="/assets/icons/members.svg" className="ps-2"/>
+                    </p>
                 </div>
-                <span className="align-middle">{u.displayName}</span>
-            </div>)}
+                {event.users.map(u => <div className="my-3" key={u.id}>
+                    <div className="iconBox iconBox-gray me-2" style={{backgroundImage: "url(/assets/icons/user-image.svg)"}}>
+                        {/* <img src={`/api/users/${m.id}/image`}/> */}
+                    </div>
+                    <span className="align-middle">{u.displayName}</span>
+                </div>)}
+            </div>
         </div>
-    </div>
+        <Modal show={showDialog} onHide={reset}>
+            <Modal.Header closeButton>
+                <Modal.Title>Invite a new member</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <form className={showValidation ? "was-validated" : ""}>
+                    <div className="mb-3">
+                        <label htmlFor="newMemberMail" className="form-label">E-Mail</label>
+                        <input type="email" className="form-control" id="newMemberMail" required value={emailAddress} onChange={e => setEmailAddress(e.target.value)}/>
+                        <div className="form-text">Enter the E-Mail Address of the person you want to invite.</div>
+                    </div>
+                </form>
+                <span className="text-warning fw-bold" hidden={errorMessage === null}>{errorMessage}</span>
+            </Modal.Body>
+            <Modal.Footer>
+                <button type="button" className="btn btn-primary" onClick={addMember}>Invite</button>
+            </Modal.Footer>
+        </Modal>
+    </>
 }
 
 function ModuleList(props) {

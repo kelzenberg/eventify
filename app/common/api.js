@@ -123,3 +123,14 @@ export function leaveEvent(eventID) {
         expect: "empty"
     }).then(([response]) => response);
 }
+
+export function inviteToEvent(eventID, emailAddress) {
+    return fetcher.request({
+        method: "POST",
+        path: `events/${eventID}/join`,
+        expect: "json",
+        body: {
+            email: emailAddress
+        }
+    }).then(([response]) => response);
+}
