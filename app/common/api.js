@@ -57,6 +57,19 @@ export function getAllUserEvents() {
     return fetcher.request({method: "GET", path: "me/events", expect: "json"}).then(([response]) => response);
 }
 
+export function createEvent(title, description, startDate) {
+    return fetcher.request({
+        method: "POST",
+        path: "events",
+        expect: "json",
+        body: {
+            title: title,
+            description: description,
+            startedAt: startDate
+        }
+    }).then(([response]) => response);
+}
+
 export function getEvent(eventID) {
     return fetcher.request({method: "GET", path: `events/${eventID}`, expect: "json"}).then(([response]) => response);
 

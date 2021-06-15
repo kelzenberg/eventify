@@ -1,22 +1,26 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Header from "../../components/Header/Header";
-import Timespan from '../../components/Timespan/Timespan';
+import Timespan, { PrepDatetimeDate } from '../../components/Timespan/Timespan';
 import Title from "../../components/Title/Title";
 import * as api from '../../common/api';
 import "./EventsOverview.scss";
+import { Modal } from 'react-bootstrap';
+import Datetime from 'react-datetime';
 
 export default function EventsOverviewPage() {
     const [events, setEvents] = React.useState(null);
 
-    React.useEffect(() => {
+    React.useEffect(fetchEvents, []);
+
+    function fetchEvents() {
         api.getAllUserEvents()
         .then(events => setEvents(events))
         .catch(err => {
             console.warn(err);
             // TODO: show error to user
         })
-    }, []);
+    }
 
     return <>
         <Header/>
@@ -37,7 +41,7 @@ export default function EventsOverviewPage() {
                 </div>)}
                 {/* New Event */}
                 <div className="col">
-                    <NewEvent />
+                    <NewEvent refreshEvents={fetchEvents}/>
                 </div>
             </div>
         </div>
@@ -78,13 +82,83 @@ function Event({event}) {
     </div>
 }
 
-function NewEvent() {
-    return <div className="card-outline h-100" aria-label="Create New Event">
-        <div className="card-body p-4 h-100 d-flex justify-content-center align-items-center flex-direction-column">
-            <div className="text-center">
-                <span className="iconBox" style={{backgroundImage: "url(/assets/icons/add.svg)"}}></span>
-                <p className="mt-3 text-primary fw-bold">CREATE NEW EVENT</p>
+function NewEvent(props) {
+    const [showDialog, setShowDialog] = React.useState(false);
+    const [title, setTitle] = React.useState("");
+    const [description, setDescription] = React.useState("");
+    const [startDate, setStartDate] = React.useState(tomorrow());
+    const [showValidation, setShowValidation] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState(null);
+
+    function createNewEvent() {
+        if(title == "") {
+            setShowValidation(true);
+            return;
+        }
+        
+        api.createEvent(title, description, startDate)
+        .then(eventData => {
+            reset();
+            props.refreshEvents();
+        })
+        .catch(err => {
+            console.warn(err);
+            setErrorMessage("An unexpected problem prevented us from creating the event. Please try again.");
+        });
+    }
+
+    function reset() {
+        setShowDialog(false);
+        setTitle("");
+        setDescription("");
+        setStartDate(tomorrow());
+        setShowValidation(false);
+        setErrorMessage(null);
+    }
+
+    function tomorrow() {
+        let k = new Date();
+        k.setDate(k.getDate()+1);
+        return k;
+    }
+
+    return <>
+        <div className="card-outline h-100" aria-label="Create New Event" onClick={() => setShowDialog(true)}>
+            <div className="card-body p-4 h-100 d-flex justify-content-center align-items-center flex-direction-column">
+                <div className="text-center">
+                    <span className="iconBox" style={{backgroundImage: "url(/assets/icons/add.svg)"}}></span>
+                    <p className="mt-3 text-primary fw-bold">CREATE NEW EVENT</p>
+                </div>
             </div>
         </div>
-    </div>
+        <Modal show={showDialog} onHide={reset}>
+            <Modal.Header closeButton>
+                <Modal.Title>Create a New Event</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <form className={showValidation ? "was-validated" : ""}>
+                    <div className="mb-3">
+                        <label htmlFor="newEventName" className="form-label">Event Name</label>
+                        <input type="text" className="form-control" id="newEventName" required value={title} onChange={e => setTitle(e.target.value)}/>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="newEventDescription" className="form-label">Description</label>
+                        <textarea className="form-control" id="newEventDescription" style={{minHeight: "100px"}} value={description} onChange={() => setDescription(event.target.value)}></textarea>
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Start of the Event</label>
+                        <Datetime
+                            locale={navigator.language}
+                            value={startDate}
+                            onChange={momDate => setStartDate(PrepDatetimeDate(momDate))}
+                        />
+                    </div>
+                </form>
+                <span className="text-warning fw-bold" hidden={errorMessage === null}>{errorMessage}</span>
+            </Modal.Body>
+            <Modal.Footer>
+                <button type="button" className="btn btn-primary" onClick={createNewEvent}>Create</button>
+            </Modal.Footer>
+        </Modal>
+    </>
 }

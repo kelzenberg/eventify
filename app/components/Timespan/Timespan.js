@@ -87,18 +87,13 @@ export function TimespanEditor(props) {
     let fromDate = props.from === null ? null : new Date(props.from);
     let toDate = props.to === null ? null : new Date(props.to);
 
-    function prepDate(momentDate) {
-        if(momentDate === "") return null;
-        return new Date(momentDate);
-    }
-
     return <div className="mb-3">
         <div className="mb-1">
             <label className="form-label">Von</label>
             <Datetime
                 {...commonDateProps}
                 value={fromDate}
-                onChange={momDate => props.onChangeFrom(prepDate(momDate))}
+                onChange={momDate => props.onChangeFrom(PrepDatetimeDate(momDate))}
             />
         </div>
         <div>
@@ -106,8 +101,13 @@ export function TimespanEditor(props) {
             <Datetime 
                 {...commonDateProps}
                 value={toDate}
-                onChange={momDate => props.onChangeTo(prepDate(momDate))}
+                onChange={momDate => props.onChangeTo(PrepDatetimeDate(momDate))}
             />
         </div>
     </div>
+}
+
+export function PrepDatetimeDate(momentDate) {
+    if(momentDate === "") return null;
+    return new Date(momentDate);
 }
