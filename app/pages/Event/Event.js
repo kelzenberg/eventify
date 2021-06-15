@@ -8,6 +8,7 @@ import Title from "../../components/Title/Title";
 import Timespan from "../../components/Timespan/Timespan";
 import ChecklistModule from "../../components/Modules/ChecklistModule";
 import ExpenseSharingModule from "../../components/Modules/ExpenseSharingModule";
+import { ModuleCreator } from './ModuleCreator';
 import * as api from "../../common/api";
 import fetcher from '../../common/fetcher';
 
@@ -128,12 +129,12 @@ export default function EventPage() {
                     </div>
                     <div className="row mb-3">
                         <div className="col">
-                            <Members event={event} onEventChanged={handleChange}/>
+                            <Members event={event} onEventChanged={handleEventUpdate}/>
                         </div>
                     </div>
                 </div>
                 <div className="col">
-                    <ModuleList event={event}/>
+                    <ModuleList event={event} onEventChanged={handleEventUpdate}/>
                 </div>
             </div>
         </div>
@@ -261,7 +262,12 @@ function Members({event, onEventChanged}) {
 
 function ModuleList(props) {
     const moduleTypes = {"checklistModule": ChecklistModule, "expenseSharingModules": ExpenseSharingModule};
+    const [creatorVisible, setCreatorVisible] = React.useState(false);
     let moduleComponents = [];
+
+    function moduleAdded(moduleType, moduleData) {
+        props.onEventChanged(update(props.event, {[moduleType]: {$push: [moduleData]}}));
+    }
 
     for(let moduleType in moduleTypes) {
         let ModuleComponent = moduleTypes[moduleType];
@@ -283,10 +289,13 @@ function ModuleList(props) {
         moduleComponents.push(<h4 className="text-center" key="no_event">This event does not have any modules yet.</h4>);
     }
 
-    moduleComponents.push(<div className="rounded border-dashed border-gray w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item" onClick={null} key="add_event">
+    moduleComponents.push(<React.Fragment key="add_module">
+        <div className="rounded border-dashed border-gray w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item" onClick={() => {setCreatorVisible(true)}}>
         <img src="/assets/icons/add.svg" alt="" className="pe-2" style={{verticalAlign: "sub"}}/>
-        ADD NEW MODULE
-    </div>);
+            ADD NEW MODULE
+        </div>
+        <ModuleCreator show={creatorVisible} onHide={() => setCreatorVisible(false)} eventID={props.event.id} onModuleAdded={moduleAdded}/>
+    </React.Fragment>);
 
     return moduleComponents;
 }
@@ -294,7 +303,7 @@ function ModuleList(props) {
 function ModuleCard(props) {
     const [collapsed, setCollapsed] = React.useState(true);
 
-    return <div className="card">
+    return <div className="card mb-3">
         <div className="card-body">
             <div
                 className="fw-bold"

@@ -7,7 +7,9 @@ export default function ExpenseSharingModule(props) {
         <p className="my-2">{props.moduleData.description}</p>
         <table className="table table-borderless table-hover align-middle">
             <tbody>
-                {props.moduleData.payments.map(payment => <Payment payment={payment} key={payment.id}/>)}
+                {props.moduleData.payments === null ? null : 
+                    props.moduleData.payments.map(payment => <Payment payment={payment} key={payment.id}/>)
+                }
             </tbody>
         </table>
         <div className="rounded border-dashed border-gray w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item" onClick={null}>

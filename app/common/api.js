@@ -134,3 +134,18 @@ export function inviteToEvent(eventID, emailAddress) {
         }
     }).then(([response]) => response);
 }
+
+// =========================================== MODULES ========================================== //
+
+export function addExpenseSharingModule(eventID, title, description) {
+    return fetcher.request({
+        method: "POST",
+        path: `modules/expense-sharing`,
+        expect: "json",
+        body: {
+            eventId: eventID,
+            title: title,
+            description: description
+        }
+    }).then(([response]) => response);
+}
