@@ -8,6 +8,7 @@ import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
 import com.eventify.api.exceptions.EntityNotFoundException;
+import com.eventify.api.exceptions.PermissionsAreInsufficientException;
 import com.eventify.api.mail.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,15 +96,17 @@ public class EventService {
 
         // TODO: check if last ORGANISER is leaving -> delete Event(?)
         // TODO: check if 'deleteAll...' is possible
-
         userEventRoleService.deleteByUserIdAndEventId(userId, eventId);
     }
 
     public void bounce(UUID actorId, UUID userId, UUID eventId) throws EntityNotFoundException {
+        EventRole actorEventRole = userEventRoleService.getByUserIdAndEventId(actorId, eventId).getRole();
 
-        // TODO: check if actorId is Organiser
+        if (actorEventRole != EventRole.ORGANISER) {
+            throw new PermissionsAreInsufficientException("Actor has insufficient permissions to bounce user with ID " + userId);
+        }
+
         // TODO: check if 'deleteAll...' is possible
-
         userEventRoleService.deleteByUserIdAndEventId(userId, eventId);
     }
 }

@@ -1,9 +1,6 @@
 package com.eventify.api;
 
-import com.eventify.api.exceptions.EntityAlreadyExistsException;
-import com.eventify.api.exceptions.EntityNotFoundException;
-import com.eventify.api.exceptions.ErrorDetails;
-import com.eventify.api.exceptions.TokenIsInvalidException;
+import com.eventify.api.exceptions.*;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -44,6 +41,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DataIntegrityViolationException.class)
     public ResponseEntity<ErrorDetails> handleDataIntegrityViolationException(DataIntegrityViolationException exception, HttpServletRequest request) {
         return handleResponseStatusException(new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage()), request);
+    }
+
+    /**
+     * BUSINESS LOGIC AUTHORIZATION EXCEPTIONS
+     */
+
+    @ExceptionHandler(value = PermissionsAreInsufficientException.class)
+    public ResponseEntity<ErrorDetails> handlePermissionsAreInsufficientException(PermissionsAreInsufficientException exception, HttpServletRequest request) {
+        return handleResponseStatusException(new ResponseStatusException(HttpStatus.FORBIDDEN, exception.getMessage()), request);
     }
 
     /**
