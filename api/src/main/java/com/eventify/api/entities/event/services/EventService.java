@@ -69,22 +69,23 @@ public class EventService {
     }
 
     public Event join(UUID eventId, String email) throws EntityNotFoundException, MessagingException {
+        Event event = getById(eventId);
         User user;
 
         try {
             user = userService.getByEmail(email);
         } catch (EntityNotFoundException e) {
             System.out.println("[DEBUG] User to join, with email " + email + ", was not found. Sending invite email...");
-            mailService.sendInvite(email, eventId);
+            mailService.sendInvite(email, event.getTitle());
             return null;
         }
 
         UserEventRole userEventRole;
 
         try {
-            userEventRole = userEventRoleService.getByUserIdAndEventId(user.getId(), eventId);
-        } catch (EntityNotFoundException e) {
-            userEventRole = userEventRoleService.create(user.getId(), eventId, EventRole.ATTENDEE);
+            userEventRole = userEventRoleService.getByUserIdAndEventId(user.getId(), event.getId());
+        } catch (EntityNotFoundException e) { // user & event exist on their own, but no relationship was found
+            userEventRole = userEventRoleService.create(user.getId(), event.getId(), EventRole.ATTENDEE);
         }
 
         return userEventRole.getEvent();

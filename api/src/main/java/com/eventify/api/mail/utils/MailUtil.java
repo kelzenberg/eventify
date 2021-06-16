@@ -23,7 +23,9 @@ public class MailUtil {
                 break;
             case INVITE:
                 message.setSubject("You were invited to Eventify");
-                message.setText(String.format(htmlTemplate, "You (%s) were invited to join the event:<br><i>%s</i>"));
+                message.setText(String.format(htmlTemplate,
+                        "You (%s) were invited to join the <b><i>%s</i></b> Event.<br><br>"
+                                + "<a href=\"http://localhost:8081/register\" alt=\"Register on Eventify\">Create a new account!</a>"));
                 break;
             default:
                 message.setSubject("%s");
