@@ -8,6 +8,7 @@ import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
 import com.eventify.api.exceptions.EntityNotFoundException;
+import com.eventify.api.exceptions.PermissionsAreInsufficientException;
 import com.eventify.api.mail.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,31 +70,43 @@ public class EventService {
     }
 
     public Event join(UUID eventId, String email) throws EntityNotFoundException, MessagingException {
-        try {
-            User user = userService.getByEmail(email);
+        Event event = getById(eventId);
+        User user;
 
-            // TODO: check Role differences (otherwise produces two UER entries)
-            UserEventRole userEventRole = userEventRoleService.create(user.getId(), eventId, EventRole.ATTENDEE);
-            return userEventRole.getEvent();
+        try {
+            user = userService.getByEmail(email);
         } catch (EntityNotFoundException e) {
-            mailService.sendInvite(email, eventId);
+            System.out.println("[DEBUG] User to join, with email " + email + ", was not found. Sending invite email...");
+            mailService.sendInvite(email, event.getTitle());
             return null;
         }
+
+        UserEventRole userEventRole;
+
+        try {
+            userEventRole = userEventRoleService.getByUserIdAndEventId(user.getId(), event.getId());
+        } catch (EntityNotFoundException e) { // user & event exist on their own, but no relationship was found
+            userEventRole = userEventRoleService.create(user.getId(), event.getId(), EventRole.ATTENDEE);
+        }
+
+        return userEventRole.getEvent();
     }
 
     public void leave(UUID userId, UUID eventId) throws EntityNotFoundException {
 
         // TODO: check if last ORGANISER is leaving -> delete Event(?)
         // TODO: check if 'deleteAll...' is possible
-
         userEventRoleService.deleteByUserIdAndEventId(userId, eventId);
     }
 
     public void bounce(UUID actorId, UUID userId, UUID eventId) throws EntityNotFoundException {
+        EventRole actorEventRole = userEventRoleService.getByUserIdAndEventId(actorId, eventId).getRole();
 
-        // TODO: check if actorId is Organiser
+        if (actorEventRole != EventRole.ORGANISER) {
+            throw new PermissionsAreInsufficientException("Actor has insufficient permissions to bounce user with ID " + userId);
+        }
+
         // TODO: check if 'deleteAll...' is possible
-
         userEventRoleService.deleteByUserIdAndEventId(userId, eventId);
     }
 }

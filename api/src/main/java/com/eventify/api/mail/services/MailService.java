@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Objects;
-import java.util.UUID;
 
 @Service
 public class MailService {
@@ -32,10 +31,11 @@ public class MailService {
         sender.send(message);
     }
 
-    public void sendInvite(String to, UUID eventId) throws MessagingException {
+    // TODO: choose MailTemplate automatically based on mapped function name
+    public void sendInvite(String to, String eventName) throws MessagingException {
         SimpleMailMessage template = util.getMessageTemplate(MailTemplate.INVITE);
-        String subject = String.format(Objects.requireNonNull(template.getSubject()), to, eventId);
-        String text = String.format(Objects.requireNonNull(template.getText()), to, eventId);
+        String subject = Objects.requireNonNull(template.getSubject());
+        String text = String.format(Objects.requireNonNull(template.getText()), to, eventName);
 
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = util.getMessageHelper(message);
