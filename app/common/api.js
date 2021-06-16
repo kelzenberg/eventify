@@ -135,6 +135,17 @@ export function inviteToEvent(eventID, emailAddress) {
     }).then(([response]) => response);
 }
 
+export function bounceFromEvent(eventID, userID) {
+    return fetcher.request({
+        method: "POST",
+        path: `events/${eventID}/bounce`,
+        expect: "json",
+        body: {
+            userId: userID
+        }
+    }).then(([response]) => response);
+}
+
 // =========================================== MODULES ========================================== //
 
 export function addExpenseSharingModule(eventID, title, description) {

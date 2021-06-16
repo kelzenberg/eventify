@@ -9,8 +9,10 @@ import Timespan from "../../components/Timespan/Timespan";
 import ChecklistModule from "../../components/Modules/ChecklistModule";
 import ExpenseSharingModule from "../../components/Modules/ExpenseSharingModule";
 import { ModuleCreator } from './ModuleCreator';
+import { SmallMembers, FullMembers } from "./members";
 import * as api from "../../common/api";
 import fetcher from '../../common/fetcher';
+import { InfoDialog } from '../../components/Dialog/Dialog';
 
 export default function EventPage() {
     const [originalEvent, setOriginalEvent] = React.useState(null); // backup data in case that the user aborts editing
@@ -19,6 +21,7 @@ export default function EventPage() {
     const [editing, setEditing] = React.useState(false);
     const [saving, setSaving] = React.useState(false);
     const [modal, setModal] = React.useState(null);
+    const [visibleContent, setVisibleContent] = React.useState("modules");
 
     let history = useHistory();
     let { eventID } = useParams();
@@ -38,10 +41,12 @@ export default function EventPage() {
         })
     }, []);
 
+    // for changes in the editing mode
     function handleChange(newEvent) {
         setEvent(newEvent);
     }
 
+    // for general updates that have been caused by other features
     function handleEventUpdate(newEvent) {
         setEvent(newEvent);
         setOriginalEvent(newEvent);
@@ -129,27 +134,27 @@ export default function EventPage() {
                     </div>
                     <div className="row mb-3">
                         <div className="col">
-                            <Members event={event} onEventChanged={handleEventUpdate}/>
+                            <SmallMembers event={event} onEventChanged={handleEventUpdate} setVisibleContent={setVisibleContent}/>
                         </div>
                     </div>
                 </div>
                 <div className="col">
-                    <ModuleList event={event} onEventChanged={handleEventUpdate}/>
+                    <div hidden={visibleContent != "modules"}>
+                        <ModuleList event={event} onEventChanged={handleEventUpdate} setVisibleContent={setVisibleContent} onErrorMessage={setErrorMessage}/>
+                    </div>
+                    <div hidden={visibleContent != "members"}>
+                        <FullMembers event={event} onEventChanged={handleEventUpdate} setVisibleContent={setVisibleContent} onErrorMessage={setErrorMessage}/>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <Modal show={modal !== null} onHide={() => {setModal(null)}}>
-            <Modal.Header closeButton>
-                <Modal.Title>{modal === null ? "" : modal.title}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>{modal === null ? "" : modal.message}</p>
-            </Modal.Body>
-            <Modal.Footer>
-                <button type="button" className="btn btn-primary" onClick={() => setModal(null)}>OK</button>
-            </Modal.Footer>
-        </Modal>
+        <InfoDialog
+            show={modal !== null}
+            onHide={() => setModal(null)}
+            title={modal === null ? "" : modal.title}
+            message={modal === null ? "" : modal.message}
+        />
     </>
 }
 
@@ -186,78 +191,6 @@ function Details({event, onChange, editing}) {
             </div>
         </div>
     </div>
-}
-
-function Members({event, onEventChanged}) {
-    const [showDialog, setShowDialog] = React.useState(false);
-    const [emailAddress, setEmailAddress] = React.useState("");
-    const [showValidation, setShowValidation] = React.useState(false);
-    const [errorMessage, setErrorMessage] = React.useState(null);
-
-    function reset() {
-        setShowDialog(false);
-        setEmailAddress("");
-        setShowValidation(false);
-        setErrorMessage(null);
-    }
-
-    function addMember() {
-        if(emailAddress === "") {
-            setShowValidation(true);
-            return;
-        }
-
-        api.inviteToEvent(event.id, emailAddress)
-        .then(eventData => {
-            onEventChanged(eventData)
-            reset();
-        })
-        .catch(err => {
-            console.warn(err);
-            setErrorMessage("An unexpected problem prevented us from inviting the person. Please try again.");
-        });
-    }
-
-    return <>
-        <div className="card">
-            <div className="card-body">
-                <div className="d-flex">
-                    <p className="fw-bold me-auto">
-                        Attendees 
-                        <img src="/assets/icons/member-add.svg" className="ps-2" onClick={() => setShowDialog(true)} style={{cursor: "pointer"}}/>
-                    </p>
-                    <p className="fw-bold text-muted">
-                        {event.users.length}
-                        <img src="/assets/icons/members.svg" className="ps-2"/>
-                    </p>
-                </div>
-                {event.users.map(u => <div className="my-3" key={u.id}>
-                    <div className="iconBox iconBox-gray me-2" style={{backgroundImage: "url(/assets/icons/user-image.svg)"}}>
-                        {/* <img src={`/api/users/${m.id}/image`}/> */}
-                    </div>
-                    <span className="align-middle">{u.displayName}</span>
-                </div>)}
-            </div>
-        </div>
-        <Modal show={showDialog} onHide={reset}>
-            <Modal.Header closeButton>
-                <Modal.Title>Invite a new member</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <form className={showValidation ? "was-validated" : ""}>
-                    <div className="mb-3">
-                        <label htmlFor="newMemberMail" className="form-label">E-Mail</label>
-                        <input type="email" className="form-control" id="newMemberMail" required value={emailAddress} onChange={e => setEmailAddress(e.target.value)}/>
-                        <div className="form-text">Enter the E-Mail Address of the person you want to invite.</div>
-                    </div>
-                </form>
-                <span className="text-warning fw-bold" hidden={errorMessage === null}>{errorMessage}</span>
-            </Modal.Body>
-            <Modal.Footer>
-                <button type="button" className="btn btn-primary" onClick={addMember}>Invite</button>
-            </Modal.Footer>
-        </Modal>
-    </>
 }
 
 function ModuleList(props) {
