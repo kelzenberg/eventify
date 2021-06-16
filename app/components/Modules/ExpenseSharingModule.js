@@ -19,6 +19,8 @@ export default function ExpenseSharingModule(props) {
     </>
 }
 
+ExpenseSharingModule.icon = "finances.svg";
+
 ExpenseSharingModule.propTypes = {
     event: PropTypes.object,
     moduleData: PropTypes.object

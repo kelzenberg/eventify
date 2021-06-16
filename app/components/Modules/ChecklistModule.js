@@ -55,6 +55,8 @@ export default function ChecklistModule(props) {
     </>
 }
 
+ChecklistModule.icon = "checklist.svg";
+
 ChecklistModule.propTypes = {
     event: PropTypes.object,
     moduleData: PropTypes.object

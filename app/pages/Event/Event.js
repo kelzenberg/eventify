@@ -209,7 +209,7 @@ function ModuleList(props) {
                 <ModuleCard
                     key={`${moduleType}_${i}`}
                     htmlID={`${moduleType}_${i}`}
-                    icon="checklist.svg"
+                    icon={ModuleComponent.icon}
                     title={moduleInstance.title}
                 >
                 <ModuleComponent moduleData={moduleInstance} htmlID={`${moduleType}_${i}_module`}/>
