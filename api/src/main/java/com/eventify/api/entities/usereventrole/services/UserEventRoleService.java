@@ -40,6 +40,12 @@ public class UserEventRoleService {
         return repository.findAllByIdEventId(eventId);
     }
 
+    public UserEventRole getByUserIdAndEventId(UUID userId, UUID eventId) {
+        return repository
+                .findByIdUserIdAndIdEventId(userId, eventId)
+                .orElseThrow(() -> new EntityNotFoundException("UserEventRole with userId '" + userId + " and eventId " + eventId + "' cannot be found."));
+    }
+
     public UserEventRole create(UUID userId, UUID eventId, EventRole role) throws EntityNotFoundException {
         User user = userService.getById(userId);
         Event event = eventService.getById(eventId);
