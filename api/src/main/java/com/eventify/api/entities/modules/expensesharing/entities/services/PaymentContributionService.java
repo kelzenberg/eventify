@@ -8,15 +8,16 @@ import com.eventify.api.entities.modules.expensesharing.entities.data.CostShareR
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContribution;
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContributionRepository;
 import com.eventify.api.entities.modules.expensesharing.services.ExpenseSharingService;
+import com.eventify.api.entities.modules.expensesharing.utils.ExpenseSharingUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentContributionService {
@@ -32,6 +33,9 @@ public class PaymentContributionService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ExpenseSharingUtil expenseSharingUtil;
 
     public List<PaymentContribution> getAll(UUID expenseSharingId) {
         return paymentContributionRepository.findAllByExpenseModuleId(expenseSharingId);
@@ -57,31 +61,29 @@ public class PaymentContributionService {
     ) throws EntityNotFoundException {
         User payer = userService.getById(userId);
         ExpenseSharingModule expenseModule = expenseSharingService.getById(expenseSharingId);
-        PaymentContribution.PaymentContributionBuilder newPaymentContribution = PaymentContribution.builder()
+        List<RequestCostShare> validatedShares = expenseSharingUtil.validateShares(shareType, amount, shares);
+
+        PaymentContribution.PaymentContributionBuilder newPayment = PaymentContribution.builder()
                 .title(title)
                 .amount(amount)
                 .payer(payer)
                 .expenseModule(expenseModule)
                 .shareType(shareType);
+        PaymentContribution createdPayment = paymentContributionRepository.save(newPayment.build());
 
-        PaymentContribution createdPaymentContribution = paymentContributionRepository.save(newPaymentContribution.build());
-        List<CostShare> costShares = new ArrayList<>();
-
-        for (RequestCostShare costShare : shares) {
+        List<CostShare> createdCostShares = validatedShares.stream().map(costShare -> {
             User shareHolder = userService.getById(costShare.getUserId());
-
-            CostShare.CostShareBuilder newCostShare = CostShare.builder()
+            return CostShare.builder()
                     .amount(costShare.getAmount())
                     .shareHolder(shareHolder)
-                    .paymentContribution(createdPaymentContribution);
+                    .paymentContribution(createdPayment)
+                    .build();
+        }).collect(Collectors.toList());
 
-            costShares.add(newCostShare.build());
-        }
+        List<CostShare> createdShares = costShareRepository.saveAll(createdCostShares);
+        createdPayment.setShares(createdShares); // manual overwrite to prevent another DB call
 
-        List<CostShare> createdShares = costShareRepository.saveAll(costShares);
-        createdPaymentContribution.setShares(createdShares);
-
-        return createdPaymentContribution;
+        return createdPayment;
     }
 
     public void deleteById(UUID id) {
