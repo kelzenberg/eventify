@@ -33,7 +33,22 @@ public class DistributionUtil {
         return DoubleStream.concat(Arrays.stream(largestValues), Arrays.stream(restValues)).toArray();
     }
 
+    private static double[] distributeByPercentage(int precision, double[] percentages, double amount) {
+//                .map(fixedAmount -> {
+//            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+//            decimalFormat.setRoundingMode(RoundingMode.FLOOR);
+//            double decimalAmount = Double.parseDouble(decimalFormat.format(fixedAmount));
+//            double rest = fixedAmount - decimalAmount;
+//            return decimalAmount;
+//        })
+        return null;
+    }
+
     public static double[] distributeCurrencyEqually(int parts, double amount) {
         return distributeEqually(2, parts, amount);
+    }
+
+    public static double[] distributeCurrencyByPercentage(double[] percentages, double amount) {
+        return distributeByPercentage(2, percentages, amount);
     }
 }

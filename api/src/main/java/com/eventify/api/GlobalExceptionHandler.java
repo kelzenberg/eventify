@@ -5,6 +5,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
@@ -31,6 +32,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = EntityAlreadyExistsException.class)
     public ResponseEntity<ErrorDetails> handleEntityAlreadyExistsException(EntityAlreadyExistsException exception, HttpServletRequest request) {
         return handleResponseStatusException(new ResponseStatusException(HttpStatus.CONFLICT, exception.getMessage()), request);
+    }
+
+    @ExceptionHandler(value = EntityIsInvalidException.class)
+    public ResponseEntity<ErrorDetails> handleEntityIsInvalidException(EntityIsInvalidException exception, HttpServletRequest request) {
+        return handleResponseStatusException(new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage()), request);
     }
 
     @ExceptionHandler(value = MessagingException.class)
@@ -98,6 +104,17 @@ public class GlobalExceptionHandler {
                 new Date(),
                 exception.getRawStatusCode(),
                 exception.getStatus(),
+                exception.getMessage()
+        );
+        return new ResponseEntity<>(errorDetails, errorDetails.getStatusMessage());
+    }
+
+    @ExceptionHandler(value = HttpMessageConversionException.class)
+    public ResponseEntity<ErrorDetails> handleHttpMessageConversionException(HttpMessageConversionException exception, HttpServletRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST,
                 exception.getMessage()
         );
         return new ResponseEntity<>(errorDetails, errorDetails.getStatusMessage());
