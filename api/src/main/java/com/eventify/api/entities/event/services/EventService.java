@@ -12,6 +12,7 @@ import com.eventify.api.exceptions.EntityNotFoundException;
 import com.eventify.api.exceptions.PermissionsAreInsufficientException;
 import com.eventify.api.mail.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -54,7 +55,7 @@ public class EventService {
         return userEventRoles.stream().map(UserEventRole::getEvent).collect(Collectors.toList());
     }
 
-    public Event create(String title, String description, Date startedAt) {
+    public Event create(String title, String description, @Nullable Date startedAt) {
         Event.EventBuilder newEntity = Event.builder()
                 .title(title)
                 .description(description);
@@ -64,6 +65,25 @@ public class EventService {
         }
 
         return repository.save(newEntity.build());
+    }
+
+    public Event update(UUID id, @Nullable String title, @Nullable String description, @Nullable Date startedAt, @Nullable Date endedAt) {
+        Event event = getReferenceById(id);
+
+        if (title != null) {
+            event.setTitle(title);
+        }
+        if (description != null) {
+            event.setDescription(description);
+        }
+        if (startedAt != null) {
+            event.setStartedAt(startedAt);
+        }
+        if (endedAt != null) {
+            event.setEndedAt(endedAt);
+        }
+
+        return repository.save(event);
     }
 
     public void deleteById(UUID id) {

@@ -29,6 +29,7 @@ public class Event extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
+    @NonNull
     @JsonView(Views.PublicShort.class)
     @Column
     private String description;
@@ -49,6 +50,7 @@ public class Event extends BaseEntity {
     @Transient
     @JsonView(Views.PublicShort.class)
     private int amountOfUsers;
+
     public int getAmountOfUsers() {
         return this.userEventRoles == null ? 0 : this.userEventRoles.size();
     }
@@ -56,6 +58,7 @@ public class Event extends BaseEntity {
     @JsonView(Views.PublicExtended.class)
     @Transient
     private List<User> users;
+
     public List<User> getUsers() {
         return this.userEventRoles == null ? null :
                 this.userEventRoles.stream().map(userEventRole -> {
@@ -71,13 +74,17 @@ public class Event extends BaseEntity {
     private List<ExpenseSharingModule> expenseSharingModules;
 
     @Builder
-    public Event(@NonNull String title, @NonNull String description, Date startedAt) {
+    public Event(@NonNull String title, @NonNull String description, Date startedAt, Date endedAt) {
         super();
         this.title = title;
         this.description = description;
 
         if (startedAt != null) {
             this.startedAt = startedAt;
+        }
+
+        if (endedAt != null) {
+            this.endedAt = endedAt;
         }
     }
 }

@@ -67,6 +67,16 @@ public class EventController {
         return event;
     }
 
+    @PutMapping(AuthenticatedPaths.EVENTS + "/{id}")
+    @JsonView(Views.PublicExtended.class)
+    Event updateById(@PathVariable UUID id, @Valid @RequestBody EventUpdateRequest body) {
+        String title = body.getTitle();
+        String description = body.getDescription();
+        Date startedAt = body.getStartedAt();
+        Date endedAt = body.getEndedAt();
+        return eventService.update(id, title, description, startedAt, endedAt);
+    }
+
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/join")
     @JsonView(Views.PublicExtended.class)
     Event joinById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) throws MessagingException {
@@ -79,7 +89,6 @@ public class EventController {
     void leaveById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @PathVariable UUID eventId) {
         String token = authHeader.split(" ")[1].trim();
         UUID userId = userService.getByToken(token).getId();
-
         eventService.leave(userId, eventId);
     }
 
