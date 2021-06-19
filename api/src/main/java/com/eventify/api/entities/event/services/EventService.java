@@ -7,6 +7,7 @@ import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
+import com.eventify.api.exceptions.EntityIsInvalidException;
 import com.eventify.api.exceptions.EntityNotFoundException;
 import com.eventify.api.exceptions.PermissionsAreInsufficientException;
 import com.eventify.api.mail.services.MailService;
@@ -100,6 +101,10 @@ public class EventService {
     }
 
     public void bounce(UUID actorId, UUID userId, UUID eventId) throws EntityNotFoundException {
+        if (actorId.equals(userId)) {
+            throw new EntityIsInvalidException("The userId to be bounced cannot be the ID of the requesting user. Leave event instead.");
+        }
+
         EventRole actorEventRole = userEventRoleService.getByUserIdAndEventId(actorId, eventId).getRole();
 
         if (actorEventRole != EventRole.ORGANISER) {
