@@ -15,6 +15,8 @@ import java.util.stream.IntStream;
  * Changes to Original: Translation from JavaScript (Source) to Java (code below).
  */
 public class DistributionUtil {
+    protected static final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    protected static final DecimalFormat decimalFormat = new DecimalFormat("#.##", symbols);
 
     private static double[] quotrem(int parts, double amount) {
         return new double[]{
@@ -27,58 +29,52 @@ public class DistributionUtil {
         double e = Math.pow(10, precision);
         double[] quotRem = quotrem(parts, amount * e);
         double largestValue = quotRem[0];
-        int remaining = (int) quotRem[1];
+        int rest = (int) quotRem[1];
 
-        double[] largestValues = new double[remaining];
+        double[] largestValues = new double[rest];
         Arrays.fill(largestValues, (largestValue + 1) / e);
 
-        double[] restValues = new double[parts - remaining];
+        double[] restValues = new double[parts - rest];
         Arrays.fill(restValues, largestValue / e);
 
         return DoubleStream.concat(Arrays.stream(largestValues), Arrays.stream(restValues)).toArray();
     }
 
-    private static double[] distributeByPercentage(double[] percentages, double amount) {
-        final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
-        final DecimalFormat decimalFormat = new DecimalFormat("#.##", symbols);
+    private static double[] distributeByPercentage(double[] shares, double amount) {
         decimalFormat.setRoundingMode(RoundingMode.FLOOR);
 
-        double[] decimalAmounts = Arrays.stream(percentages)
+        double[] decimalShares = Arrays.stream(shares)
                 .map(value -> Double.parseDouble(decimalFormat.format(value)))
                 .toArray();
+        double rest = amount - Arrays.stream(decimalShares)
+                .reduce(0.0, Double::sum);
 
-        double remaining = amount - Arrays.stream(decimalAmounts).reduce(0.0, Double::sum);
         decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-        int roundedRemaining = Double.valueOf(Double.parseDouble(decimalFormat.format(remaining)) * 100).intValue();
-//        System.out.println("[DEBUG] Remaining: " + remaining + " -> " + roundedRemaining);
 
-        double[] adjustedDecimalAmounts;
-        if (roundedRemaining >= decimalAmounts.length) {
-            double[] distributedRemaining = distributeCurrencyEqually(decimalAmounts.length, remaining); // value from high -> low
-            adjustedDecimalAmounts = IntStream.range(0, Math.min(decimalAmounts.length, distributedRemaining.length))
-                    .mapToDouble(idx -> decimalAmounts[idx] + distributedRemaining[idx])
+        int remainingRounded = Double.valueOf(
+                Double.parseDouble(decimalFormat.format(rest)) * 100
+        ).intValue();
+
+        double[] adjustedDecimals;
+        if (remainingRounded >= decimalShares.length) {
+            double[] remainingEquallyDistributed = distributeCurrencyEqually(decimalShares.length, rest);
+            adjustedDecimals = IntStream.range(0, decimalShares.length)
+                    .mapToDouble(idx -> decimalShares[idx] + remainingEquallyDistributed[idx])
                     .toArray();
         } else {
-            adjustedDecimalAmounts = IntStream.range(0, decimalAmounts.length)
-                    .mapToDouble(idx -> idx >= roundedRemaining ? decimalAmounts[idx] : decimalAmounts[idx] + 0.01)
+            adjustedDecimals = IntStream.range(0, decimalShares.length)
+                    .mapToDouble(idx -> idx >= remainingRounded ? decimalShares[idx] : decimalShares[idx] + 0.01)
                     .toArray();
         }
 
-//        double[] formattedPercentages = Arrays.stream(convertedPercentages)
-//                .map(value -> Double.parseDouble(decimalFormat.format(value)))
-//                .toArray();
-//
-//        System.out.println("[DEBUG] Decimal Amounts: " + Arrays.toString(decimalAmounts) + " -> " + Arrays.toString(adjustedDecimalAmounts));
-//        System.out.println("[DEBUG] Difference: " + (amount - Arrays.stream(adjustedDecimalAmounts).reduce(0.0, Double::sum)));
-//        System.out.println("[DEBUG] Smaller than 0.01? " + ((amount - Arrays.stream(adjustedDecimalAmounts).reduce(0.0, Double::sum)) < 0.01));
-        return adjustedDecimalAmounts;
+        return adjustedDecimals;
     }
 
     public static double[] distributeCurrencyEqually(int parts, double amount) {
         return distributeEqually(2, parts, amount);
     }
 
-    public static double[] distributeCurrencyByPercentage(double[] percentages, double amount) {
-        return distributeByPercentage(percentages, amount);
+    public static double[] distributeCurrencyByPercentage(double[] shares, double amount) {
+        return distributeByPercentage(shares, amount);
     }
 }
