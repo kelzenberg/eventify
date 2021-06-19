@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -55,13 +57,24 @@ public class ExpenseSharingUtil {
         }
     }
 
+    private List<RequestCostShare> trimShareAmounts(List<RequestCostShare> requestShares) {
+        DecimalFormat decimalFormat = DistributionUtil.decimalFormat;
+        decimalFormat.setRoundingMode(RoundingMode.FLOOR);
+
+        requestShares.forEach(share -> share.setAmount(
+                Double.parseDouble(decimalFormat.format(share.getAmount()))
+        ));
+
+        return requestShares;
+    }
+
     public List<RequestCostShare> validateShares(
             ShareType shareType,
             double amount,
             List<RequestCostShare> requestShares
     ) throws EntityIsInvalidException {
         // e.g. PERCENTAGE 100:[20%, 50%, 30%] or DECIMAL 55:[19.99, 15.01, 20.00]
-        PayHelper payHelper = new PayHelper(shareType, amount, requestShares);
+        PayHelper payHelper = new PayHelper(shareType, amount, trimShareAmounts(requestShares));
 
         if (payHelper.getShareType() != ShareType.EQUAL && !payHelper.isSettled()) {
             String exceptionMessage = String.format("Shares do not add up to %s (%s by %s, from %s).",
