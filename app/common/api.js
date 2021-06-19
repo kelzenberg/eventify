@@ -72,43 +72,6 @@ export function createEvent(title, description, startDate) {
 
 export function getEvent(eventID) {
     return fetcher.request({method: "GET", path: `events/${eventID}`, expect: "json"}).then(([response]) => response);
-
-    return Promise.resolve({
-        "id": "22f7c93e-cfdc-491f-baa2-732fa298d8f6",
-        "createdAt": "2021-06-02T15:42:16.478+00:00",
-        "updatedAt": "2021-06-02T15:42:16.478+00:00",
-        "title": "TestEvent 1",
-        "description": "This is a test description",
-        "startedAt": "2021-12-24T13:33:37.111+00:00",
-        "endedAt": null,
-        "expenseSharingModules": [
-            {
-                "id": "0f994c11-58ba-4718-ae18-5fe099177329",
-                "createdAt": "2021-06-02T15:42:40.985+00:00",
-                "updatedAt": "2021-06-02T15:42:40.985+00:00",
-                "title": "Expense Sharing Module 1",
-                "description": "This is a test description",
-                "payments": [
-                    {
-                        "id": "e2ba702a-3713-4804-9b67-de5f9f99b3a8",
-                        "createdAt": "2021-06-02T15:43:05.301+00:00",
-                        "updatedAt": "2021-06-02T15:43:05.301+00:00",
-                        "title": "Payment 1",
-                        "amount": 13.37,
-                        "payer": {
-                            "id": "1798a949-1f72-45ff-b83c-d8e796add4cc",
-                            "createdAt": "2021-05-29T17:01:31.716+00:00",
-                            "updatedAt": "2021-05-29T17:01:31.716+00:00",
-                            "email": "admin@test.de",
-                            "displayName": "Admin",
-                            "authRole": "ADMIN"
-                        },
-                        "shareType": "FIXED"
-                    }
-                ]
-            }
-        ]
-    });
 }
 
 export function saveEvent(event) {
@@ -158,5 +121,14 @@ export function addExpenseSharingModule(eventID, title, description) {
             title: title,
             description: description
         }
+    }).then(([response]) => response);
+}
+
+export function addPaymentToExpenseSharing(moduleID, paymentData) {
+    return fetcher.request({
+        method: "POST",
+        path: `modules/expense-sharing/${moduleID}`,
+        expect: "json",
+        body: paymentData
     }).then(([response]) => response);
 }

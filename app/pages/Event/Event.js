@@ -124,7 +124,7 @@ export default function EventPage() {
                 <Dropdown.Item onClick={leave}>Leave</Dropdown.Item>
             </DropdownButton>
         </Title>
-        <div className="container">
+        <div className="container-lg">
             <div className="row gx-5">
                 <div className="col col-12 col-md-4 col-lg-3">
                     <div className="row mb-3">
@@ -212,7 +212,7 @@ function ModuleList(props) {
                     icon={ModuleComponent.icon}
                     title={moduleInstance.title}
                 >
-                <ModuleComponent moduleData={moduleInstance} htmlID={`${moduleType}_${i}_module`}/>
+                <ModuleComponent moduleData={moduleInstance} event={props.event} htmlID={`${moduleType}_${i}_module`}/>
             </ModuleCard>)
             moduleComponents = moduleComponents.concat(instances);
         }
@@ -234,7 +234,7 @@ function ModuleList(props) {
 }
 
 function ModuleCard(props) {
-    const [collapsed, setCollapsed] = React.useState(true);
+    const [collapsed, setCollapsed] = React.useState(false);
 
     return <div className="card mb-3">
         <div className="card-body">

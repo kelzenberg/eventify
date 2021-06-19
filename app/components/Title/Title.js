@@ -17,7 +17,7 @@ export default function Title(props) {
         .reduce((prev, curr) => [prev, " > ", curr]);
     }
 
-    return <div className="container mb-4 mt-5 title">
+    return <div className="container-lg mb-4 mt-5 title">
         <span className="text-muted">{breadcrumbs}</span>
         <div className="d-flex">
             <h1 className="fw-bolder me-auto">{props.title}</h1>

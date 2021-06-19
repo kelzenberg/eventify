@@ -41,7 +41,7 @@ export function InfoDialog(props) {
         title={props.title}
         buttons={[{text: "OK", onClick: props.onHide}]}
     >
-        {props.message}
+        {props.message == undefined ? "" : props.message}
     </Dialog>
 }
 
@@ -49,7 +49,7 @@ InfoDialog.propTypes = {
     show: PropTypes.bool.isRequired,
     onHide: PropTypes.func.isRequired,
     title: PropTypes.node.isRequired,
-    message: PropTypes.node.isRequired
+    message: PropTypes.node // not required to allow null
 };
 
 export function ConfirmationDialog(props) {
