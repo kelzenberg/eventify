@@ -8,16 +8,16 @@ import java.util.Locale;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-/**
- * Creator: Thank you (https://stackoverflow.com/users/633183/thank-you)
- * Source: https://stackoverflow.com/a/38925164 (last edited Dec 18 '18 at 4:31)
- * Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
- * Changes to Original: Translation from JavaScript (Source) to Java (code below).
- */
 public class DistributionUtil {
     protected static final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
     protected static final DecimalFormat decimalFormat = new DecimalFormat("#.##", symbols);
 
+    /**
+     * Creator: Thank you (https://stackoverflow.com/users/633183/thank-you)
+     * Source: https://stackoverflow.com/a/38925164 (last edited Dec 18 '18 at 4:31)
+     * Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+     * Changes to Original: Translation from JavaScript (Source) to Java (Method below).
+     */
     private static double[] quotrem(int parts, double amount) {
         return new double[]{
                 Math.floor(amount / parts),
@@ -25,6 +25,12 @@ public class DistributionUtil {
         };
     }
 
+    /**
+     * Creator: Thank you (https://stackoverflow.com/users/633183/thank-you)
+     * Source: https://stackoverflow.com/a/38925164 (last edited Dec 18 '18 at 4:31)
+     * Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+     * Changes to Original: Translation from JavaScript (Source) to Java (Method below).
+     */
     private static double[] distributeEqually(int precision, int parts, double amount) {
         double e = Math.pow(10, precision);
         double[] quotRem = quotrem(parts, amount * e);
