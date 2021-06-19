@@ -1,7 +1,12 @@
 package com.eventify.api.entities.modules.expensesharing.utils;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 /**
  * Creator: Thank you (https://stackoverflow.com/users/633183/thank-you)
@@ -33,15 +38,40 @@ public class DistributionUtil {
         return DoubleStream.concat(Arrays.stream(largestValues), Arrays.stream(restValues)).toArray();
     }
 
-    private static double[] distributeByPercentage(int precision, double[] percentages, double amount) {
-//                .map(fixedAmount -> {
-//            DecimalFormat decimalFormat = new DecimalFormat("#.##");
-//            decimalFormat.setRoundingMode(RoundingMode.FLOOR);
-//            double decimalAmount = Double.parseDouble(decimalFormat.format(fixedAmount));
-//            double rest = fixedAmount - decimalAmount;
-//            return decimalAmount;
-//        })
-        return null;
+    private static double[] distributeByPercentage(double[] percentages, double amount) {
+        final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+        final DecimalFormat decimalFormat = new DecimalFormat("#.##", symbols);
+        decimalFormat.setRoundingMode(RoundingMode.FLOOR);
+
+        double[] decimalAmounts = Arrays.stream(percentages)
+                .map(value -> Double.parseDouble(decimalFormat.format(value)))
+                .toArray();
+
+        double remaining = amount - Arrays.stream(decimalAmounts).reduce(0.0, Double::sum);
+        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+        int roundedRemaining = Double.valueOf(Double.parseDouble(decimalFormat.format(remaining)) * 100).intValue();
+//        System.out.println("[DEBUG] Remaining: " + remaining + " -> " + roundedRemaining);
+
+        double[] adjustedDecimalAmounts;
+        if (roundedRemaining >= decimalAmounts.length) {
+            double[] distributedRemaining = distributeCurrencyEqually(decimalAmounts.length, remaining); // value from high -> low
+            adjustedDecimalAmounts = IntStream.range(0, Math.min(decimalAmounts.length, distributedRemaining.length))
+                    .mapToDouble(idx -> decimalAmounts[idx] + distributedRemaining[idx])
+                    .toArray();
+        } else {
+            adjustedDecimalAmounts = IntStream.range(0, decimalAmounts.length)
+                    .mapToDouble(idx -> idx >= roundedRemaining ? decimalAmounts[idx] : decimalAmounts[idx] + 0.01)
+                    .toArray();
+        }
+
+//        double[] formattedPercentages = Arrays.stream(convertedPercentages)
+//                .map(value -> Double.parseDouble(decimalFormat.format(value)))
+//                .toArray();
+//
+//        System.out.println("[DEBUG] Decimal Amounts: " + Arrays.toString(decimalAmounts) + " -> " + Arrays.toString(adjustedDecimalAmounts));
+//        System.out.println("[DEBUG] Difference: " + (amount - Arrays.stream(adjustedDecimalAmounts).reduce(0.0, Double::sum)));
+//        System.out.println("[DEBUG] Smaller than 0.01? " + ((amount - Arrays.stream(adjustedDecimalAmounts).reduce(0.0, Double::sum)) < 0.01));
+        return adjustedDecimalAmounts;
     }
 
     public static double[] distributeCurrencyEqually(int parts, double amount) {
@@ -49,6 +79,6 @@ public class DistributionUtil {
     }
 
     public static double[] distributeCurrencyByPercentage(double[] percentages, double amount) {
-        return distributeByPercentage(2, percentages, amount);
+        return distributeByPercentage(percentages, amount);
     }
 }
