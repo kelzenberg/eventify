@@ -76,6 +76,7 @@ public class DistributionUtil {
                     .toArray();
         }
 
+        // TODO: some values still create broken shares, e.g. 77.11 with 55% and 45% shares -> 42.419999999999995
         return adjustedDecimals;
     }
 
