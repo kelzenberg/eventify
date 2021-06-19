@@ -8,7 +8,7 @@ import com.eventify.api.entities.modules.expensesharing.entities.data.CostShareR
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContribution;
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContributionRepository;
 import com.eventify.api.entities.modules.expensesharing.services.ExpenseSharingService;
-import com.eventify.api.entities.modules.expensesharing.utils.ExpenseSharingUtil;
+import com.eventify.api.entities.modules.expensesharing.utils.PaymentsUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.exceptions.EntityNotFoundException;
@@ -35,7 +35,7 @@ public class PaymentContributionService {
     private UserService userService;
 
     @Autowired
-    private ExpenseSharingUtil expenseSharingUtil;
+    private PaymentsUtil paymentsUtil;
 
     public List<PaymentContribution> getAll(UUID expenseSharingId) {
         return paymentContributionRepository.findAllByExpenseModuleId(expenseSharingId);
@@ -61,11 +61,13 @@ public class PaymentContributionService {
     ) throws EntityNotFoundException {
         User payer = userService.getById(userId);
         ExpenseSharingModule expenseModule = expenseSharingService.getById(expenseSharingId);
-        List<RequestCostShare> validatedShares = expenseSharingUtil.validateShares(shareType, amount, shares);
+
+        double trimmedAmount = paymentsUtil.trimDoubleToDecimal(amount);
+        List<RequestCostShare> validatedShares = paymentsUtil.validateShares(shareType, trimmedAmount, shares);
 
         PaymentContribution.PaymentContributionBuilder newPayment = PaymentContribution.builder()
                 .title(title)
-                .amount(amount)
+                .amount(trimmedAmount)
                 .payer(payer)
                 .expenseModule(expenseModule)
                 .shareType(shareType);

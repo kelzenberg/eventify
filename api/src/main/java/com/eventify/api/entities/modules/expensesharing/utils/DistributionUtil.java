@@ -1,5 +1,7 @@
 package com.eventify.api.entities.modules.expensesharing.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -8,9 +10,10 @@ import java.util.Locale;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
+@Component
 public class DistributionUtil {
-    protected static final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
-    protected static final DecimalFormat decimalFormat = new DecimalFormat("#.##", symbols);
+    private static final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##", symbols);
 
     /**
      * Creator: Thank you (https://stackoverflow.com/users/633183/thank-you)
@@ -18,7 +21,7 @@ public class DistributionUtil {
      * Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
      * Changes to Original: Translation from JavaScript (Source) to Java (Method below).
      */
-    private static double[] quotrem(int parts, double amount) {
+    private double[] quotrem(int parts, double amount) {
         return new double[]{
                 Math.floor(amount / parts),
                 Math.floor(amount % parts)
@@ -31,7 +34,7 @@ public class DistributionUtil {
      * Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
      * Changes to Original: Translation from JavaScript (Source) to Java (Method below).
      */
-    private static double[] distributeEqually(int precision, int parts, double amount) {
+    private double[] distributeEqually(int precision, int parts, double amount) {
         double e = Math.pow(10, precision);
         double[] quotRem = quotrem(parts, amount * e);
         double largestValue = quotRem[0];
@@ -46,19 +49,19 @@ public class DistributionUtil {
         return DoubleStream.concat(Arrays.stream(largestValues), Arrays.stream(restValues)).toArray();
     }
 
-    private static double[] distributeByPercentage(double[] shares, double amount) {
-        decimalFormat.setRoundingMode(RoundingMode.FLOOR);
+    private double[] distributeByPercentage(double[] shares, double amount) {
+        DECIMAL_FORMAT.setRoundingMode(RoundingMode.FLOOR);
 
         double[] decimalShares = Arrays.stream(shares)
-                .map(value -> Double.parseDouble(decimalFormat.format(value)))
+                .map(value -> Double.parseDouble(DECIMAL_FORMAT.format(value)))
                 .toArray();
         double rest = amount - Arrays.stream(decimalShares)
                 .reduce(0.0, Double::sum);
 
-        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+        DECIMAL_FORMAT.setRoundingMode(RoundingMode.HALF_UP);
 
         int remainingRounded = Double.valueOf(
-                Double.parseDouble(decimalFormat.format(rest)) * 100
+                Double.parseDouble(DECIMAL_FORMAT.format(rest)) * 100
         ).intValue();
 
         double[] adjustedDecimals;
@@ -76,11 +79,11 @@ public class DistributionUtil {
         return adjustedDecimals;
     }
 
-    public static double[] distributeCurrencyEqually(int parts, double amount) {
+    public double[] distributeCurrencyEqually(int parts, double amount) {
         return distributeEqually(2, parts, amount);
     }
 
-    public static double[] distributeCurrencyByPercentage(double[] shares, double amount) {
+    public double[] distributeCurrencyByPercentage(double[] shares, double amount) {
         return distributeByPercentage(shares, amount);
     }
 }

@@ -6,6 +6,7 @@ import com.eventify.api.exceptions.EntityIsInvalidException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.RoundingMode;
@@ -18,7 +19,12 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 @Component
-public class ExpenseSharingUtil {
+public class PaymentsUtil {
+
+    @Autowired
+    DistributionUtil distributionUtil;
+
+    private final DecimalFormat decimalFormat = DistributionUtil.DECIMAL_FORMAT;
 
     @Getter
     @ToString
@@ -57,14 +63,15 @@ public class ExpenseSharingUtil {
         }
     }
 
-    private List<RequestCostShare> trimShareAmounts(List<RequestCostShare> requestShares) {
-        DecimalFormat decimalFormat = DistributionUtil.decimalFormat;
+    public double trimDoubleToDecimal(double doubleValue) {
         decimalFormat.setRoundingMode(RoundingMode.FLOOR);
+        return Double.parseDouble(decimalFormat.format(doubleValue));
+    }
 
+    private List<RequestCostShare> trimShareAmounts(List<RequestCostShare> requestShares) {
         requestShares.forEach(share -> share.setAmount(
-                Double.parseDouble(decimalFormat.format(share.getAmount()))
+                trimDoubleToDecimal(share.getAmount())
         ));
-
         return requestShares;
     }
 
@@ -92,10 +99,10 @@ public class ExpenseSharingUtil {
                 shareArray = payHelper.getShares();
                 break;
             case EQUAL:
-                shareArray = DistributionUtil.distributeCurrencyEqually(payHelper.getShares().length, payHelper.getAmount());
+                shareArray = distributionUtil.distributeCurrencyEqually(payHelper.getShares().length, payHelper.getAmount());
                 break;
             case PERCENTAGE:
-                shareArray = DistributionUtil.distributeCurrencyByPercentage(payHelper.getShares(), payHelper.getAmount());
+                shareArray = distributionUtil.distributeCurrencyByPercentage(payHelper.getShares(), payHelper.getAmount());
                 break;
             default:
                 throw new EntityIsInvalidException("Payment contribution share type is invalid.");
