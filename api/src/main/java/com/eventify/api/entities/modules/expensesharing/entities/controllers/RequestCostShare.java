@@ -16,10 +16,10 @@ import java.util.UUID;
 public class RequestCostShare implements Serializable {
 
     @NotNull
+    private UUID userId;
+
+    @NotNull
     @PositiveOrZero
     @Max(100000)
     private Double amount;
-
-    @NotNull
-    private UUID userId;
 }
