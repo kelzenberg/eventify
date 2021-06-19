@@ -21,60 +21,79 @@ public class ExpenseSharingUtil {
     @Getter
     @ToString
     @EqualsAndHashCode
-    private static class Difference {
+    private static class PayHelper {
         private final ShareType shareType;
         private final double amount;
         private final double[] shares;
         private final double totalGap;
-        private final boolean isEqual;
+        private final boolean isSettled;
 
-        public Difference(ShareType shareType, double amount, List<RequestCostShare> shares) {
+        public PayHelper(ShareType shareType, double amount, List<RequestCostShare> shares) {
+            double[] convertedShares = shares.stream()
+                    .map(RequestCostShare::getAmount)
+                    .mapToDouble(Double::doubleValue)
+                    .toArray();
+
+            double sharesSum = shares.stream()
+                    .map(RequestCostShare::getAmount)
+                    .reduce(0.0, Double::sum);
+
+            double totalGap = amount - sharesSum;
+
+            if (shareType == ShareType.PERCENTAGE) {
+                convertedShares = Arrays.stream(convertedShares)
+                        .map(percentage -> amount * (percentage / 100.0))
+                        .toArray();
+                totalGap = 100 - sharesSum;
+            }
+
             this.shareType = shareType;
             this.amount = amount;
-            this.shares = shares.stream().map(RequestCostShare::getAmount).mapToDouble(Double::doubleValue).toArray();
-            this.totalGap = (shareType == ShareType.PERCENTAGE ? 100 : amount)
-                    - shares.stream().map(RequestCostShare::getAmount).reduce(0.0, Double::sum);
-            this.isEqual = this.totalGap == 0.0;
+            this.shares = convertedShares;
+            this.totalGap = totalGap;
+            this.isSettled = this.totalGap == 0.0;
         }
     }
 
-    private double[] convertPercentageToDecimal(double amount, double[] shares) {
-        return Arrays.stream(shares)
-                .map(percentage -> amount * (percentage / 100.0))
-                .toArray();
-    }
-
-    public List<RequestCostShare> validateShares(ShareType shareType, double amount, List<RequestCostShare> requestShares) throws EntityIsInvalidException {
+    public List<RequestCostShare> validateShares(
+            ShareType shareType,
+            double amount,
+            List<RequestCostShare> requestShares
+    ) throws EntityIsInvalidException {
         // e.g. PERCENTAGE 100:[20%, 50%, 30%] or DECIMAL 55:[19.99, 15.01, 20.00]
-        Difference diff = new Difference(shareType, amount, requestShares);
+        PayHelper payHelper = new PayHelper(shareType, amount, requestShares);
 
-        if (shareType != ShareType.EQUAL && !diff.isEqual()) {
-            throw new EntityIsInvalidException("Shares do not add up to the total amount paid or 100%.");
+        if (payHelper.getShareType() != ShareType.EQUAL && !payHelper.isSettled()) {
+            String exceptionMessage = String.format("Shares do not add up to %s (%s by %s, from %s).",
+                    payHelper.getShareType() == ShareType.PERCENTAGE ? "100 percent" : "total amount",
+                    Math.signum(payHelper.getTotalGap()) >= 0 ? "underpaid" : "overpaid",
+                    Math.abs(payHelper.getTotalGap()),
+                    payHelper.getShareType() == ShareType.PERCENTAGE ? 100 : payHelper.getAmount()
+            );
+            throw new EntityIsInvalidException(exceptionMessage);
         }
 
-        double[] shareArray;
+        double[] shareArray = new double[0];
         switch (shareType) {
             case DECIMAL:
-                shareArray = diff.getShares();
+                shareArray = payHelper.getShares();
                 break;
             case EQUAL:
-                shareArray = DistributionUtil.distributeCurrencyEqually(diff.getShares().length, amount);
+                shareArray = DistributionUtil.distributeCurrencyEqually(payHelper.getShares().length, payHelper.getAmount());
                 break;
             case PERCENTAGE:
-                throw new RuntimeException("Currently unsupported share type (PERCENTAGE).");
-//                double[] decimalShares = convertPercentageToDecimal(amount, diff.getShares());
-//                shareArray = DistributionUtil.distributeCurrencyByPercentage(decimalShares, amount);
-//                break;
+                shareArray = DistributionUtil.distributeCurrencyByPercentage(payHelper.getShares(), payHelper.getAmount());
+                break;
             default:
                 throw new EntityIsInvalidException("Payment contribution share type is invalid.");
         }
 
         List<UUID> userIds = requestShares.stream().map(RequestCostShare::getUserId).collect(Collectors.toList());
-        List<Double> shares = DoubleStream.of(shareArray).boxed().collect(Collectors.toList());
+        List<Double> shareList = DoubleStream.of(shareArray).boxed().collect(Collectors.toList());
 
         // zip userIds & shares back to RequestCostShare list
-        return IntStream.range(0, Math.min(userIds.size(), shares.size()))
-                .mapToObj(idx -> new RequestCostShare(userIds.get(idx), shares.get(idx)))
+        return IntStream.range(0, Math.min(userIds.size(), shareList.size()))
+                .mapToObj(idx -> new RequestCostShare(userIds.get(idx), shareList.get(idx)))
                 .collect(Collectors.toList());
     }
 
