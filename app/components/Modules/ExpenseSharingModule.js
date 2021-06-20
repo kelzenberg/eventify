@@ -32,7 +32,7 @@ export default function ExpenseSharingModule(props) {
             </tbody>
         </table>
         {!editorOpen ? null :
-            <PaymentEditor moduleID={props.moduleData.id} members={props.event.users} onAddPayment={savePayment}/>
+            <PaymentEditor moduleID={props.moduleData.id} members={props.event.users} onAddPayment={savePayment} onCancelEdit={() => setEditorOpen(false)}/>
         }
         <div hidden={editorOpen} onClick={() => setEditorOpen(true)} className="rounded border-dashed border-gray w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item">
             <img src="/assets/icons/add.svg" alt="" className="pe-2" style={{verticalAlign: "sub"}}/>
@@ -255,8 +255,11 @@ function PaymentEditor(props) {
                 </div>
             </div>
             {/* ====== Save ====== */}
-            <div className="row mb-3">
-                <div className="col d-grid">
+            <div className="row gy-3 gy-md-0">
+                <div className="col-12 col-sm-4 col-xl-2 d-grid">
+                    <button type="button" className="btn btn-outline-primary" onClick={props.onCancelEdit}>Cancel</button>
+                </div>
+                <div className="col-12 col-sm-8 col-xl-10 d-grid">
                     <button type="button" className="btn btn-primary" onClick={savePayment} disabled={!allValid}>Save Expense</button>
                 </div>
             </div>
@@ -366,7 +369,7 @@ function NullableInput(props) {
         inputProps.value = props.value;
     return <div className={`btn-group align-items-center ${props.className}`} hidden={props.hidden}>
         <input type={props.type} {...inputProps} onChange={props.onChange} className={`form-control ${props.isNull ? "passive" : ""} ${props.isValid ? "" : "is-invalid"}`} />
-        <button type="button" className="btn-close me-4 position-absolute end-0" onClick={() => props.onChange({target:{value: null}})} aria-label="Remove Person"/>
+        <button type="button" hidden={props.isNull} className="btn-close me-4 position-absolute end-0" onClick={() => props.onChange({target:{value: null}})} aria-label="Remove Person"/>
     </div>
 }
 
@@ -461,9 +464,11 @@ function validateShares(shares, shareType, amount) {
         amount: acc.amount + share.amount
     }});
 
+    console.log(sums);
+
     // I think just checking the amount should be enough as a validation.
     // if(shareType == "FIXED") {
-        return sums.amount == amount;
+        return floatsEqual(sums.amount, amount);
     // } else if(shareType == "PERCENTAGE") {
     //     return sums.percent == 1;
     // }
@@ -478,6 +483,11 @@ function roundToDecimalPlaces(value, places) {
 // Makes a float nicer by removing the small inaccuracies that floating point numbers often have
 function niceFloat(value) {
     return roundToDecimalPlaces(value, 10);
+}
+
+// Returns true of the two floating point numbers are equal (enough).
+function floatsEqual(a, b) {
+    return Math.abs(a - b) < 0.0000000001;
 }
 
 function splitRealMoney(value) {
