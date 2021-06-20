@@ -10,7 +10,7 @@ export default function ExpenseSharingModule(props) {
     const [errorMessage, setErrorMessage] = React.useState(null);
 
     function savePayment(paymentData) {
-        api.addPaymentToExpenseSharing(props.moduleID, paymentData)
+        api.addPaymentToExpenseSharing(props.moduleData.id, paymentData)
         .then((result) => {
             console.info(result);
             setErrorMessage("Payment has been saved! TODO: Remove this");
