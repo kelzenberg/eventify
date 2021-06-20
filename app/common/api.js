@@ -75,7 +75,7 @@ export function getEvent(eventID) {
 }
 
 export function saveEvent(event) {
-    return fetcher.request({method: "PUT", path: `events/${event.id}`, expect: "json"}).then(([response]) => response);
+    return fetcher.request({method: "PUT", path: `events/${event.id}`, expect: "json", body: event}).then(([response]) => response);
 }
 
 export function leaveEvent(eventID) {

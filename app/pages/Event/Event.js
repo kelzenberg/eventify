@@ -65,13 +65,15 @@ export default function EventPage() {
         setEditing(false);
         setSaving(true);
         api.saveEvent(event)
-        .catch(() => {
-            setModal({title: "Event could not be saved", message: "Unfortunately a problem prevented us from saving the event. Please try again."})
-        })
-        .finally(() => {
-            setEditing(true);
+        .then(newEvent => {
+            setEvent(newEvent);
             setSaving(false);
         })
+        .catch(() => {
+            setModal({title: "Event could not be saved", message: "Unfortunately a problem prevented us from saving the event. Please try again."});
+            setEditing(true);
+            setSaving(false);
+        });
     }
 
     function leave() {
