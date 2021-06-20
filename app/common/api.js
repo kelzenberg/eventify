@@ -102,7 +102,7 @@ export function bounceFromEvent(eventID, userID) {
     return fetcher.request({
         method: "POST",
         path: `events/${eventID}/bounce`,
-        expect: "json",
+        expect: "empty",
         body: {
             userId: userID
         }

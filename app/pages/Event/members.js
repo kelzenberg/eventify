@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import update from 'immutability-helper';
 import { ConfirmationDialog, Dialog } from "../../components/Dialog/Dialog";
 import { UserContext } from "../../common/stateKeeper";
 import * as api from "../../common/api";
@@ -29,7 +30,7 @@ export function SmallMembers({event, onEventChanged, setVisibleContent}) {
                 <a className="link-primary fw-bold d-block m-2" role="button" onClick={() => setVisibleContent("members")}>More...</a>
             </div>
         </div>
-        <AddMemberDialog show={showDialog} onHide={() => setShowDialog(false)} onEventChanged={onEventChanged}/>
+        <AddMemberDialog show={showDialog} onHide={() => setShowDialog(false)} eventID={event.id} onEventChanged={onEventChanged}/>
     </>
 }
 
@@ -47,13 +48,16 @@ export function FullMembers(props) {
     function removeMember() {
         api.bounceFromEvent(props.event.id, bounceUser.id)
         .then(() => {
-
+            let newUsers = props.event.users.filter(u => u.id != bounceUser.id);
+            setBounceUser(null);
+            let newEvent = update(props.event, {users: {$set: newUsers}});
+            props.onEventChanged(newEvent);
         })
         .catch(err => {
             console.warn(err);
             props.onErrorMessage("Unfortunately a problem prevented us from saving the event. Please try again.");
-        });
-        setBounceUser(null);
+            setBounceUser(null);
+        })
     }
 
     return <>
@@ -84,7 +88,7 @@ export function FullMembers(props) {
             onConfirm={removeMember}
             onDeny={() => setBounceUser(null)}
         />
-        <AddMemberDialog show={addUserVisible} onHide={() => setAddUserVisible(false)} onEventChanged={props.onEventChanged}/>
+        <AddMemberDialog show={addUserVisible} onHide={() => setAddUserVisible(false)} eventID={props.event.id} onEventChanged={props.onEventChanged}/>
     </>
 }
 
@@ -113,7 +117,8 @@ function AddMemberDialog(props) {
             return;
         }
 
-        api.inviteToEvent(event.id, emailAddress)
+        console.log(props.eventID);
+        api.inviteToEvent(props.eventID, emailAddress)
         .then(eventData => {
             props.onEventChanged(eventData);
             reset();
