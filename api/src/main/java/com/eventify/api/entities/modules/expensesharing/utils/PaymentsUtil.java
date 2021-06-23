@@ -64,7 +64,13 @@ public class PaymentsUtil {
         }
 
         double[] distributedShares = distributePerShareType(payHelper.getShareType(), payHelper.getShares(), payHelper.getTotal());
-        return convertToRequestCostShares(payHelper.getUserIds(), distributedShares);
+        List<RequestCostShare> validatedShares = convertToRequestCostShares(payHelper.getUserIds(), distributedShares);
+
+        if (!new PayHelper(ShareType.DECIMAL, validatedShares, amount).isSettled()) { // payHelper.getTotal() return int, but double is needed
+            throw new RuntimeException("Payment cost share validation failed.");
+        }
+
+        return validatedShares;
     }
 
     public double trimDoubleToDecimal(double doubleValue) {
