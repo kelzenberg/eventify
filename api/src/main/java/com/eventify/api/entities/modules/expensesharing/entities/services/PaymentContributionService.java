@@ -59,11 +59,10 @@ public class PaymentContributionService {
             ShareType shareType,
             List<RequestCostShare> shares
     ) throws EntityNotFoundException {
-        User payer = userService.getById(userId);
         ExpenseSharingModule expenseModule = expenseSharingService.getById(expenseSharingId);
-
+        User payer = userService.getById(userId);
         double trimmedAmount = paymentsUtil.trimDoubleToDecimal(amount);
-        List<RequestCostShare> validatedShares = paymentsUtil.validateShares(shareType, trimmedAmount, shares);
+        List<RequestCostShare> trimmedShares = paymentsUtil.trimSharesToDecimal(shares);
 
         PaymentContribution.PaymentContributionBuilder newPayment = PaymentContribution.builder()
                 .title(title)
@@ -73,14 +72,16 @@ public class PaymentContributionService {
                 .shareType(shareType);
         PaymentContribution createdPayment = paymentContributionRepository.save(newPayment.build());
 
-        List<CostShare> createdCostShares = validatedShares.stream().map(costShare -> {
-            User shareHolder = userService.getById(costShare.getUserId());
-            return CostShare.builder()
-                    .amount(costShare.getAmount())
-                    .shareHolder(shareHolder)
-                    .paymentContribution(createdPayment)
-                    .build();
-        }).collect(Collectors.toList());
+        List<RequestCostShare> validatedShares = paymentsUtil.validateShares(shareType, trimmedShares, trimmedAmount);
+        List<CostShare> createdCostShares = validatedShares.stream()
+                .map(costShare -> {
+                    User shareHolder = userService.getById(costShare.getUserId());
+                    return CostShare.builder()
+                            .amount(costShare.getAmount())
+                            .shareHolder(shareHolder)
+                            .paymentContribution(createdPayment)
+                            .build();
+                }).collect(Collectors.toList());
 
         List<CostShare> createdShares = costShareRepository.saveAll(createdCostShares);
         createdPayment.setShares(createdShares); // manual overwrite to prevent another DB call
