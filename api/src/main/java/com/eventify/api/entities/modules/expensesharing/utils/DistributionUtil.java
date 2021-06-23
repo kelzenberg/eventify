@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Random;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
@@ -14,6 +15,17 @@ import java.util.stream.IntStream;
 public class DistributionUtil {
     private static final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
     protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##", symbols);
+
+    private double[] shuffleArray(double[] arr) {
+        Random random = new Random();
+        IntStream.range(0, arr.length).forEach(idx -> {
+            int randomIdx = random.nextInt(arr.length);
+            double tempValue = arr[randomIdx];
+            arr[randomIdx] = arr[idx];
+            arr[idx] = tempValue;
+        });
+        return arr;
+    }
 
     /**
      * Creator: Thank you (https://stackoverflow.com/users/633183/thank-you)
@@ -46,7 +58,8 @@ public class DistributionUtil {
         double[] restValues = new double[parts - rest];
         Arrays.fill(restValues, largestValue / e);
 
-        return DoubleStream.concat(Arrays.stream(largestValues), Arrays.stream(restValues)).toArray();
+        double[] concatenatedValues = DoubleStream.concat(Arrays.stream(largestValues), Arrays.stream(restValues)).toArray();
+        return shuffleArray(concatenatedValues);
     }
 
     private double[] distributeByPercentages(int[] percentages, int amount) {
