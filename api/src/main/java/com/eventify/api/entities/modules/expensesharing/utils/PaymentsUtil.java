@@ -23,7 +23,7 @@ public class PaymentsUtil {
 
     private final DecimalFormat decimalFormat = DistributionUtil.DECIMAL_FORMAT;
 
-    private double[] distributePerShareType(ShareType shareType, int[] shares, int total) {
+    private double[] distributePerShareType(ShareType shareType, int[] shares, int total) throws EntityIsInvalidException {
         switch (shareType) {
             case DECIMAL:
                 return Arrays.stream(shares).mapToDouble(value -> value / 100.0).toArray();

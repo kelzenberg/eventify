@@ -49,71 +49,34 @@ public class DistributionUtil {
         return DoubleStream.concat(Arrays.stream(largestValues), Arrays.stream(restValues)).toArray();
     }
 
-//    private double[] distributeByPercentage(double[] shares, double amount) {
-//        DECIMAL_FORMAT.setRoundingMode(RoundingMode.FLOOR);
-//
-//        double[] decimalShares = Arrays.stream(shares)
-//                .map(value -> Double.parseDouble(DECIMAL_FORMAT.format(value)))
-//                .toArray();
-//        double rest = amount - Arrays.stream(decimalShares)
-//                .reduce(0.0, Double::sum);
-//
-//        DECIMAL_FORMAT.setRoundingMode(RoundingMode.HALF_UP);
-//
-//        int remainingRounded = Double.valueOf(
-//                Double.parseDouble(DECIMAL_FORMAT.format(rest)) * 100
-//        ).intValue();
-//
-//        double[] adjustedDecimals;
-//        if (remainingRounded >= decimalShares.length) {
-//            double[] remainingEquallyDistributed = distributeCurrencyEqually(decimalShares.length, rest);
-//            adjustedDecimals = IntStream.range(0, decimalShares.length)
-//                    .mapToDouble(idx -> decimalShares[idx] + remainingEquallyDistributed[idx])
-//                    .toArray();
-//        } else {
-//            adjustedDecimals = IntStream.range(0, decimalShares.length)
-//                    .mapToDouble(idx -> idx >= remainingRounded ? decimalShares[idx] : decimalShares[idx] + 0.01)
-//                    .toArray();
-//        }
-//
-//        // TODO: some values still create broken shares, e.g. 77.11 with 55% and 45% shares -> 42.419999999999995
-//        return adjustedDecimals;
-//    }
-
-    private double[] distributeByPercentage2(int[] percentages, int amount) {
+    private double[] distributeByPercentages(int[] percentages, int amount) {
         DECIMAL_FORMAT.setRoundingMode(RoundingMode.HALF_UP);
-
-        System.out.println("AMOUNT " + amount);
-        System.out.println("SHARES " + Arrays.toString(percentages));
 
         int[] integerShares = Arrays.stream(percentages)
                 .mapToDouble(percentage -> amount * (percentage / 100.0)) // % -> double
                 .map(percentageNum -> Double.parseDouble(DECIMAL_FORMAT.format(percentageNum))) // double -> decimal
-                .mapToInt(decimal -> (int) Math.floor(decimal))
+                .mapToInt(decimal -> (int) Math.floor(decimal)) // decimal -> int
                 .toArray();
+        int shareLength = integerShares.length;
         int rest = amount - Arrays.stream(integerShares).reduce(0, Integer::sum);
 
-        System.out.println("INT_SHARES " + Arrays.toString(integerShares));
-        System.out.println("REST " + rest);
-
         if (rest == 1) {
-            int minShareIdx = IntStream.range(0, integerShares.length)
+            int smallestShareIdx = IntStream.range(0, shareLength)
                     .reduce((curr, next) -> integerShares[curr] <= integerShares[next] ? curr : next)
                     .getAsInt();
-            integerShares[minShareIdx] += 1;
+            integerShares[smallestShareIdx] += 1;
         } else if (rest > 1) {
             IntStream.range(0, rest).forEach(idx -> {
-                int wrapIdx = (integerShares.length - (idx % integerShares.length)) - 1;
+                // start adding +1 from the back of the array
+                int wrapIdx = (shareLength - (idx % shareLength)) - 1;
                 integerShares[wrapIdx] += 1;
             });
-            if (rest >= integerShares.length) {
-                System.out.println("ULTRA REST " + rest);
+
+            if (rest >= shareLength) {
+                throw new RuntimeException("Percentage calculation seems defective.");
             }
         }
 
-        System.out.println("SUM " + Arrays.stream(integerShares).reduce(0, Integer::sum));
-        System.out.println("EQUAL " + (Arrays.stream(integerShares).reduce(0, Integer::sum) == amount));
-        System.out.println("PERC " + (Arrays.toString(Arrays.stream(integerShares).mapToDouble(share -> Math.round((double) share / (double) amount * 100.0)).toArray())));
         return Arrays.stream(integerShares).mapToDouble(value -> value / 100.0).toArray();
     }
 
@@ -122,6 +85,6 @@ public class DistributionUtil {
     }
 
     public double[] distributeCurrencyByPercentage(int[] percentages, int amount) {
-        return distributeByPercentage2(percentages, amount);
+        return distributeByPercentages(percentages, amount);
     }
 }

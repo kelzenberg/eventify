@@ -27,7 +27,7 @@ public class PayHelper {
         return (int) (value * 100);
     }
 
-    private int[] convertToIntArray(ShareType shareType, List<RequestCostShare> shares) {
+    private int[] convertToIntArray(ShareType shareType, List<RequestCostShare> shares) throws EntityIsInvalidException {
         switch (shareType) {
             case DECIMAL:
                 return shares.stream()
@@ -45,7 +45,7 @@ public class PayHelper {
         }
     }
 
-    public PayHelper(ShareType shareType, List<RequestCostShare> shares, double total) {
+    public PayHelper(ShareType shareType, List<RequestCostShare> shares, double total) throws EntityIsInvalidException {
         int[] integerShares = convertToIntArray(shareType, shares);
         int integerAmount = convertDecimalToInt(total);
         int integerSharesSum = Arrays.stream(integerShares).reduce(0, Integer::sum);
