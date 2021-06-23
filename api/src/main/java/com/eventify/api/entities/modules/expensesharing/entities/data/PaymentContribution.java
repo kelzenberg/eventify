@@ -54,7 +54,7 @@ public class PaymentContribution extends BaseEntity {
 
     @JsonView(Views.PublicExtended.class)
     @JsonManagedReference
-    @OneToMany(mappedBy = "paymentContribution")
+    @OneToMany(mappedBy = "paymentContribution", cascade = CascadeType.REMOVE)
     private List<CostShare> shares;
 
     @Builder

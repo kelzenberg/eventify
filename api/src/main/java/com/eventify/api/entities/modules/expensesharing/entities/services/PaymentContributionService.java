@@ -12,9 +12,11 @@ import com.eventify.api.entities.modules.expensesharing.utils.PaymentsUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.exceptions.EntityNotFoundException;
+import com.eventify.api.exceptions.PermissionsAreInsufficientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -89,7 +91,14 @@ public class PaymentContributionService {
         return createdPayment;
     }
 
-    public void deleteById(UUID id) {
-        paymentContributionRepository.deleteById(id);
+    @Transactional
+    public void deleteById(UUID paymentContributionId, UUID actorId) {
+        UUID payerId = getById(paymentContributionId).getPayer().getId();
+
+        if (!payerId.equals(actorId)) {
+            throw new PermissionsAreInsufficientException("Actor has insufficient permissions to delete payment (not payment owner).");
+        }
+
+        paymentContributionRepository.deleteById(paymentContributionId);
     }
 }

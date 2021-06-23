@@ -5,8 +5,10 @@ import com.eventify.api.entities.Views;
 import com.eventify.api.entities.modules.expensesharing.constants.ShareType;
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContribution;
 import com.eventify.api.entities.modules.expensesharing.entities.services.PaymentContributionService;
+import com.eventify.api.entities.user.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,12 +19,15 @@ import java.util.UUID;
 public class PaymentContributionController {
 
     @Autowired
-    private PaymentContributionService service;
+    private PaymentContributionService paymentContributionService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping(AuthenticatedPaths.PAYMENT_CONTRIBUTION)
     @JsonView(Views.PublicExtended.class)
     List<PaymentContribution> getAll(@PathVariable UUID expenseSharingId) {
-        return service.getAll(expenseSharingId);
+        return paymentContributionService.getAll(expenseSharingId);
     }
 
     @PostMapping(AuthenticatedPaths.PAYMENT_CONTRIBUTION)
@@ -33,7 +38,14 @@ public class PaymentContributionController {
         ShareType shareType = body.getShareType();
         UUID userId = body.getUserId();
         List<RequestCostShare> shares = body.getShares();
+        return paymentContributionService.create(expenseSharingId, title, amount, userId, shareType, shares);
+    }
 
-        return service.create(expenseSharingId, title, amount, userId, shareType, shares);
+    @DeleteMapping(AuthenticatedPaths.PAYMENT_CONTRIBUTION + "/{paymentContributionId}")
+    @JsonView(Views.PublicExtended.class)
+    void delete(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @PathVariable UUID paymentContributionId) {
+        String token = authHeader.split(" ")[1].trim();
+        UUID actorId = userService.getByToken(token).getId();
+        paymentContributionService.deleteById(paymentContributionId, actorId);
     }
 }
