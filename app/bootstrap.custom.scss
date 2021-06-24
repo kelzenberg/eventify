@@ -42,6 +42,14 @@ $form-text-color: $text-muted;
     font-weight: 600;
 }
 
+.cursor-default {
+    cursor: default
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
 // ========================================== BUTTON ==========================================
 
 $btn-font-size: 1.2rem;

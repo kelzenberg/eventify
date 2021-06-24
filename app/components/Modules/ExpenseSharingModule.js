@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
-import { Accordion } from 'react-bootstrap';
+import { Accordion, AccordionContext, useAccordionButton } from 'react-bootstrap';
 import { InfoDialog } from '../Dialog/Dialog';
 import * as stateKeeper from '../../common/stateKeeper';
 import * as api from '../../common/api';
@@ -45,11 +45,11 @@ export default function ExpenseSharingModule(props) {
 
     return <>
         <p className="my-2">{moduleData.description}</p>
-        <div className="container-fluid gx-1 my-2">
+        <Accordion defaultActiveKey="0" flush className="container-fluid gx-1 my-2">
             {moduleData.payments === null ? null : 
                 moduleData.payments.map(payment => <Payment payment={payment} key={payment.id} onDelete={deletePayment}/>)
             }
-        </div>
+        </Accordion>
         {!editorOpen ? null :
             <PaymentEditor moduleID={moduleData.id} members={props.event.users} onAddPayment={savePayment} onCancelEdit={() => setEditorOpen(false)}/>
         }
@@ -107,22 +107,47 @@ function Payment({payment, onDelete}) {
         var textStyle = "text-muted";
     }
 
-    return <div className="row hover-accent p-2 gx-0">
-        <div className="col-1 text-primary fw-slightly-bold">
-            <div>{date.getDate()}</div>
-            <div>{months[date.getMonth()]}</div>
+    const showDetails = useAccordionButton(payment.id, () => {});
+    const { activeEventKey: detailedPaymentID } = React.useContext(AccordionContext);
+
+    return <div>
+        <div onClick={showDetails} className="row hover-accent p-2 gx-0 cursor-default">
+            <div className="col-1 text-primary fw-slightly-bold">
+                <div>{date.getDate()}</div>
+                <div>{months[date.getMonth()]}</div>
+            </div>
+            <div className="col">
+                <div className="fw-slightly-bold" id={payment.id + "_name"}>{payment.title}</div>
+                <div>{payer} paid {niceFloat(payment.amount)} € for {payment.shares.length} {payment.shares.length == 1 ? "Person" : "People"}</div>
+            </div>
+            <div className="col-1 d-flex align-items-center justify-content-end">
+                <img src="/assets/icons/trash.png" onClick={() => onDelete(payment.id)} hidden={payment.payer.id != userInfo.id || detailedPaymentID != payment.id} role="button" aria-label="Delete this payment"/>
+            </div>
+            <div className="col-1 text-end">
+                <div>{icon}</div>
+                <div className={`fw-slightly-bold ${textStyle}`}>{niceFloat(balance)} €</div>
+            </div>
         </div>
-        <div className="col">
-            <div className="fw-slightly-bold" id={payment.id + "_name"}>{payment.title}</div>
-            <div>{payer} paid {niceFloat(payment.amount)} € for {payment.shares.length} {payment.shares.length == 1 ? "Person" : "People"}</div>
-        </div>
-        <div className="col-1 d-flex align-items-center justify-content-end">
-            <img src="/assets/icons/trash.png" onClick={() => onDelete(payment.id)} hidden={payment.payer.id != userInfo.id} role="button" aria-label="Delete this payment"/>
-        </div>
-        <div className="col-1 text-end">
-            <div>{icon}</div>
-            <div className={`fw-slightly-bold ${textStyle}`}>{niceFloat(balance)} €</div>
-        </div>
+        <Accordion.Collapse eventKey={payment.id}>
+            <div className="container-fluid gx-3 border-bottom">
+                <span className="fw-slightly-bold">{{
+                    "DECIMAL": "The money was divided up individually.",
+                    "PERCENTAGE": "The money was divided on a percentage basis.",
+                    "EQUAL": "The money was devided equaly."
+                }[payment.shareType]}</span>
+                {payment.shares.map(share => <div className="row p-1" key={share.id}>
+                    <div className="col">
+                        {share.shareHolder.displayName}
+                    </div>
+                    <div className="col-1">
+                        {niceFloat((share.amount / payment.amount) * 100)} %
+                    </div>
+                    <div className="col-1">
+                        {share.amount} €
+                    </div>
+                </div>)}
+            </div>
+        </Accordion.Collapse>
     </div>
 }
 
