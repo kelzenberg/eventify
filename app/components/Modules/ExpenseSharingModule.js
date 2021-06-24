@@ -6,14 +6,14 @@ import * as stateKeeper from '../../common/stateKeeper';
 import * as api from '../../common/api';
 
 export default function ExpenseSharingModule(props) {
+    const [moduleData, setModuleData] = React.useState(props.moduleData);
     const [editorOpen, setEditorOpen] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState(null);
 
     function savePayment(paymentData) {
-        api.addPaymentToExpenseSharing(props.moduleData.id, paymentData)
+        api.addPaymentToExpenseSharing(moduleData.id, paymentData)
         .then((result) => {
-            console.info(result);
-            setErrorMessage("Payment has been saved! TODO: Remove this");
+            setModuleData(update(moduleData, {payments: {$push: [result]}}));
             setEditorOpen(false);
         })
         .catch(err => {
@@ -23,16 +23,16 @@ export default function ExpenseSharingModule(props) {
     }
 
     return <>
-        <p className="my-2">{props.moduleData.description}</p>
+        <p className="my-2">{moduleData.description}</p>
         <table className="table table-borderless table-hover align-middle">
             <tbody>
-                {props.moduleData.payments === null ? null : 
-                    props.moduleData.payments.map(payment => <Payment payment={payment} key={payment.id}/>)
+                {moduleData.payments === null ? null : 
+                    moduleData.payments.map(payment => <Payment payment={payment} key={payment.id}/>)
                 }
             </tbody>
         </table>
         {!editorOpen ? null :
-            <PaymentEditor moduleID={props.moduleData.id} members={props.event.users} onAddPayment={savePayment} onCancelEdit={() => setEditorOpen(false)}/>
+            <PaymentEditor moduleID={moduleData.id} members={props.event.users} onAddPayment={savePayment} onCancelEdit={() => setEditorOpen(false)}/>
         }
         <div hidden={editorOpen} onClick={() => setEditorOpen(true)} className="rounded border-dashed border-gray w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item">
             <img src="/assets/icons/add.svg" alt="" className="pe-2" style={{verticalAlign: "sub"}}/>
@@ -86,6 +86,9 @@ function Payment({payment}) {
             <div className="fw-slightly-bold" id={payment.id + "_name"}>{payment.title}</div>
             <div>{payer} paid {payment.amount} €</div>
         </td>
+        <td>
+            <div className="fw-slightly-bold"><img src="/assets/icons/trash.png"/></div>
+        </td>
         <td className="text-end">
             <div>{icon}</div>
             <div className={`fw-slightly-bold ${textStyle}`}>{effectiveShare} €</div>
@@ -99,7 +102,7 @@ function PaymentEditor(props) {
     const [title, setTitle] = React.useState("");
     const [amount, setAmount] = React.useState(0);
     const [payer, setPayer] = React.useState(userInfo);
-    const [shareType, setShareType] = React.useState("FIXED");
+    const [shareType, setShareType] = React.useState("DECIMAL");
     const [shares, setShares] = React.useState([]);
     /* Shares is an array of objects with the following structure:
         {
@@ -118,7 +121,7 @@ function PaymentEditor(props) {
         and the program should calculate the value using an equal split.
         The calculated value will also be stored in the corresponding "...Input" value.
         Only percent or amount can not be null at any time depending on the used shareType.
-        If that is "FIXED" only 'amount' can be not null and if it is "PERCENTAGE" only 'percent' can.
+        If that is "DECIMAL" only 'amount' can be not null and if it is "PERCENTAGE" only 'percent' can.
         Read more about the calculation of all values in the 'calculateShares' function.
     */
 
@@ -134,8 +137,8 @@ function PaymentEditor(props) {
     function changeShareType(newType) {
         if(newType == shareType) return;
         // change all shares that have a set percent or amount value (which one depends on the current shareType) to the new shareType
-        // If we change from "FIXED" to "PERCENTAGE" we will convert all amounts to percents
-        // and if we change from "PERCENTAGE" to "FIXED" we do the opposite.
+        // If we change from "DECIMAL" to "PERCENTAGE" we will convert all amounts to percents
+        // and if we change from "PERCENTAGE" to "DECIMAL" we do the opposite.
         setShares(calculateShares(shares.map(share => {
             let newShare = share;
             if(share.percent !== null && shareType == "PERCENTAGE") {
@@ -144,7 +147,7 @@ function PaymentEditor(props) {
                     percent: {$set: null}
                 })
             }
-            if(share.amount !== null && shareType == "FIXED") {
+            if(share.amount !== null && shareType == "DECIMAL") {
                 newShare = update(share, {
                     percent: {$set: share.amount / amount},
                     amount: {$set: null}
@@ -161,17 +164,17 @@ function PaymentEditor(props) {
 
     function savePayment() {
         let amountFunc = null;
-        if(shareType == "FIXED")
-            amountFunc = share => share.amount;
+        if(shareType == "DECIMAL")
+            amountFunc = share => share.amountInput;
         else if(shareType == "PERCENTAGE")
-            amountFunc = share => share.percent;
+            amountFunc = share => share.percentInput;
         props.onAddPayment({
             title: title,
-            amount: amount,
+            amount: parseFloat(amount),
             userId: payer.id,
             shareType: shareType,
             shares: shares.map(share => {return {
-                amount: amountFunc(share),
+                amount: parseFloat(amountFunc(share)),
                 userId: share.user.id
             }})
         });
@@ -232,8 +235,8 @@ function PaymentEditor(props) {
                     />
                     <label className="btn btn-outline-primary" htmlFor={`${props.moduleID}_editor_shareType_percent`}>Relative</label>
                     <input
-                        checked={shareType == "FIXED"}
-                        onChange={() => changeShareType("FIXED")}
+                        checked={shareType == "DECIMAL"}
+                        onChange={() => changeShareType("DECIMAL")}
                         type="radio" className="btn-check"
                         name={`${props.moduleID}_editor_shareType`} id={`${props.moduleID}_editor_shareType_fixed`}
                     />
@@ -328,9 +331,9 @@ function ShareList(props) {
                     <span>%</span>
                 </div>
                 <div className="mx-2 d-flex align-items-center">
-                    <span hidden={props.shareType == "FIXED"}>{share.amountInput}</span>
+                    <span hidden={props.shareType == "DECIMAL"}>{share.amountInput}</span>
                     <NullableInput
-                        hidden={props.shareType != "FIXED"}
+                        hidden={props.shareType != "DECIMAL"}
                         className="flex-grow-1 me-2"
                         type="number"
                         value={share.amountInput}
@@ -464,10 +467,8 @@ function validateShares(shares, shareType, amount) {
         amount: acc.amount + share.amount
     }});
 
-    console.log(sums);
-
     // I think just checking the amount should be enough as a validation.
-    // if(shareType == "FIXED") {
+    // if(shareType == "DECIMAL") {
         return floatsEqual(sums.amount, amount);
     // } else if(shareType == "PERCENTAGE") {
     //     return sums.percent == 1;

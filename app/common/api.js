@@ -127,7 +127,7 @@ export function addExpenseSharingModule(eventID, title, description) {
 export function addPaymentToExpenseSharing(moduleID, paymentData) {
     return fetcher.request({
         method: "POST",
-        path: `modules/expense-sharing/${moduleID}`,
+        path: `modules/expense-sharing/${moduleID}/payments`,
         expect: "json",
         body: paymentData
     }).then(([response]) => response);
