@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
+import { Accordion } from 'react-bootstrap';
 import { InfoDialog } from '../Dialog/Dialog';
 import * as stateKeeper from '../../common/stateKeeper';
 import * as api from '../../common/api';
@@ -9,6 +10,14 @@ export default function ExpenseSharingModule(props) {
     const [moduleData, setModuleData] = React.useState(props.moduleData);
     const [editorOpen, setEditorOpen] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState(null);
+
+    React.useEffect(() => {
+        if(props.moduleData.id != moduleData.id) {
+            setModuleData(props.moduleData);
+            setEditorOpen(false);
+            setErrorMessage(null);
+        }
+    }, [props.moduleData]);
 
     function savePayment(paymentData) {
         api.addPaymentToExpenseSharing(moduleData.id, paymentData)
@@ -22,19 +31,29 @@ export default function ExpenseSharingModule(props) {
         });
     }
 
+    function deletePayment(paymentID) {
+        api.deletePaymentFromExpenseSharing(moduleData.id, paymentID)
+        .then((result) => {
+            let newPayments = moduleData.payments.filter(p => p.id != paymentID);
+            setModuleData(update(moduleData, {payments: {$set: newPayments}}));
+        })
+        .catch(err => {
+            console.warn(err);
+            setErrorMessage("Unfortunetely an error precented us from deleting the payment. Please try again.");
+        });
+    }
+
     return <>
         <p className="my-2">{moduleData.description}</p>
-        <table className="table table-borderless table-hover align-middle">
-            <tbody>
-                {moduleData.payments === null ? null : 
-                    moduleData.payments.map(payment => <Payment payment={payment} key={payment.id}/>)
-                }
-            </tbody>
-        </table>
+        <div className="container-fluid gx-1 my-2">
+            {moduleData.payments === null ? null : 
+                moduleData.payments.map(payment => <Payment payment={payment} key={payment.id} onDelete={deletePayment}/>)
+            }
+        </div>
         {!editorOpen ? null :
             <PaymentEditor moduleID={moduleData.id} members={props.event.users} onAddPayment={savePayment} onCancelEdit={() => setEditorOpen(false)}/>
         }
-        <div hidden={editorOpen} onClick={() => setEditorOpen(true)} className="rounded border-dashed border-gray w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item">
+        <div hidden={editorOpen} onClick={() => setEditorOpen(true)} className="rounded border-dashed border-gray mt-4 w-100 p-3 text-center text-primary" role="button" aria-label="Add new Item">
             <img src="/assets/icons/add.svg" alt="" className="pe-2" style={{verticalAlign: "sub"}}/>
             ADD NEW EXPENSE
         </div>
@@ -54,22 +73,33 @@ ExpenseSharingModule.propTypes = {
     moduleData: PropTypes.object
 }
 
-function Payment({payment}) {
+function Payment({payment, onDelete}) {
     let userInfo = React.useContext(stateKeeper.UserContext);
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
     let date = new Date(payment.createdAt);
 
     let payer = "You";
-    if(payment.payer.id != userInfo) {
+    let balance = 0;
+    if(payment.payer.id != userInfo.id) {
         payer = payment.payer.displayName;
+    } else {
+        balance += payment.amount;
     }
 
-    let effectiveShare = -1.23;
-    if(effectiveShare > 0) {
+    // NOTE: shares received from the server always contain the absolute amounts no matter what the share type is
+
+    // calculate your balance for this payment
+    balance -= payment.shares
+    .filter(s => s.shareHolder.id == userInfo.id)
+    .map(share => share.amount)
+    .reduce((sum, v) => sum+v, 0); // initial value for reduce is required for empty arrays
+
+    // let effectiveShare = -1.23;
+    if(balance > 0) {
         var icon = "↗️";
         var textStyle = "text-primary";
-    } else if(effectiveShare < 0) {
+    } else if(balance < 0) {
         var icon = "↘️";
         var textStyle = "text-secondary";
     } else {
@@ -77,23 +107,23 @@ function Payment({payment}) {
         var textStyle = "text-muted";
     }
 
-    return <tr aria-labelledby={payment.id + "_name"}>
-        <td className="text-center text-primary fw-slightly-bold">
+    return <div className="row hover-accent p-2 gx-0">
+        <div className="col-1 text-primary fw-slightly-bold">
             <div>{date.getDate()}</div>
             <div>{months[date.getMonth()]}</div>
-        </td>
-        <td>
+        </div>
+        <div className="col">
             <div className="fw-slightly-bold" id={payment.id + "_name"}>{payment.title}</div>
-            <div>{payer} paid {payment.amount} €</div>
-        </td>
-        <td>
-            <div className="fw-slightly-bold"><img src="/assets/icons/trash.png"/></div>
-        </td>
-        <td className="text-end">
+            <div>{payer} paid {niceFloat(payment.amount)} € for {payment.shares.length} {payment.shares.length == 1 ? "Person" : "People"}</div>
+        </div>
+        <div className="col-1 d-flex align-items-center justify-content-end">
+            <img src="/assets/icons/trash.png" onClick={() => onDelete(payment.id)} hidden={payment.payer.id != userInfo.id} role="button" aria-label="Delete this payment"/>
+        </div>
+        <div className="col-1 text-end">
             <div>{icon}</div>
-            <div className={`fw-slightly-bold ${textStyle}`}>{effectiveShare} €</div>
-        </td>
-    </tr>
+            <div className={`fw-slightly-bold ${textStyle}`}>{niceFloat(balance)} €</div>
+        </div>
+    </div>
 }
 
 // An editor for creating new shares or editing existing ones.
@@ -174,7 +204,7 @@ function PaymentEditor(props) {
             userId: payer.id,
             shareType: shareType,
             shares: shares.map(share => {return {
-                amount: parseFloat(amountFunc(share)),
+                amount: parseFloat(amountFunc(share)), // percentages will be between [0, 100]
                 userId: share.user.id
             }})
         });

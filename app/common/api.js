@@ -132,3 +132,11 @@ export function addPaymentToExpenseSharing(moduleID, paymentData) {
         body: paymentData
     }).then(([response]) => response);
 }
+
+export function deletePaymentFromExpenseSharing(moduleID, paymentID) {
+    return fetcher.request({
+        method: "DELETE",
+        path: `modules/expense-sharing/${moduleID}/payments/${paymentID}`,
+        expect: "empty"
+    })
+}
