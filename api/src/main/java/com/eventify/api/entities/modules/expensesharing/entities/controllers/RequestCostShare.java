@@ -23,5 +23,5 @@ public class RequestCostShare implements Serializable {
     @NotNull
     @PositiveOrZero
     @Max(100000)
-    private Double amount;
+    private double amount;
 }

@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Random;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
@@ -14,6 +15,17 @@ import java.util.stream.IntStream;
 public class DistributionUtil {
     private static final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
     protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##", symbols);
+
+    private double[] shuffleArray(double[] arr) {
+        Random random = new Random();
+        IntStream.range(0, arr.length).forEach(idx -> {
+            int randomIdx = random.nextInt(arr.length);
+            double tempValue = arr[randomIdx];
+            arr[randomIdx] = arr[idx];
+            arr[idx] = tempValue;
+        });
+        return arr;
+    }
 
     /**
      * Creator: Thank you (https://stackoverflow.com/users/633183/thank-you)
@@ -34,9 +46,9 @@ public class DistributionUtil {
      * Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
      * Changes to Original: Translation from JavaScript (Source) to Java (Method below).
      */
-    private double[] distributeEqually(int precision, int parts, double amount) {
+    private double[] distributeEqually(int precision, int parts, int amount) {
         double e = Math.pow(10, precision);
-        double[] quotRem = quotrem(parts, amount * e);
+        double[] quotRem = quotrem(parts, (amount / 100.0) * e);
         double largestValue = quotRem[0];
         int rest = (int) quotRem[1];
 
@@ -46,45 +58,46 @@ public class DistributionUtil {
         double[] restValues = new double[parts - rest];
         Arrays.fill(restValues, largestValue / e);
 
-        return DoubleStream.concat(Arrays.stream(largestValues), Arrays.stream(restValues)).toArray();
+        double[] concatenatedValues = DoubleStream.concat(Arrays.stream(largestValues), Arrays.stream(restValues)).toArray();
+        return shuffleArray(concatenatedValues);
     }
 
-    private double[] distributeByPercentage(double[] shares, double amount) {
-        DECIMAL_FORMAT.setRoundingMode(RoundingMode.FLOOR);
-
-        double[] decimalShares = Arrays.stream(shares)
-                .map(value -> Double.parseDouble(DECIMAL_FORMAT.format(value)))
-                .toArray();
-        double rest = amount - Arrays.stream(decimalShares)
-                .reduce(0.0, Double::sum);
-
+    private double[] distributeByPercentages(int[] percentages, int amount) {
         DECIMAL_FORMAT.setRoundingMode(RoundingMode.HALF_UP);
 
-        int remainingRounded = Double.valueOf(
-                Double.parseDouble(DECIMAL_FORMAT.format(rest)) * 100
-        ).intValue();
+        int[] integerShares = Arrays.stream(percentages)
+                .mapToDouble(percentage -> amount * (percentage / 100.0)) // % -> double
+                .map(percentageNum -> Double.parseDouble(DECIMAL_FORMAT.format(percentageNum))) // double -> decimal
+                .mapToInt(decimal -> (int) Math.floor(decimal)) // decimal -> int
+                .toArray();
+        int shareLength = integerShares.length;
+        int rest = amount - Arrays.stream(integerShares).reduce(0, Integer::sum);
 
-        double[] adjustedDecimals;
-        if (remainingRounded >= decimalShares.length) {
-            double[] remainingEquallyDistributed = distributeCurrencyEqually(decimalShares.length, rest);
-            adjustedDecimals = IntStream.range(0, decimalShares.length)
-                    .mapToDouble(idx -> decimalShares[idx] + remainingEquallyDistributed[idx])
-                    .toArray();
-        } else {
-            adjustedDecimals = IntStream.range(0, decimalShares.length)
-                    .mapToDouble(idx -> idx >= remainingRounded ? decimalShares[idx] : decimalShares[idx] + 0.01)
-                    .toArray();
+        if (rest == 1) {
+            int smallestShareIdx = IntStream.range(0, shareLength)
+                    .reduce((curr, next) -> integerShares[curr] <= integerShares[next] ? curr : next)
+                    .getAsInt();
+            integerShares[smallestShareIdx] += 1;
+        } else if (rest > 1) {
+            IntStream.range(0, rest).forEach(idx -> {
+                // start adding +1 from the back of the array
+                int wrapIdx = (shareLength - (idx % shareLength)) - 1;
+                integerShares[wrapIdx] += 1;
+            });
+
+            if (rest >= shareLength) {
+                throw new RuntimeException("Percentage calculation seems defective.");
+            }
         }
 
-        // TODO: some values still create broken shares, e.g. 77.11 with 55% and 45% shares -> 42.419999999999995
-        return adjustedDecimals;
+        return Arrays.stream(integerShares).mapToDouble(value -> value / 100.0).toArray();
     }
 
-    public double[] distributeCurrencyEqually(int parts, double amount) {
+    public double[] distributeCurrencyEqually(int parts, int amount) {
         return distributeEqually(2, parts, amount);
     }
 
-    public double[] distributeCurrencyByPercentage(double[] shares, double amount) {
-        return distributeByPercentage(shares, amount);
+    public double[] distributeCurrencyByPercentage(int[] percentages, int amount) {
+        return distributeByPercentages(percentages, amount);
     }
 }
