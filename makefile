@@ -20,7 +20,7 @@ app-watch:
 	cd ./app && npm run watch-server
 
 app-run:
-	cd ./app && npm run build-dev && npm run watch-server
+	cd ./app && npm install && npm run build-dev && npm run watch-server
 
 app-reset:
 	cd ./app && npm run clean
