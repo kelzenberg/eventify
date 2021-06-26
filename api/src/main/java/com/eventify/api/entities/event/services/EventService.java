@@ -98,7 +98,7 @@ public class EventService {
             user = userService.getByEmail(email);
         } catch (EntityNotFoundException e) {
             System.out.println("[DEBUG] User to join, with email " + email + ", was not found. Sending invite email...");
-            mailService.sendInvite(email, event.getTitle());
+            mailService.sendInviteMail(email, event.getTitle());
             return null;
         }
 

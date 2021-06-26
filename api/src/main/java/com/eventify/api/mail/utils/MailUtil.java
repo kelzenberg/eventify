@@ -1,26 +1,16 @@
 package com.eventify.api.mail.utils;
 
+import com.eventify.api.mail.templates.MailTemplateType;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 @Component
 public class MailUtil {
-
-    private static final String senderEmail = "noreply@eventify.com";
-    private static final String htmlTemplate = "<html><body><h1>Eventify</h1><p>%s</p></body></html>";
-
-    public SimpleMailMessage getMessageTemplate(MailTemplate templateKey) {
+    public SimpleMailMessage getMessageTemplate(MailTemplateType templateKey) {
+        String htmlTemplate = "<html><body><h1>Eventify</h1><p>%s</p></body></html>";
         SimpleMailMessage message = new SimpleMailMessage();
 
         switch (templateKey) {
-            case REGISTER:
-                message.setSubject("Welcome to Eventify");
-                message.setText(String.format(htmlTemplate, "You (%s) registered on Eventify."));
-                break;
             case INVITE:
                 message.setSubject("You were invited to Eventify");
                 message.setText(String.format(htmlTemplate,
@@ -34,11 +24,5 @@ public class MailUtil {
         }
 
         return message;
-    }
-
-    public MimeMessageHelper getMessageHelper(MimeMessage message) throws MessagingException {
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom(senderEmail);
-        return helper;
     }
 }
