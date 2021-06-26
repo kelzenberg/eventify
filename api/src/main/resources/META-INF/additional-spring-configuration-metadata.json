@@ -1,6 +1,21 @@
 {
   "properties": [
     {
+      "name": "public.name",
+      "type": "java.lang.String",
+      "description": "Public name of the Project"
+    },
+    {
+      "name": "public.port",
+      "type": "java.lang.String",
+      "description": "Public port of the Project"
+    },
+    {
+      "name": "public.url",
+      "type": "java.lang.String",
+      "description": "Public URL/Domain of the Project"
+    },
+    {
       "name": "jwt.signingKey",
       "type": "java.lang.String",
       "description": "Secret key to sign JWTs."
