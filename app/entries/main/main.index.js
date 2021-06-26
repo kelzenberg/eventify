@@ -14,13 +14,25 @@ if(!stateKeeper.isAuthenticated()) {
     window.location = "/";
 }
 
+let lastAuthCheck = Date.now();
+window.onfocus = () => {
+    // only check every minute at max
+    if(Date.now() - lastAuthCheck < 60000) return;
+    lastAuthCheck = Date.now();
+    api.getUserInfo().catch(err => {
+        console.warn(err);
+        stateKeeper.clearLogin();
+        window.location = "/";
+    })
+}
+
 ReactDOM.render(<MainPage/>, document.getElementById('root'));
 
 function MainPage() {
     const [userInfo, setUserInfo] = React.useState(stateKeeper.getUserInfo());
 
     React.useEffect(() => {
-        let newUserInfo = api.getUserInfo()
+        api.getUserInfo()
         .then(newUserInfo => {
             let didUpdate = stateKeeper.maybeUpdateUserInfo(newUserInfo);
             if(didUpdate) {

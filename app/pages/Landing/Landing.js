@@ -34,8 +34,14 @@ function UserLogin() {
     const [password, setPassword] = React.useState("");
 
     const tryEnterUserSpace = () => {
-        if(stateKeeper.isAuthenticated()) {
-            window.location = "/you";
+        if(stateKeeper.isAuthenticated()) { // check if there are still credentials in the browser
+            api.getUserInfo() // and make sure that they are still valid
+            .then(() => {
+                window.location = "/you";
+            })
+            .catch(() => {
+                setShowLogin(true);
+            })
         } else {
             setShowLogin(true);
         }
