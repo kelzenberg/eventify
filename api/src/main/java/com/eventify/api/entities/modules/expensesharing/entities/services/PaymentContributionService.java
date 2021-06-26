@@ -66,6 +66,9 @@ public class PaymentContributionService {
         double trimmedAmount = paymentsUtil.trimDoubleToDecimal(amount);
         List<RequestCostShare> trimmedShares = paymentsUtil.trimSharesToDecimal(shares);
 
+        // always validate shares first before creating the payment
+        List<RequestCostShare> validatedShares = paymentsUtil.validateShares(shareType, trimmedShares, trimmedAmount);
+
         PaymentContribution.PaymentContributionBuilder newPayment = PaymentContribution.builder()
                 .title(title)
                 .amount(trimmedAmount)
@@ -74,7 +77,6 @@ public class PaymentContributionService {
                 .shareType(shareType);
         PaymentContribution createdPayment = paymentContributionRepository.save(newPayment.build());
 
-        List<RequestCostShare> validatedShares = paymentsUtil.validateShares(shareType, trimmedShares, trimmedAmount);
         List<CostShare> createdCostShares = validatedShares.stream()
                 .map(costShare -> {
                     User shareHolder = userService.getById(costShare.getUserId());
