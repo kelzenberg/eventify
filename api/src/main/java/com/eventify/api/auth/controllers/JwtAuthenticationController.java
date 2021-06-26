@@ -6,6 +6,7 @@ import com.eventify.api.constants.PublicPaths;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserDetailsWrapperService;
 import com.eventify.api.entities.user.services.UserService;
+import com.eventify.api.mail.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,6 +36,9 @@ public class JwtAuthenticationController {
     private UserDetailsWrapperService userDetailsWrapperService;
 
     @Autowired
+    private MailService mailService;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     private String authenticate(String email, String password) {
@@ -43,12 +48,14 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping(PublicPaths.REGISTER)
-    public ResponseEntity<?> registerAuthToken(@Valid @RequestBody JwtRegisterRequest body) throws URISyntaxException {
+    public ResponseEntity<?> registerAuthToken(@Valid @RequestBody JwtRegisterRequest body) throws URISyntaxException, MessagingException {
         String email = body.getEmail().trim();
         String password = body.getPassword().trim();
         String displayName = body.getDisplayName().trim();
+
         User newUser = userService.create(email, password, displayName);
         String token = authenticate(email, password);
+        mailService.sendRegisterMail(newUser.getEmail(), newUser.getCreatedAt(), newUser.getVerificationHash());
 
         return ResponseEntity
                 .created(new URI(AdminPaths.USERS + newUser.getId()))
@@ -61,6 +68,8 @@ public class JwtAuthenticationController {
         String email = body.getEmail().trim();
         String password = body.getPassword().trim();
         String token = authenticate(email, password);
+
+        // TODO: send verification mail again if not yet verified
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, token)
