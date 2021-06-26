@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const Dotenv = require('dotenv-webpack');
 
 let config = {
     target: "web",
@@ -63,7 +64,10 @@ module.exports = (env, argv) => {
         config.plugins.push(new webpack.HotModuleReplacementPlugin());
     } else {
         // production mode
-        
+        config.plugins.push(new Dotenv({
+            path: "../local.env",
+            safe: true, // also load .env.example to verify all keys are set
+        }));
     }
 
     return config;
