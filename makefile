@@ -13,12 +13,6 @@ db-run:
 db-reset:
 	docker-compose --env-file local.env up --force-recreate --remove-orphans --build postgres
 
-mail:
-	docker-compose --env-file local.env up mailhog
-
-mail-reset:
-	docker-compose --env-file local.env up --force-recreate --remove-orphans --build mailhog
-
 app-install:
 	cd ./app && npm install && npm run build-dev
 
