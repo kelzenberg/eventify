@@ -22,7 +22,11 @@ export default function ExpenseSharingModule(props) {
     function savePayment(paymentData) {
         api.addPaymentToExpenseSharing(moduleData.id, paymentData)
         .then((result) => {
-            setModuleData(update(moduleData, {payments: {$push: [result]}}));
+            if(moduleData.payment === null) {
+                setModuleData(update(moduleData, {payments: {$set: [result]}}));
+            } else {
+                setModuleData(update(moduleData, {payments: {$push: [result]}}));
+            }
             setEditorOpen(false);
         })
         .catch(err => {
@@ -181,8 +185,12 @@ function PaymentEditor(props) {
     */
 
     function changeAmount(e) {
-        setAmount(e.target.value);
-        setShares(calculateShares(shares, e.target.value));
+        let value = e.target.value;
+        if(value == "") value = "0";
+        if(value.length > 1 && value[0] == "0" && parseFloat(value) > 1) value = value.slice(1);
+
+        setAmount(value);
+        setShares(calculateShares(shares, value));
     }
 
     function changePayer(e) {
