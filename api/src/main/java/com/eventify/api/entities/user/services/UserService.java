@@ -52,7 +52,7 @@ public class UserService {
     }
 
     public User create(String email, String password, String displayName) throws EntityAlreadyExistsException {
-        if (getByEmail(email) != null) {
+        if (repository.findByEmail(email).isPresent()) {
             throw new EntityAlreadyExistsException("User with email '" + email + "' already exists");
         }
 
