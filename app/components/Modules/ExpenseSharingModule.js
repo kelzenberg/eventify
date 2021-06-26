@@ -22,7 +22,7 @@ export default function ExpenseSharingModule(props) {
     function savePayment(paymentData) {
         api.addPaymentToExpenseSharing(moduleData.id, paymentData)
         .then((result) => {
-            if(moduleData.payment === null) {
+            if(moduleData.payments === null) {
                 setModuleData(update(moduleData, {payments: {$set: [result]}}));
             } else {
                 setModuleData(update(moduleData, {payments: {$push: [result]}}));
