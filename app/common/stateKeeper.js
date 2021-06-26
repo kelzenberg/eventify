@@ -34,7 +34,7 @@ export function getUserInfo() {
         if (data == null) throw new Error("data is null");
         return data;
     } catch(e) {
-        console.warn("unable to get user info:", err);
+        console.warn("unable to get user info:", e);
         return {
             "id": "",
             "createdAt": "2021-06-02T00:06:45.528+00:00",

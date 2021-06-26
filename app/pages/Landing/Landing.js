@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from 'react-bootstrap';
+import { LoginDialog } from '../../components/Dialog/Login';
 import * as stateKeeper from '../../common/stateKeeper';
 import * as api from '../../common/api';
 import "./Landing.scss";
@@ -29,9 +29,6 @@ export default function LandingPage() {
 
 function UserLogin() {
     const [showLogin, setShowLogin] = React.useState(false);
-    const [wrongLogin, setWrongLogin] = React.useState(false);
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
 
     const tryEnterUserSpace = () => {
         if(stateKeeper.isAuthenticated()) { // check if there are still credentials in the browser
@@ -47,38 +44,9 @@ function UserLogin() {
         }
     };
 
-    const login = () => {
-        api.authenticate(email, password)
-        .then(() => {
-            window.location = "/you";
-        })
-        .catch(err => {
-            console.warn(err);
-            setWrongLogin(true);
-        })
-    };
-
     return <>
         <div className="user" onClick={tryEnterUserSpace}/>
-        <Modal show={showLogin} onHide={() => setShowLogin(false)}>
-            <Modal.Header closeButton>
-                <Modal.Title>Login</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <div className="mb-3">
-                    <label htmlFor="loginEmail" className="form-label">Email address</label>
-                    <input type="email" className="form-control" id="loginEmail" value={email} onChange={e => setEmail(e.target.value)}/>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="loginPassword" className="form-label">Password</label>
-                    <input type="password" className="form-control" id="loginPassword" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={event => event.keyCode == 13 ? login() : {}}/>
-                </div>
-                <p className="text-error" hidden={!wrongLogin}>The entered credentials were wrong.</p>
-            </Modal.Body>
-            <Modal.Footer>
-                <button type="button" className="btn btn-primary" onClick={login}>Login</button>
-            </Modal.Footer>
-        </Modal>
+        <LoginDialog show={showLogin}/>
     </>
 }
 

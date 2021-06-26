@@ -51,6 +51,12 @@ export function logout() {
     console.warn("TODO: api logout");
 }
 
+export function completeRegistration(token) {
+    return Promise.reject();
+    return fetcher.request({method: "POST", path: "verify", expect: "empty", body: {hash: token}})
+    .then(([responseData, rawResponse]) => response);
+}
+
 // =========================================== EVENTS =========================================== //
 
 export function getAllUserEvents() {

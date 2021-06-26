@@ -1,6 +1,6 @@
-import { Modal } from "react-bootstrap";
-import PropTypes from 'prop-types';
 import React from "react";
+import PropTypes from 'prop-types';
+import { Modal } from "react-bootstrap";
 
 export function Dialog(props) {
     return <Modal show={props.show} onHide={props.onHide}>
