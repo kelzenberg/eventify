@@ -7,7 +7,7 @@
     },
     {
       "name": "public.port",
-      "type": "java.lang.String",
+      "type": "java.lang.Integer",
       "description": "Public port of the Project"
     },
     {
