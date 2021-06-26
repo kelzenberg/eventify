@@ -42,11 +42,11 @@ public class User extends BaseEntity {
     @Setter(AccessLevel.PRIVATE)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    AuthorizationRole authRole = AuthorizationRole.USER;
+    private AuthorizationRole authRole = AuthorizationRole.USER;
 
     @JsonView(Views.PublicExtended.class)
     @Transient
-    EventRole eventRole;
+    private EventRole eventRole;
 
     @Builder
     public User(@NonNull String email, @NonNull String password, @NonNull String displayName) {
