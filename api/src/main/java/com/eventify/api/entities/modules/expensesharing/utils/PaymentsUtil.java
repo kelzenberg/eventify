@@ -1,7 +1,9 @@
 package com.eventify.api.entities.modules.expensesharing.utils;
 
 import com.eventify.api.entities.modules.expensesharing.constants.ShareType;
+import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
 import com.eventify.api.entities.modules.expensesharing.entities.controllers.RequestCostShare;
+import com.eventify.api.entities.user.data.User;
 import com.eventify.api.exceptions.EntityIsInvalidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -71,6 +73,30 @@ public class PaymentsUtil {
         }
 
         return validatedShares;
+    }
+
+    public void validateUserIds(ExpenseSharingModule expenseModule, User payer, List<RequestCostShare> shares) throws EntityIsInvalidException {
+        List<UUID> paymentUserIds = shares.stream()
+                .map(RequestCostShare::getUserId)
+                .collect(Collectors.toList());
+        paymentUserIds.add(payer.getId());
+
+        List<UUID> eventUserIds = expenseModule.getEvent().getUsers().stream()
+                .map(User::getId)
+                .collect(Collectors.toList());
+
+        List<UUID> unknownUserIds = paymentUserIds.stream()
+                .filter(paymentUserId -> !eventUserIds.contains(paymentUserId))
+                .collect(Collectors.toList());
+        int unknownAmount = unknownUserIds.size();
+
+        if (unknownAmount > 0) {
+            throw new EntityIsInvalidException(String.format("%s %s not in this Event: %s",
+                    unknownAmount,
+                    unknownAmount > 1 ? "users are" : "user is",
+                    unknownUserIds
+            ));
+        }
     }
 
     public double trimDoubleToDecimal(double doubleValue) {

@@ -66,7 +66,8 @@ public class PaymentContributionService {
         double trimmedAmount = paymentsUtil.trimDoubleToDecimal(amount);
         List<RequestCostShare> trimmedShares = paymentsUtil.trimSharesToDecimal(shares);
 
-        // always validate shares first before creating the payment
+        // always validate userIds and shares first before creating the payment
+        paymentsUtil.validateUserIds(expenseModule, payer, trimmedShares);
         List<RequestCostShare> validatedShares = paymentsUtil.validateShares(shareType, trimmedShares, trimmedAmount);
 
         PaymentContribution.PaymentContributionBuilder newPayment = PaymentContribution.builder()
