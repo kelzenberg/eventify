@@ -43,14 +43,14 @@ public class BaseMailTemplate {
         BaseMailTemplate.PUBLIC_URL_STATIC = name;
     }
 
-    static final String SENDER_MAIL_ADDRESS = "noreply@eventify.com";
-    static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy, HH:mm");
+    public static final String SENDER_MAIL_ADDRESS = "noreply@eventify.com";
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy, HH:mm");
 
-    static String getBaseTemplate() {
+    public static String getBaseTemplate() {
         return "<html><body><h1>" + PUBLIC_NAME_STATIC + "</h1><p>%s</p></body></html>";
     }
 
-    static String getBaseURL() {
+    public static String getBaseURL() {
         return PUBLIC_URL_STATIC + ":" + PUBLIC_PORT_STATIC;
     }
 }
