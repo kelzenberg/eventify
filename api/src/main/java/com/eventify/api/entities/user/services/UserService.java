@@ -33,13 +33,13 @@ public class UserService {
         return repository.getOne(id);
     }
 
-    public User getById(UUID id) {
+    public User getById(UUID id) throws TokenIsInvalidException {
         return repository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with ID '" + id + "' cannot be found."));
     }
 
-    public User getByEmail(String email) {
+    public User getByEmail(String email) throws TokenIsInvalidException {
         return repository
                 .findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User with email '" + email + "' cannot be found."));
