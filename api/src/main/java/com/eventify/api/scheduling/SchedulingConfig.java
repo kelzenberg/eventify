@@ -14,13 +14,13 @@ public class SchedulingConfig {
     UserService userService;
 
     // "Every day at 10:00 am"
-    @Scheduled(cron = "0 10 * * *", zone = "Europe/Berlin")
+    @Scheduled(cron = "0 0 10 * * *", zone = "Europe/Berlin")
     public void remindUnverifiedUsers() {
         //
     }
 
     // "Every day at 00:01 am and 12:01 am"
-    @Scheduled(cron = "1 0,12 * * *", zone = "Europe/Berlin")
+    @Scheduled(cron = "0 1 0,12 * * *", zone = "Europe/Berlin")
     public void deleteUnverifiedUsers() {
         //
     }
