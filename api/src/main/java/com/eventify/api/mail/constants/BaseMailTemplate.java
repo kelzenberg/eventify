@@ -1,4 +1,4 @@
-package com.eventify.api.mail.templates;
+package com.eventify.api.mail.constants;
 
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

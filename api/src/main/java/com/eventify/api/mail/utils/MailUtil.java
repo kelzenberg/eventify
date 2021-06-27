@@ -1,6 +1,6 @@
 package com.eventify.api.mail.utils;
 
-import com.eventify.api.mail.templates.MailTemplateType;
+import com.eventify.api.mail.constants.MailTemplateType;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 

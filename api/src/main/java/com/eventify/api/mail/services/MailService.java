@@ -1,6 +1,6 @@
 package com.eventify.api.mail.services;
 
-import com.eventify.api.mail.templates.MailTemplateType;
+import com.eventify.api.mail.constants.MailTemplateType;
 import com.eventify.api.mail.templates.RegisterTemplate;
 import com.eventify.api.mail.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;

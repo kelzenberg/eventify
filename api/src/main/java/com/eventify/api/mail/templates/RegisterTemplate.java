@@ -1,5 +1,7 @@
 package com.eventify.api.mail.templates;
 
+import com.eventify.api.mail.constants.BaseMailTemplate;
+import com.eventify.api.mail.constants.MailTemplateType;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.MessagingException;
