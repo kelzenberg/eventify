@@ -70,6 +70,11 @@ public class User extends BaseEntity {
         return VerificationUtil.UUIDtoHash(this.verificationUUID);
     }
 
+    @JsonIgnore
+    @ToString.Exclude
+    @Column(nullable = false)
+    private boolean enabled = true;
+
     @Builder
     public User(@NonNull String email, @NonNull String password, @NonNull String displayName) {
         super();
