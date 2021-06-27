@@ -67,7 +67,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 // public endpoints
-                .antMatchers(PublicPaths.REGISTER).permitAll()
+                .antMatchers(PublicPaths.REGISTER + "/**").permitAll()
                 .antMatchers(PublicPaths.LOGIN).permitAll()
                 // endpoints with authenticated Admin role
                 .antMatchers(AdminPaths.USERS).hasRole("ADMIN")
