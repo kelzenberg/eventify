@@ -3,13 +3,16 @@ package com.eventify.api.entities.user.services;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.data.UserRepository;
+import com.eventify.api.entities.user.utils.VerificationUtil;
 import com.eventify.api.exceptions.EntityAlreadyExistsException;
 import com.eventify.api.exceptions.EntityNotFoundException;
 import com.eventify.api.exceptions.TokenIsInvalidException;
+import com.eventify.api.exceptions.VerificationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,6 +65,21 @@ public class UserService {
                 .displayName(displayName);
 
         return repository.save(newEntity.build());
+    }
+
+    public Date verify(String verificationHash) throws EntityNotFoundException, VerificationFailedException {
+        User user = repository
+                .findByVerificationUUID(VerificationUtil.hashToUUID(verificationHash))
+                .orElseThrow(() -> new EntityNotFoundException("Verification hash does not belong to any user."));
+
+        if (user.getVerifiedAt() != null) {
+            throw new VerificationFailedException("User is already verified.");
+        }
+
+        user.setVerifiedAt(new Date());
+        repository.save(user);
+
+        return user.getVerifiedAt();
     }
 
     public void deleteById(UUID id) {

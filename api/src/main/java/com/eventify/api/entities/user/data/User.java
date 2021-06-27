@@ -4,13 +4,12 @@ import com.eventify.api.constants.AuthorizationRole;
 import com.eventify.api.constants.EventRole;
 import com.eventify.api.entities.BaseEntity;
 import com.eventify.api.entities.Views;
+import com.eventify.api.entities.user.utils.VerificationUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
-import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.persistence.*;
-import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.UUID;
 
@@ -54,23 +53,21 @@ public class User extends BaseEntity {
 
     @JsonIgnore
     @ToString.Exclude
-    @Setter(AccessLevel.PRIVATE)
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date verifiedAt;
 
     @JsonIgnore
     @ToString.Exclude
+    @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PRIVATE)
     @NonNull
-    @Column(updatable = false, nullable = false)
-    private UUID verificationHash = UUID.randomUUID();
+    @Column(name = "verification_uuid", updatable = false, nullable = false)
+    private UUID verificationUUID = UUID.randomUUID();
 
-    public String getVerificationHash() {
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[16]);
-        buffer.putLong(this.verificationHash.getMostSignificantBits());
-        buffer.putLong(this.verificationHash.getLeastSignificantBits());
-        return Base64.encodeBase64URLSafeString(buffer.array());
+    // convenience Getter for verificationUUID
+    public String retrieveVerificationHash() {
+        return VerificationUtil.UUIDtoHash(this.verificationUUID);
     }
 
     @Builder
@@ -79,11 +76,5 @@ public class User extends BaseEntity {
         this.email = email;
         this.password = password;
         this.displayName = displayName;
-    }
-
-    public boolean verificationHashIsValid(String verificationHash) {
-        byte[] bytes = Base64.decodeBase64(verificationHash);
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        return this.verificationHash.equals(new UUID(buffer.getLong(), buffer.getLong()));
     }
 }
