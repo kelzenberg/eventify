@@ -66,7 +66,7 @@ function request(options) {
                 return response.json().then(data => {
                     return [data, response];
                 })
-            } else if(contentType.includes("text/html")) {
+            } else if(contentType.includes("text/plain")) {
                 if(options.expect != undefined && options.expect != "text") {
                     console.warn(`fetcher: got response with content type '${contentType}', but expected '${options.expect}'.`);
                     return Promise.reject(new FetchError(`Invalid content-type '${contentType}', but expected '${options.expect}'`));

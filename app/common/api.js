@@ -41,7 +41,7 @@ export function register(email, password, displayName) {
         "displayName": displayName
     };
     return fetcher.request({method: "POST", path: "register", expect: "json", body: body})
-    .then(([responseData, rawResponse]) => {
+    .then(([responseData]) => {
         stateKeeper.setCredentials(responseData.token);
         return Promise.resolve();
     })
@@ -52,9 +52,8 @@ export function logout() {
 }
 
 export function completeRegistration(token) {
-    return Promise.reject();
     return fetcher.request({method: "POST", path: "verify", expect: "empty", body: {hash: token}})
-    .then(([responseData, rawResponse]) => response);
+    .then(([response]) => response);
 }
 
 // =========================================== EVENTS =========================================== //
@@ -85,7 +84,6 @@ export function saveEvent(event) {
 }
 
 export function leaveEvent(eventID) {
-    let userInfo = stateKeeper.getUserInfo();
     return fetcher.request({
         method: "POST", 
         path: `events/${eventID}/leave`, 

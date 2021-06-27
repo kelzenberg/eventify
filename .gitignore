@@ -2,6 +2,7 @@
 # app
 app/dist
 app/node_modules
+app/coverage
 
 # Editors
 .vscode
