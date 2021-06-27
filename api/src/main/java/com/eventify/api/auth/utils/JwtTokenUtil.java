@@ -1,6 +1,6 @@
 package com.eventify.api.auth.utils;
 
-import com.eventify.api.exceptions.TokenIsInvalidException;
+import com.eventify.api.handlers.exceptions.TokenIsInvalidException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

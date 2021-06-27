@@ -2,7 +2,7 @@ package com.eventify.api.auth.filters;
 
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.entities.user.services.UserDetailsWrapperService;
-import com.eventify.api.exceptions.TokenIsInvalidException;
+import com.eventify.api.handlers.exceptions.TokenIsInvalidException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.NonNull;

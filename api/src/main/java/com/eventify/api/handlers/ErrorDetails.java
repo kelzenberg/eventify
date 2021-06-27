@@ -1,4 +1,4 @@
-package com.eventify.api.exceptions;
+package com.eventify.api.handlers;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

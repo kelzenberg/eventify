@@ -4,7 +4,7 @@ import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.services.EventService;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingRepository;
-import com.eventify.api.exceptions.EntityNotFoundException;
+import com.eventify.api.handlers.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

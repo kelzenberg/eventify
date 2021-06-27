@@ -11,8 +11,8 @@ import com.eventify.api.entities.modules.expensesharing.services.ExpenseSharingS
 import com.eventify.api.entities.modules.expensesharing.utils.PaymentsUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserService;
-import com.eventify.api.exceptions.EntityNotFoundException;
-import com.eventify.api.exceptions.PermissionsAreInsufficientException;
+import com.eventify.api.handlers.exceptions.EntityNotFoundException;
+import com.eventify.api.handlers.exceptions.PermissionsAreInsufficientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

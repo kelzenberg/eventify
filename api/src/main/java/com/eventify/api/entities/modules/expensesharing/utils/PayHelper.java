@@ -2,7 +2,7 @@ package com.eventify.api.entities.modules.expensesharing.utils;
 
 import com.eventify.api.entities.modules.expensesharing.constants.ShareType;
 import com.eventify.api.entities.modules.expensesharing.entities.controllers.RequestCostShare;
-import com.eventify.api.exceptions.EntityIsInvalidException;
+import com.eventify.api.handlers.exceptions.EntityIsInvalidException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

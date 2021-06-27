@@ -2,7 +2,7 @@ package com.eventify.api.entities.user.init;
 
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserService;
-import com.eventify.api.exceptions.EntityAlreadyExistsException;
+import com.eventify.api.handlers.exceptions.EntityAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

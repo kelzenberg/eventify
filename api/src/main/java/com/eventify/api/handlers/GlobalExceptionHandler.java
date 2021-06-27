@@ -1,6 +1,6 @@
-package com.eventify.api;
+package com.eventify.api.handlers;
 
-import com.eventify.api.exceptions.*;
+import com.eventify.api.handlers.exceptions.*;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

@@ -8,7 +8,7 @@ import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.data.UserEventRoleId;
 import com.eventify.api.entities.usereventrole.data.UserEventRoleRepository;
-import com.eventify.api.exceptions.EntityNotFoundException;
+import com.eventify.api.handlers.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
