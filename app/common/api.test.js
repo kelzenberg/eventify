@@ -75,9 +75,9 @@ test("complete registration", () => {
     return api.completeRegistration("bla bla token").then(response => {
         expect(fetcher.request).toHaveBeenCalledWith({
             method: "POST",
-            path: "verify",
+            path: "register/verify",
             expect: "empty",
-            body: {hash: "bla bla token"}
+            body: {verificationHash: "bla bla token"}
         });
         expect(response).toBe("");
     });
