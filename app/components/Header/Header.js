@@ -19,7 +19,6 @@ export default function Header() {
 }
 
 function logout() {
-    api.logout();
     stateKeeper.clearLogin();
     window.location = "/";
 }

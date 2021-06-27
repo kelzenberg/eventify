@@ -47,10 +47,6 @@ export function register(email, password, displayName) {
     })
 }
 
-export function logout() {
-    console.warn("TODO: api logout");
-}
-
 export function completeRegistration(token) {
     return fetcher.request({method: "POST", path: "register/verify", expect: "empty", body: {verificationHash: token}})
     .then(([response]) => response);
