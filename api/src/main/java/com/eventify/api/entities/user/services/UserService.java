@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -92,6 +93,35 @@ public class UserService {
 
     public void deleteById(UUID id) {
         repository.deleteById(id);
+    }
+
+    public void remindAllExpiring() throws MessagingException {
+        List<User> enabledUnverifiedUsers = repository.findAllByEnabledIsTrueAndVerifiedAtIsNull();
+
+        if (enabledUnverifiedUsers.size() <= 0) {
+            return;
+        }
+
+        List<User> expiringUsers = enabledUnverifiedUsers.stream()
+                .filter(user -> !isExpired(user.getCreatedAt()))
+                .collect(Collectors.toList());
+
+        if (expiringUsers.size() <= 0) {
+            return;
+        }
+
+
+        List<HashMap<String, String>> mappedUsers = expiringUsers.stream()
+                .map(user -> {
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.put("toAddress", user.getEmail());
+                    hashMap.put("createdAt", user.getCreatedAt().toString());
+                    hashMap.put("verificationHash", user.retrieveVerificationHash());
+                    return hashMap;
+                })
+                .collect(Collectors.toList());
+
+        mailService.sendReminderMails(mappedUsers);
     }
 
     @Transactional

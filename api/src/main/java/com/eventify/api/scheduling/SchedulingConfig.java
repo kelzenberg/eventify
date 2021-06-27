@@ -24,12 +24,13 @@ public class SchedulingConfig {
     @Scheduled(cron = "0 0 10 * * *", zone = TIME_ZONE)
     public void remindUnverifiedUsers() {
         SecurityContextHolder.getContext()
-                .setAuthentication(new UsernamePasswordAuthenticationToken("SCHEDULER:REMIND_UNVERIFIED", null));
+                .setAuthentication(new UsernamePasswordAuthenticationToken("SCHEDULER:REMIND_EXPIRING", null));
 
         try {
-            System.out.printf("[DEBUG] Task Scheduler (REMIND_UNVERIFIED) executed at %s.%n", new Date());
+            System.out.printf("[DEBUG] Task Scheduler (REMIND_EXPIRING) executed at %s.%n", new Date());
+            userService.remindAllExpiring();
         } catch (Exception e) {
-            System.out.println("[DEBUG] Task Scheduler (REMIND_UNVERIFIED) failed: " + e.getMessage());
+            System.out.println("[DEBUG] Task Scheduler (REMIND_EXPIRING) failed: " + e.getMessage());
             e.printStackTrace();
         }
     }
