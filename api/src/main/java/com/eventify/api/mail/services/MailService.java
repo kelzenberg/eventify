@@ -1,6 +1,7 @@
 package com.eventify.api.mail.services;
 
 import com.eventify.api.mail.constants.MailTemplateType;
+import com.eventify.api.mail.templates.DeleteTemplate;
 import com.eventify.api.mail.templates.RegisterTemplate;
 import com.eventify.api.mail.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -54,5 +56,24 @@ public class MailService {
         MimeMessage message = sender.createMimeMessage();
         RegisterTemplate template = new RegisterTemplate(message, toAddress, createdAt, verificationHash);
         sender.send(template.getMessage());
+    }
+
+    public void sendDeleteMail(List<String> toAddresses) throws MessagingException {
+        int batchLimit = 50;
+        int amountOfBatches = (int) Math.ceil(toAddresses.size() / (double) batchLimit); // limit the sending to 50 mails at once
+
+        for (int batchIdx = 0; batchIdx < amountOfBatches; batchIdx++) {
+            int fromIndex = Math.min(batchIdx * batchLimit, toAddresses.size());
+            int toIndex = Math.min((batchIdx + 1) * batchLimit, toAddresses.size());
+
+            if (fromIndex == toIndex) {
+                break;
+            }
+
+            MimeMessage message = sender.createMimeMessage();
+            List<String> addressBatch = toAddresses.subList(fromIndex, toIndex);
+            DeleteTemplate template = new DeleteTemplate(message, addressBatch.toArray(String[]::new));
+            sender.send(template.getMessage());
+        }
     }
 }
