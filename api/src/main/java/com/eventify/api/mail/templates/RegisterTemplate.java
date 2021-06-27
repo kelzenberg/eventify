@@ -46,7 +46,7 @@ public class RegisterTemplate implements MailTemplate {
                                 (long) ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS * (60 - 1) * 60 * 1000) // = Hours to Milliseconds, minus 1 minute
                 ) +
                 ").<br>" +
-                "After this period your account will be <b>permanently deleted</b>.<br><br>" +
+                "Your account will be <b>permanently deleted</b> afterwards.<br><br>" +
                 "Welcome to " +
                 BaseMailTemplate.PUBLIC_NAME_STATIC +
                 "!";
