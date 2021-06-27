@@ -55,6 +55,7 @@ public class UserDBInitializer {
                 for (String[] user : users) {
                     try {
                         User newUser = userService.create(user[0], user[1], user[2]);
+                        userService.verify(newUser.retrieveVerificationHash());
                         System.out.println("[DEBUG] Created user: " + newUser.getDisplayName());
                     } catch (EntityAlreadyExistsException | DataIntegrityViolationException e) {
                         System.out.println("[DEBUG] User already exists: " + user[0]);
