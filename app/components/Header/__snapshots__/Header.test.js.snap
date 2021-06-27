@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot 1`] = `
+<div
+  className="container-fluid p-4"
+>
+  <div
+    className="d-flex"
+  >
+    <a
+      className="me-auto"
+      href="/you"
+    >
+      <img
+        aria-label="Eventify"
+        className="bi me-2"
+        height="40"
+        src="/assets/logo_text.svg"
+      />
+    </a>
+    <div
+      className="col-md-3 text-end"
+    >
+      <span
+        className="text-muted"
+      >
+        Logged in as 
+        Jane Doe
+      </span>
+      <button
+        className="btn btn-outline-darkGray ms-3"
+        onClick={[Function]}
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+</div>
+`;
