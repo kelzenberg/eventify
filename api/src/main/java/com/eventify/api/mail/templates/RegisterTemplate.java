@@ -43,7 +43,7 @@ public class RegisterTemplate implements MailTemplate {
                 " hours (until " +
                 BaseMailTemplate.DATE_FORMAT.format(new Date(
                         this.createdAt.getTime() +
-                                (long) ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS * (60 - 1) * 60 * 1000) // = 2 days minus 1 minute
+                                (long) ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS * (60 - 1) * 60 * 1000) // = Hours to Milliseconds, minus 1 minute
                 ) +
                 ").<br>" +
                 "After this period your account will be <b>permanently deleted</b>.<br><br>" +
