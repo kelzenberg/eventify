@@ -52,7 +52,7 @@ export function logout() {
 }
 
 export function completeRegistration(token) {
-    return fetcher.request({method: "POST", path: "verify", expect: "empty", body: {hash: token}})
+    return fetcher.request({method: "POST", path: "register/verify", expect: "empty", body: {verificationHash: token}})
     .then(([response]) => response);
 }
 
