@@ -1,5 +1,6 @@
 package com.eventify.api.mail.templates;
 
+import com.eventify.api.auth.ApplicationSecurityConfig;
 import com.eventify.api.mail.constants.BaseMailTemplate;
 import com.eventify.api.mail.constants.MailTemplateType;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -10,7 +11,7 @@ import java.util.Date;
 
 public class RegisterTemplate implements MailTemplate {
     private final MailTemplateType type = MailTemplateType.REGISTER;
-    private final String subject = "Welcome to Eventify";
+    private final String subject = "Welcome to " + BaseMailTemplate.PUBLIC_NAME_STATIC;
 
     private final MimeMessage message;
     private final String toAddress;
@@ -28,16 +29,27 @@ public class RegisterTemplate implements MailTemplate {
         String verifyURL = BaseMailTemplate.getBaseURL() + "/register?verify=" + this.verificationHash;
         String template = "Your new account " +
                 "<i>" + this.toAddress + "</i> " +
-                "on Eventify is almost ready.<br>" +
+                "on " +
+                BaseMailTemplate.PUBLIC_NAME_STATIC +
+                " is almost ready.<br>" +
                 "Please verify your account by clicking " +
-                "<a href=\"" + verifyURL + "\" alt=\"Verify your email address for Eventify\">this link</a> " +
+                "<a href=\"" + verifyURL + "\" alt=\"Verify your email address for " +
+                BaseMailTemplate.PUBLIC_NAME_STATIC +
+                "\">this link</a> " +
                 "or copying and opening the following URL into your Browser:<br><br>" +
                 "<i>" + verifyURL + "</i><br><br>" +
-                "The link is valid for 48 hours (until " +
-                BaseMailTemplate.DATE_FORMAT.format(new Date(this.createdAt.getTime() + 48 * (60 - 1) * 60 * 1000)) + // = 2 days minus 1 minute
+                "The link is valid for " +
+                ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS +
+                " hours (until " +
+                BaseMailTemplate.DATE_FORMAT.format(new Date(
+                        this.createdAt.getTime() +
+                                (long) ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS * (60 - 1) * 60 * 1000) // = 2 days minus 1 minute
+                ) +
                 ").<br>" +
                 "After this period your account will be <b>permanently deleted</b>.<br><br>" +
-                "Welcome to Eventify!";
+                "Welcome to " +
+                BaseMailTemplate.PUBLIC_NAME_STATIC +
+                "!";
 
         String baseTemplate = BaseMailTemplate.getBaseTemplate();
         return String.format(baseTemplate, template);

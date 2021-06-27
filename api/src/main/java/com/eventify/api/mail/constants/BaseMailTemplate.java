@@ -16,7 +16,7 @@ public class BaseMailTemplate {
     @Value("${public.name}")
     private String publicName;
 
-    private static String PUBLIC_NAME_STATIC;
+    public static String PUBLIC_NAME_STATIC;
 
     @Value("${public.name}")
     public void setPublicNameStatic(String name){
