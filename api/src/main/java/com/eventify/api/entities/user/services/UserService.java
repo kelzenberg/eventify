@@ -1,5 +1,6 @@
 package com.eventify.api.entities.user.services;
 
+import com.eventify.api.auth.ApplicationSecurityConfig;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.data.UserRepository;
@@ -8,13 +9,17 @@ import com.eventify.api.handlers.exceptions.EntityAlreadyExistsException;
 import com.eventify.api.handlers.exceptions.EntityNotFoundException;
 import com.eventify.api.handlers.exceptions.TokenIsInvalidException;
 import com.eventify.api.handlers.exceptions.VerificationFailedException;
+import com.eventify.api.mail.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -27,6 +32,9 @@ public class UserService {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private MailService mailService;
 
     public List<User> getAll() {
         return repository.findAll();
@@ -84,5 +92,32 @@ public class UserService {
 
     public void deleteById(UUID id) {
         repository.deleteById(id);
+    }
+
+    @Transactional
+    public void disableAllExpired() throws MessagingException {
+        List<User> enabledUnverifiedUsers = repository.findAllByEnabledIsTrueAndVerifiedAtIsNull();
+
+        if (enabledUnverifiedUsers.size() <= 0) {
+            return;
+        }
+
+        List<User> disabledUsers = enabledUnverifiedUsers.stream()
+                .filter(user -> isExpired(user.getCreatedAt()))
+                .peek(user -> user.setEnabled(false))
+                .collect(Collectors.toList());
+
+        if (disabledUsers.size() <= 0) {
+            return;
+        }
+
+        repository.saveAll(disabledUsers);
+        mailService.sendDeleteMail(disabledUsers.stream().map(User::getEmail).collect(Collectors.toList()));
+    }
+
+    private boolean isExpired(Date createdAt) {
+        long expirationTime = ((long) ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS * 60 * 60 * 1000); // Hours to Milliseconds
+        Date expiredDate = new Date(createdAt.getTime() + expirationTime);
+        return new Date().after(expiredDate);
     }
 }
