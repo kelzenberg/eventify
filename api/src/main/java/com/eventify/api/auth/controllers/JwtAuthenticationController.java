@@ -22,6 +22,7 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 
 @RestController
 @CrossOrigin
@@ -55,12 +56,20 @@ public class JwtAuthenticationController {
 
         User newUser = userService.create(email, password, displayName);
         String token = authenticate(email, password);
-        mailService.sendRegisterMail(newUser.getEmail(), newUser.getCreatedAt(), newUser.getVerificationHash());
+        mailService.sendRegisterMail(newUser.getEmail(), newUser.getCreatedAt(), newUser.retrieveVerificationHash());
 
         return ResponseEntity
                 .created(new URI(AdminPaths.USERS + newUser.getId()))
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .body(new JwtResponse(token));
+    }
+
+    @PostMapping(PublicPaths.REGISTER + "/verify")
+    public ResponseEntity<?> verifyUser(@Valid @RequestBody UserVerifyRequest body) {
+        String verificationHash = body.getVerificationHash();
+        Date verifiedAt = userService.verify(verificationHash);
+        return ResponseEntity.ok()
+                .body(new VerificationResponse(verifiedAt));
     }
 
     @PostMapping(PublicPaths.LOGIN)

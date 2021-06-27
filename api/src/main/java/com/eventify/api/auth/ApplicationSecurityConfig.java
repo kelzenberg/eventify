@@ -7,6 +7,7 @@ import com.eventify.api.constants.AdminPaths;
 import com.eventify.api.constants.PublicPaths;
 import com.eventify.api.entities.user.services.UserDetailsWrapperService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -38,6 +39,14 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
+    @Value("${account.verificationTime}")
+    private Integer accountVerificationTime;
+    public static int ACCOUNT_VERIFICATION_TIME_HRS;
+
+    @Value("${account.verificationTime}")
+    public void setAccountVerificationTime(Integer time) {
+        ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS = time;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -67,7 +76,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 // public endpoints
-                .antMatchers(PublicPaths.REGISTER).permitAll()
+                .antMatchers(PublicPaths.REGISTER + "/**").permitAll()
                 .antMatchers(PublicPaths.LOGIN).permitAll()
                 // endpoints with authenticated Admin role
                 .antMatchers(AdminPaths.USERS).hasRole("ADMIN")

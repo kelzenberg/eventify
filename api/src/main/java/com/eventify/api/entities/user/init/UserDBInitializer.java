@@ -2,7 +2,7 @@ package com.eventify.api.entities.user.init;
 
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserService;
-import com.eventify.api.exceptions.EntityAlreadyExistsException;
+import com.eventify.api.handlers.exceptions.EntityAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -55,6 +55,7 @@ public class UserDBInitializer {
                 for (String[] user : users) {
                     try {
                         User newUser = userService.create(user[0], user[1], user[2]);
+                        userService.verify(newUser.retrieveVerificationHash());
                         System.out.println("[DEBUG] Created user: " + newUser.getDisplayName());
                     } catch (EntityAlreadyExistsException | DataIntegrityViolationException e) {
                         System.out.println("[DEBUG] User already exists: " + user[0]);

@@ -53,6 +53,6 @@ public class UserDetailsWrapper implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true; // temporarily until User class implements these attributes
+        return user.isEnabled();
     }
 }

@@ -4,7 +4,7 @@ import com.eventify.api.entities.modules.expensesharing.constants.ShareType;
 import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
 import com.eventify.api.entities.modules.expensesharing.entities.controllers.RequestCostShare;
 import com.eventify.api.entities.user.data.User;
-import com.eventify.api.exceptions.EntityIsInvalidException;
+import com.eventify.api.handlers.exceptions.EntityIsInvalidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

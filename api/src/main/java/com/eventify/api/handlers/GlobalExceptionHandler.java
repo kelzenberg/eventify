@@ -1,6 +1,6 @@
-package com.eventify.api;
+package com.eventify.api.handlers;
 
-import com.eventify.api.exceptions.*;
+import com.eventify.api.handlers.exceptions.*;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -49,13 +49,14 @@ public class GlobalExceptionHandler {
         return handleResponseStatusException(new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage()), request);
     }
 
-    /**
-     * BUSINESS LOGIC AUTHORIZATION EXCEPTIONS
-     */
-
     @ExceptionHandler(value = PermissionsAreInsufficientException.class)
     public ResponseEntity<ErrorDetails> handlePermissionsAreInsufficientException(PermissionsAreInsufficientException exception, HttpServletRequest request) {
         return handleResponseStatusException(new ResponseStatusException(HttpStatus.FORBIDDEN, exception.getMessage()), request);
+    }
+
+    @ExceptionHandler(value = VerificationFailedException.class)
+    public ResponseEntity<ErrorDetails> handleVerificationFailedException(VerificationFailedException exception, HttpServletRequest request) {
+        return handleResponseStatusException(new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage()), request);
     }
 
     /**
@@ -95,7 +96,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * GLOBAL EXCEPTIONS
+     * UNIVERSAL EXCEPTIONS
      */
 
     @ExceptionHandler(value = ResponseStatusException.class)

@@ -1,5 +1,7 @@
 package com.eventify.api.mail.templates;
 
+import com.eventify.api.mail.constants.MailTemplateType;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 

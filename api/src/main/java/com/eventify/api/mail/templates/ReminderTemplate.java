@@ -1,55 +1,44 @@
 package com.eventify.api.mail.templates;
 
-import com.eventify.api.auth.ApplicationSecurityConfig;
 import com.eventify.api.mail.constants.BaseMailTemplate;
 import com.eventify.api.mail.constants.MailTemplateType;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.Date;
+import java.util.HashMap;
 
-public class RegisterTemplate implements MailTemplate {
-    private final MailTemplateType type = MailTemplateType.REGISTER;
-    private final String subject = "Welcome to " + BaseMailTemplate.PUBLIC_NAME_STATIC;
+public class ReminderTemplate implements MailTemplate {
+    private final MailTemplateType type = MailTemplateType.DELETE;
+    private final String subject = String.format("Please verify your %s Account", BaseMailTemplate.PUBLIC_NAME_STATIC);
 
     private final MimeMessage message;
     private final String toAddress;
-    private final Date createdAt;
+//    private final Date createdAt;
     private final String verificationHash;
 
-    public RegisterTemplate(MimeMessage message, String toAddress, Date createdAt, String verificationHash) {
+    public ReminderTemplate(MimeMessage message, HashMap<String, String> data) {
         this.message = message;
-        this.toAddress = toAddress;
-        this.createdAt = createdAt;
-        this.verificationHash = verificationHash;
+        this.toAddress = data.get("toAddress");
+//        this.createdAt = new Date(data.get("createdAt")); // TODO: improve Date parsing
+        this.verificationHash = data.get("verificationHash");
     }
 
     private String getTemplate() {
         String verifyURL = BaseMailTemplate.getBaseURL() + "/register?verify=" + this.verificationHash;
-        String template = "Your new account " +
-                "<i>" + this.toAddress + "</i> " +
-                "on " +
-                BaseMailTemplate.PUBLIC_NAME_STATIC +
-                " is almost ready.<br>" +
-                "Please verify your account by clicking " +
+        String template = "Please verify your account by clicking " +
                 "<a href=\"" + verifyURL + "\" alt=\"Verify your email address for " +
                 BaseMailTemplate.PUBLIC_NAME_STATIC +
                 "\">this link</a> " +
                 "or copying and opening the following URL into your Browser:<br><br>" +
                 "<i>" + verifyURL + "</i><br><br>" +
-                "The link is valid for " +
-                ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS +
-                " hours (until " +
-                BaseMailTemplate.DATE_FORMAT.format(new Date(
-                        this.createdAt.getTime() +
-                                (long) ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS * (60 - 1) * 60 * 1000) // = Hours to Milliseconds, minus 1 minute
-                ) +
-                ").<br>" +
-                "Your account will be <b>permanently deleted</b> afterwards.<br><br>" +
-                "Welcome to " +
-                BaseMailTemplate.PUBLIC_NAME_STATIC +
-                "!";
+                "The link is valid until " +
+//                BaseMailTemplate.DATE_FORMAT.format(new Date(
+//                        this.createdAt.getTime() +
+//                                (long) ApplicationSecurityConfig.ACCOUNT_VERIFICATION_TIME_HRS * (60 - 1) * 60 * 1000) // = Hours to Milliseconds, minus 1 minute
+//                ) +
+                ".<br>" +
+                "Your account will be <b>permanently deleted</b> afterwards.";
 
         String baseTemplate = BaseMailTemplate.getBaseTemplate();
         return String.format(baseTemplate, template);

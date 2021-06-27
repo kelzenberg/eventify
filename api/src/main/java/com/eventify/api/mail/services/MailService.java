@@ -1,7 +1,9 @@
 package com.eventify.api.mail.services;
 
-import com.eventify.api.mail.templates.MailTemplateType;
+import com.eventify.api.mail.constants.MailTemplateType;
+import com.eventify.api.mail.templates.DeleteTemplate;
 import com.eventify.api.mail.templates.RegisterTemplate;
+import com.eventify.api.mail.templates.ReminderTemplate;
 import com.eventify.api.mail.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,7 +14,10 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class MailService {
@@ -54,5 +59,56 @@ public class MailService {
         MimeMessage message = sender.createMimeMessage();
         RegisterTemplate template = new RegisterTemplate(message, toAddress, createdAt, verificationHash);
         sender.send(template.getMessage());
+    }
+
+    public void sendReminderMails(List<HashMap<String, String>> data) {
+        List<MimeMessage> templates = data.stream()
+                .map(entry -> {
+                    try {
+                        return new ReminderTemplate(sender.createMimeMessage(), entry).getMessage();
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .collect(Collectors.toList());
+
+        sendMessagesInBatches(templates);
+    }
+
+    public void sendDeleteMail(List<String> toAddresses) throws MessagingException {
+        int batchLimit = 50;
+        int amountOfBatches = (int) Math.ceil(toAddresses.size() / (double) batchLimit); // limit the sending to 50 mails at once
+
+        for (int batchIdx = 0; batchIdx < amountOfBatches; batchIdx++) {
+            int fromIndex = Math.min(batchIdx * batchLimit, toAddresses.size());
+            int toIndex = Math.min((batchIdx + 1) * batchLimit, toAddresses.size());
+
+            if (fromIndex == toIndex) {
+                break;
+            }
+
+            MimeMessage message = sender.createMimeMessage();
+            List<String> addressBatch = toAddresses.subList(fromIndex, toIndex);
+            DeleteTemplate template = new DeleteTemplate(message, addressBatch.toArray(String[]::new));
+            sender.send(template.getMessage());
+        }
+    }
+
+    private void sendMessagesInBatches(List<MimeMessage> messages) {
+        int batchLimit = 50;
+        int amountOfBatches = (int) Math.ceil(messages.size() / (double) batchLimit); // limit the sending to 50 mails at once
+
+        for (int batchIdx = 0; batchIdx < amountOfBatches; batchIdx++) {
+            int fromIndex = Math.min(batchIdx * batchLimit, messages.size());
+            int toIndex = Math.min((batchIdx + 1) * batchLimit, messages.size());
+
+            if (fromIndex == toIndex) {
+                break;
+            }
+
+            List<MimeMessage> messageBatch = messages.subList(fromIndex, toIndex);
+            sender.send(messageBatch.toArray(MimeMessage[]::new));
+        }
     }
 }
