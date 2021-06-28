@@ -11,6 +11,7 @@ import com.eventify.api.handlers.exceptions.EntityIsInvalidException;
 import com.eventify.api.handlers.exceptions.EntityNotFoundException;
 import com.eventify.api.handlers.exceptions.PermissionsAreInsufficientException;
 import com.eventify.api.mail.services.MailService;
+import com.eventify.api.mail.templates.invite.InviteMailData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -98,7 +99,7 @@ public class EventService {
             user = userService.getByEmail(email);
         } catch (EntityNotFoundException e) {
             System.out.println("[DEBUG] User to join, with email " + email + ", was not found. Sending invite email...");
-            mailService.sendInviteMail(email, event.getTitle());
+            mailService.sendInviteMail(new InviteMailData(email, event.getTitle()));
             return null;
         }
 

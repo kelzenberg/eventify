@@ -1,11 +1,13 @@
 package com.eventify.api.mail.templates;
 
-import com.eventify.api.mail.constants.MailTemplateType;
+import lombok.*;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
-public interface MailTemplate {
-    MailTemplateType getTemplateType();
-    MimeMessage getMessage() throws MessagingException;
+@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode
+@ToString
+public abstract class MailTemplate {
+    private final String subject;
+    private final String toAddress;
+    public abstract String getTemplate();
 }
