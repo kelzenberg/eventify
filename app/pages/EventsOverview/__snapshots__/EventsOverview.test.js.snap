@@ -1,0 +1,111 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Event Card Snapshot 1`] = `
+<div
+  className="card h-100"
+>
+  <div
+    className="card-body p-4 eventCardBody"
+    onClick={[Function]}
+  >
+    <h5
+      className="card-title fw-bolder fs-4 mb-4"
+    >
+      Event Title
+    </h5>
+    <h6
+      className="card-subtitle mb-2 text-muted"
+    >
+      <div
+        className="d-flex"
+      >
+        <div
+          className="text-left me-auto"
+        >
+          <span
+            className="text-primary"
+          >
+            28.6.2021
+          </span>
+          <br />
+          <span
+            className="text-primary fw-light"
+          >
+            01:38 - 01:38
+          </span>
+        </div>
+        <div
+          className="text-end pt-2"
+        >
+          <span>
+            5
+          </span>
+          <img
+            alt="attendees"
+            className="ms-1"
+            src="/assets/icons/members.svg"
+          />
+        </div>
+      </div>
+    </h6>
+    <p
+      className="card-text"
+    >
+      Event Description
+    </p>
+  </div>
+  <div
+    className="card-footer"
+  >
+    <a
+      href="/you/event/123456789"
+      onClick={[Function]}
+    >
+      <button
+        aria-label="Edit Event"
+        className="btn btn-primary me-3"
+      >
+        Edit
+      </button>
+    </a>
+    <button
+      aria-label="Delete Event"
+      className="btn btn-outline-secondary btn-icon"
+    >
+      <img
+        src="/assets/icons/trash.svg"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`NewEvent Card Snapshot 1`] = `
+<div
+  aria-label="Create New Event"
+  className="card-outline h-100"
+  onClick={[Function]}
+>
+  <div
+    className="card-body p-4 h-100 d-flex justify-content-center align-items-center flex-direction-column"
+  >
+    <div
+      className="text-center"
+    >
+      <span
+        className="iconBox"
+        style={
+          Object {
+            "backgroundImage": "url(/assets/icons/add.svg)",
+          }
+        }
+      />
+      <p
+        className="mt-3 text-primary fw-bold"
+      >
+        CREATE NEW EVENT
+      </p>
+    </div>
+  </div>
+</div>
+`;

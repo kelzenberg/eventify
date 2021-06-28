@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { Modal } from 'react-bootstrap';
+import Datetime from 'react-datetime';
 import Header from "../../components/Header/Header";
 import Timespan, { PrepDatetimeDate } from '../../components/Timespan/Timespan';
 import Title from "../../components/Title/Title";
 import * as api from '../../common/api';
 import "./EventsOverview.scss";
-import { Modal } from 'react-bootstrap';
-import Datetime from 'react-datetime';
 
 export default function EventsOverviewPage() {
     const [events, setEvents] = React.useState(null);
@@ -146,8 +146,9 @@ function NewEvent(props) {
                         <textarea className="form-control" id="newEventDescription" style={{minHeight: "100px"}} value={description} onChange={() => setDescription(event.target.value)}></textarea>
                     </div>
                     <div className="mb-3">
-                        <label className="form-label">Start of the Event</label>
+                        <label className="form-label" htmlFor="newEventStart">Start of the Event</label>
                         <Datetime
+                            inputProps={{id:"newEventStart"}}
                             locale={navigator.language}
                             value={startDate}
                             onChange={momDate => setStartDate(PrepDatetimeDate(momDate))}
