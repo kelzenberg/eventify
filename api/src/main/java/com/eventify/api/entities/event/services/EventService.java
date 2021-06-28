@@ -68,7 +68,7 @@ public class EventService {
         return repository.save(newEntity.build());
     }
 
-    public Event update(UUID id, @Nullable String title, @Nullable String description, @Nullable Date startedAt, @Nullable Date endedAt) {
+    public Event updateById(UUID id, @Nullable String title, @Nullable String description, @Nullable Date startedAt, @Nullable Date endedAt) {
         Event event = getReferenceById(id);
 
         if (title != null) {
@@ -91,7 +91,7 @@ public class EventService {
         repository.deleteById(id);
     }
 
-    public Event join(UUID eventId, String email) throws EntityNotFoundException, MessagingException {
+    public Event inviteByEmail(UUID eventId, String email) throws EntityNotFoundException, MessagingException {
         Event event = getById(eventId);
         User user;
 
@@ -114,14 +114,14 @@ public class EventService {
         return userEventRole.getEvent();
     }
 
-    public void leave(UUID userId, UUID eventId) throws EntityNotFoundException {
+    public void leaveById(UUID userId, UUID eventId) throws EntityNotFoundException {
 
         // TODO: check if last ORGANISER is leaving -> delete Event(?)
         // TODO: check if 'deleteAll...' is possible
         userEventRoleService.deleteByUserIdAndEventId(userId, eventId);
     }
 
-    public void bounce(UUID actorId, UUID userId, UUID eventId) throws EntityNotFoundException {
+    public void bounceById(UUID actorId, UUID userId, UUID eventId) throws EntityNotFoundException {
         if (actorId.equals(userId)) {
             throw new EntityIsInvalidException("The userId to be bounced cannot be the ID of the requesting user. Leave event instead.");
         }

@@ -74,14 +74,14 @@ public class EventController {
         String description = body.getDescription();
         Date startedAt = body.getStartedAt();
         Date endedAt = body.getEndedAt();
-        return eventService.update(eventId, title, description, startedAt, endedAt);
+        return eventService.updateById(eventId, title, description, startedAt, endedAt);
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/join")
     @JsonView(Views.PublicExtended.class)
-    Event joinById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) throws MessagingException {
+    Event inviteById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) throws MessagingException {
         String email = body.getEmail().trim();
-        return eventService.join(eventId, email);
+        return eventService.inviteByEmail(eventId, email);
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/leave")
@@ -89,7 +89,7 @@ public class EventController {
     void leaveById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @PathVariable UUID eventId) {
         String token = authHeader.split(" ")[1].trim();
         UUID userId = userService.getByToken(token).getId();
-        eventService.leave(userId, eventId);
+        eventService.leaveById(userId, eventId);
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/bounce")
@@ -98,6 +98,6 @@ public class EventController {
         String token = authHeader.split(" ")[1].trim();
         UUID actorId = userService.getByToken(token).getId();
         UUID userId = body.getUserId();
-        eventService.bounce(actorId, userId, eventId);
+        eventService.bounceById(actorId, userId, eventId);
     }
 }
