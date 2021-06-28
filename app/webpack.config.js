@@ -66,7 +66,7 @@ module.exports = (env, argv) => {
         // production mode
         config.plugins.push(new Dotenv({
             path: "../local.env",
-            safe: true, // also load .env.example to verify all keys are set
+            safe: "../.env.example", // also load .env.example to verify all keys are set
         }));
     }
 

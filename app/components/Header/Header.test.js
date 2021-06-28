@@ -3,7 +3,7 @@ import {fireEvent, render} from '@testing-library/react';
 import { default as snapshotRenderer } from 'react-test-renderer';
 import { UserContext } from "../../common/stateKeeper";
 import Header from "../../components/Header/Header";
-import * as stateKeeper from "../../common/stateKeeper";
+import { __RewireAPI__ as rewireStateKeeper} from "../../common/stateKeeper";
 
 const userInfo = {
     id: "123456789",
@@ -31,8 +31,8 @@ test('logout', () => {
 
     expect(queryByText(userInfo.displayName, {exact: false})).toBeTruthy();
 
-    let clearLogin = jest.spyOn(stateKeeper, "clearLogin");
+    let clearLogin = jest.fn();
+    rewireStateKeeper.__Rewire__("clearLogin", clearLogin);
     fireEvent.click(getByText("Logout"));
-    expect(clearLogin).toHaveBeenCalled();
-    clearLogin.mockRestore();
+    rewireStateKeeper.__ResetDependency__("clearLogin");
 })
