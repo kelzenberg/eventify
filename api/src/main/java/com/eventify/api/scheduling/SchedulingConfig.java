@@ -58,6 +58,7 @@ public class SchedulingConfig {
 //
 //        try {
 //            System.out.printf("[DEBUG] Task Scheduler (TEST) executed at %s.%n", new Date());
+//            userService.remindAllExpiring();
 //            userService.disableAllExpired();
 //        } catch (MessagingException e) {
 //            System.out.println("[DEBUG] Task Scheduler (TEST) failed: " + e.getMessage());
