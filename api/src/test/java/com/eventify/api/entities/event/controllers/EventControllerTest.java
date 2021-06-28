@@ -2,11 +2,13 @@ package com.eventify.api.entities.event.controllers;
 
 import com.eventify.api.ApplicationSecurityTestConfig;
 import com.eventify.api.entities.event.data.Event;
+import com.eventify.api.entities.event.data.EventRepository;
 import com.eventify.api.entities.event.services.EventService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +17,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.Mockito.when;
@@ -32,8 +35,11 @@ class EventControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @InjectMocks
     private EventService eventService;
+
+    @MockBean
+    private EventRepository eventRepository;
 
     @BeforeEach
     void setUp() {
@@ -50,7 +56,7 @@ class EventControllerTest {
                 .title("Test Title")
                 .description("Test Description")
                 .build();
-        when(eventService.getAll()).thenReturn(List.of(event));
+        when(eventRepository.findAll()).thenReturn(List.of(event));
 
         mockMvc.perform(get("/events").secure(true))
                 .andExpect(status().isOk())
@@ -67,7 +73,7 @@ class EventControllerTest {
                 .description("Test Description")
                 .build();
 
-        when(eventService.getById(uuid)).thenReturn(event);
+        when(eventRepository.findById(uuid)).thenReturn(Optional.of(event));
 
         mockMvc.perform(get("/events/" + uuid).secure(true))
                 .andExpect(jsonPath("$.id").value(event.getId()));
