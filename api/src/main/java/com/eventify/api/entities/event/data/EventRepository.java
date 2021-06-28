@@ -5,5 +5,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EventRepository extends BaseRepository<Event> {
-//    Optional<Event> findById(UUID id);
 }

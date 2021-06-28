@@ -7,6 +7,7 @@ import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.services.UserDetailsWrapperService;
 import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.mail.services.MailService;
+import com.eventify.api.mail.templates.register.RegisterMailData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,7 @@ public class JwtAuthenticationController {
 
         User newUser = userService.create(email, password, displayName);
         String token = authenticate(email, password);
-        mailService.sendRegisterMail(newUser.getEmail(), newUser.getCreatedAt(), newUser.retrieveVerificationHash());
+        mailService.sendRegisterMail(new RegisterMailData(newUser.getEmail(), newUser.getCreatedAt(), newUser.retrieveVerificationHash()));
 
         return ResponseEntity
                 .created(new URI(AdminPaths.USERS + newUser.getId()))

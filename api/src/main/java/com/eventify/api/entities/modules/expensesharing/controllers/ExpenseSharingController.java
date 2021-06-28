@@ -24,10 +24,10 @@ public class ExpenseSharingController {
         return service.getAll();
     }
 
-    @GetMapping(AuthenticatedPaths.EXPENSE_SHARING + "/{id}")
+    @GetMapping(AuthenticatedPaths.EXPENSE_SHARING + "/{expenseSharingId}")
     @JsonView(Views.PublicExtended.class)
-    ExpenseSharingModule getById(@PathVariable UUID id) {
-        return service.getById(id);
+    ExpenseSharingModule getById(@PathVariable UUID expenseSharingId) {
+        return service.getById(expenseSharingId);
     }
 
     @PostMapping(AuthenticatedPaths.EXPENSE_SHARING)

@@ -1,22 +1,22 @@
 package com.eventify.api.mail.services;
 
-import com.eventify.api.mail.constants.MailTemplateType;
-import com.eventify.api.mail.templates.DeleteTemplate;
-import com.eventify.api.mail.templates.RegisterTemplate;
-import com.eventify.api.mail.templates.ReminderTemplate;
+import com.eventify.api.mail.constants.TemplateConstants;
+import com.eventify.api.mail.templates.delete.DeleteMailData;
+import com.eventify.api.mail.templates.delete.DeleteMailTemplate;
+import com.eventify.api.mail.templates.invite.InviteMailData;
+import com.eventify.api.mail.templates.invite.InviteMailTemplate;
+import com.eventify.api.mail.templates.register.RegisterMailData;
+import com.eventify.api.mail.templates.register.RegisterMailTemplate;
+import com.eventify.api.mail.templates.reminder.ReminderMailData;
+import com.eventify.api.mail.templates.reminder.ReminderMailTemplate;
 import com.eventify.api.mail.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,90 +25,41 @@ public class MailService {
     @Autowired
     public MailUtil util;
 
-    @Autowired
-    private JavaMailSender sender;
+    public void sendRegisterMail(RegisterMailData data) throws MessagingException {
+        List<MimeMessage> messages = util.generateMimeMessages(
+                List.of(new RegisterMailTemplate(data))
+        );
+        util.sendMessagesInBatches(messages);
+    }
 
-    public void sendEmail(String[] to, String subject, String text) throws MessagingException {
-        MimeMessage message = sender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom("noreply@eventify.com");
+    public void sendReminderMailBulk(List<ReminderMailData> data) throws MessagingException {
+        List<MimeMessage> messages = util.generateMimeMessages(
+                data.stream().map(ReminderMailTemplate::new).collect(Collectors.toList())
+        );
+        util.sendMessagesInBatches(messages);
+    }
+
+    public void sendInviteMail(InviteMailData data) throws MessagingException {
+        List<MimeMessage> messages = util.generateMimeMessages(
+                List.of(new InviteMailTemplate(data))
+        );
+        util.sendMessagesInBatches(messages);
+    }
+
+    public void sendDeleteMailBulk(List<DeleteMailData> data) throws MessagingException {
+        List<MimeMessage> messages = util.generateMimeMessages(
+                data.stream().map(DeleteMailTemplate::new).collect(Collectors.toList())
+        );
+        util.sendMessagesInBatches(messages);
+    }
+
+    public void sendTestEmail(String[] to, String subject, String htmlTemplate) throws MessagingException {
+        MimeMessageHelper helper = util.getMessageHelper();
+        helper.setFrom(TemplateConstants.SENDER_MAIL_ADDRESS);
         helper.setSubject(subject);
-        helper.setText(text, true);
+        helper.setText(String.format(TemplateConstants.getBaseTemplate(), htmlTemplate), true);
         helper.setTo(to);
 
-        sender.send(message);
-    }
-
-    // TODO: choose MailTemplate automatically based on mapped function name
-    public void sendInviteMail(String to, String eventName) throws MessagingException {
-        SimpleMailMessage template = util.getMessageTemplate(MailTemplateType.INVITE);
-        String subject = Objects.requireNonNull(template.getSubject());
-        String text = String.format(Objects.requireNonNull(template.getText()), to, eventName);
-
-        MimeMessage message = sender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom("noreply@eventify.com");
-        helper.setSubject(subject);
-        helper.setText(text, true);
-        helper.setTo(to);
-
-        sender.send(message);
-    }
-
-    public void sendRegisterMail(String toAddress, Date createdAt, String verificationHash) throws MessagingException {
-        MimeMessage message = sender.createMimeMessage();
-        RegisterTemplate template = new RegisterTemplate(message, toAddress, createdAt, verificationHash);
-        sender.send(template.getMessage());
-    }
-
-    public void sendReminderMails(List<HashMap<String, String>> data) {
-        List<MimeMessage> templates = data.stream()
-                .map(entry -> {
-                    try {
-                        return new ReminderTemplate(sender.createMimeMessage(), entry).getMessage();
-                    } catch (MessagingException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                .collect(Collectors.toList());
-
-        sendMessagesInBatches(templates);
-    }
-
-    public void sendDeleteMail(List<String> toAddresses) throws MessagingException {
-        int batchLimit = 50;
-        int amountOfBatches = (int) Math.ceil(toAddresses.size() / (double) batchLimit); // limit the sending to 50 mails at once
-
-        for (int batchIdx = 0; batchIdx < amountOfBatches; batchIdx++) {
-            int fromIndex = Math.min(batchIdx * batchLimit, toAddresses.size());
-            int toIndex = Math.min((batchIdx + 1) * batchLimit, toAddresses.size());
-
-            if (fromIndex == toIndex) {
-                break;
-            }
-
-            MimeMessage message = sender.createMimeMessage();
-            List<String> addressBatch = toAddresses.subList(fromIndex, toIndex);
-            DeleteTemplate template = new DeleteTemplate(message, addressBatch.toArray(String[]::new));
-            sender.send(template.getMessage());
-        }
-    }
-
-    private void sendMessagesInBatches(List<MimeMessage> messages) {
-        int batchLimit = 50;
-        int amountOfBatches = (int) Math.ceil(messages.size() / (double) batchLimit); // limit the sending to 50 mails at once
-
-        for (int batchIdx = 0; batchIdx < amountOfBatches; batchIdx++) {
-            int fromIndex = Math.min(batchIdx * batchLimit, messages.size());
-            int toIndex = Math.min((batchIdx + 1) * batchLimit, messages.size());
-
-            if (fromIndex == toIndex) {
-                break;
-            }
-
-            List<MimeMessage> messageBatch = messages.subList(fromIndex, toIndex);
-            sender.send(messageBatch.toArray(MimeMessage[]::new));
-        }
+        util.sendMessagesInBatches(List.of(helper.getMimeMessage()));
     }
 }

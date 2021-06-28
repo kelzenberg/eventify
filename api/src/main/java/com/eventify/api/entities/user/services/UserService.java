@@ -10,6 +10,8 @@ import com.eventify.api.handlers.exceptions.EntityNotFoundException;
 import com.eventify.api.handlers.exceptions.TokenIsInvalidException;
 import com.eventify.api.handlers.exceptions.VerificationFailedException;
 import com.eventify.api.mail.services.MailService;
+import com.eventify.api.mail.templates.delete.DeleteMailData;
+import com.eventify.api.mail.templates.reminder.ReminderMailData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -110,18 +111,11 @@ public class UserService {
             return;
         }
 
-
-        List<HashMap<String, String>> mappedUsers = expiringUsers.stream()
-                .map(user -> {
-                    HashMap<String, String> hashMap = new HashMap<>();
-                    hashMap.put("toAddress", user.getEmail());
-                    hashMap.put("createdAt", user.getCreatedAt().toString());
-                    hashMap.put("verificationHash", user.retrieveVerificationHash());
-                    return hashMap;
-                })
+        List<ReminderMailData> reminderMailData = expiringUsers.stream()
+                .map(user -> new ReminderMailData(user.getEmail(), user.getCreatedAt(), user.retrieveVerificationHash()))
                 .collect(Collectors.toList());
 
-        mailService.sendReminderMails(mappedUsers);
+        mailService.sendReminderMailBulk(reminderMailData);
     }
 
     @Transactional
@@ -142,7 +136,12 @@ public class UserService {
         }
 
         repository.saveAll(disabledUsers);
-        mailService.sendDeleteMail(disabledUsers.stream().map(User::getEmail).collect(Collectors.toList()));
+
+        List<DeleteMailData> deleteMailData = disabledUsers.stream()
+                .map(user -> new DeleteMailData(user.getEmail()))
+                .collect(Collectors.toList());
+
+        mailService.sendDeleteMailBulk(deleteMailData);
     }
 
     private boolean isExpired(Date createdAt) {
