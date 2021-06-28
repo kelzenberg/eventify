@@ -44,10 +44,10 @@ public class EventController {
         return eventService.getAll();
     }
 
-    @GetMapping(AuthenticatedPaths.EVENTS + "/{id}")
+    @GetMapping(AuthenticatedPaths.EVENTS + "/{eventId}")
     @JsonView(Views.PublicExtended.class)
-    Event getById(@PathVariable UUID id) {
-        return eventService.getById(id);
+    Event getById(@PathVariable UUID eventId) {
+        return eventService.getById(eventId);
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS)
@@ -67,14 +67,14 @@ public class EventController {
         return event;
     }
 
-    @PutMapping(AuthenticatedPaths.EVENTS + "/{id}")
+    @PutMapping(AuthenticatedPaths.EVENTS + "/{eventId}")
     @JsonView(Views.PublicExtended.class)
-    Event updateById(@PathVariable UUID id, @Valid @RequestBody EventUpdateRequest body) {
+    Event updateById(@PathVariable UUID eventId, @Valid @RequestBody EventUpdateRequest body) {
         String title = body.getTitle();
         String description = body.getDescription();
         Date startedAt = body.getStartedAt();
         Date endedAt = body.getEndedAt();
-        return eventService.update(id, title, description, startedAt, endedAt);
+        return eventService.update(eventId, title, description, startedAt, endedAt);
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/join")
