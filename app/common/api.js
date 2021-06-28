@@ -90,7 +90,7 @@ export function leaveEvent(eventID) {
 export function inviteToEvent(eventID, emailAddress) {
     return fetcher.request({
         method: "POST",
-        path: `events/${eventID}/join`,
+        path: `events/${eventID}/invite`,
         expect: "json",
         body: {
             email: emailAddress

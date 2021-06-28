@@ -155,7 +155,7 @@ test("invite to event", () => {
     return api.inviteToEvent("eventid", "one@two.three").then(response => {
         expect(fetcher.request).toHaveBeenCalledWith({
             method: "POST",
-            path: "events/eventid/join",
+            path: "events/eventid/invite",
             expect: "json",
             body: {
                 email: "one@two.three"

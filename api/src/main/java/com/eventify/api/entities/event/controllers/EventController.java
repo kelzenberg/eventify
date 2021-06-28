@@ -77,7 +77,7 @@ public class EventController {
         return eventService.updateById(eventId, title, description, startedAt, endedAt);
     }
 
-    @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/join")
+    @PostMapping(AuthenticatedPaths.EVENTS + "/{eventId}/invite")
     @JsonView(Views.PublicExtended.class)
     Event inviteById(@PathVariable UUID eventId, @Valid @RequestBody EventJoinRequest body) throws MessagingException {
         String email = body.getEmail().trim();
