@@ -3,6 +3,7 @@ import { LoginDialog } from '../../components/Dialog/Login';
 import * as stateKeeper from '../../common/stateKeeper';
 import * as api from '../../common/api';
 import "./Landing.scss";
+import fetcher from '../../common/fetcher';
 
 export default function LandingPage() {
     return <>
@@ -80,9 +81,13 @@ function Register() {
     const [password, setPassword] = React.useState("");
     const [loading, setLoading] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState("");
+    const [showValidation, setShowValidation] = React.useState(false);
 
     const register = () => {
-        if(email == "" || password == "") return;
+        if(email == "" || password == "" || password.length < 8) {
+            setShowValidation(true);
+            return;
+        }
         setLoading(true);
         let displayName = email;
         if(email.split("@").length != 0) displayName = email.split("@")[0];
@@ -91,29 +96,35 @@ function Register() {
             window.location = "/you";
         })
         .catch((err) => {
+            setLoading(false);
+            if(err instanceof fetcher.FetchError && err.code == fetcher.status.conflict) {
+                setErrorMessage("This Email address is already registered.");
+                return;
+            }
             console.warn(err);
             setLoading(false);
             setErrorMessage("Unfortunately an error occurred and the registration could not be completed. Please try again.");
         })
     };
 
-    return <div>
+    return <form className={showValidation ? "was-validated": ""}>
         <div className="mb-3">
             <h2>Register Now!</h2>
         </div>
         <div className="mb-3">
             <label htmlFor="emailInput" className="form-label">Email address</label>
-            <input type="email" className="form-control" id="emailInput" value={email} onChange={e => setEmail(e.target.value)}/>
+            <input type="email" className="form-control" id="emailInput" value={email} required onChange={e => setEmail(e.target.value)}/>
         </div>
         <div className="mb-3">
             <label htmlFor="passwordInput" className="form-label">Password</label>
-            <input type="password" className="form-control" id="passwordInput" value={password} onChange={e => setPassword(e.target.value)}/>
+            <input type="password" className="form-control" id="passwordInput" minLength="8" required value={password} onChange={e => setPassword(e.target.value)}/>
+            <div id="emailHelp">Needs to be at least 8 characters long.</div>
         </div>
-        <button type="submit" className="btn btn-primary" hidden={loading} onClick={register}>Register</button>
-        <button type="submit" className="btn btn-primary" disabled hidden={!loading}>
+        <button type="button" className="btn btn-primary" hidden={loading} onClick={register}>Register</button>
+        <button type="button" className="btn btn-primary" disabled hidden={!loading}>
             <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span className="visually-hidden">Loading...</span>
         </button>
         <p className="fs-5 fw-bold mt-1">{errorMessage}</p>
-    </div>
+    </form>
 }
