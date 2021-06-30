@@ -9,6 +9,7 @@ import com.eventify.api.entities.user.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,6 +32,7 @@ public class PaymentContributionController {
     }
 
     @PostMapping(AuthenticatedPaths.PAYMENT_CONTRIBUTION)
+    @ResponseStatus(HttpStatus.CREATED)
     @JsonView(Views.PublicExtended.class)
     PaymentContribution create(@PathVariable UUID expenseSharingId, @Valid @RequestBody PaymentContributionCreateRequest body) {
         String title = body.getTitle();

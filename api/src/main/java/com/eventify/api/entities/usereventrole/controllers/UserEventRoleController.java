@@ -7,6 +7,7 @@ import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,6 +31,7 @@ public class UserEventRoleController {
     List<UserEventRole> getAllByUserId(@PathVariable UUID userId) {
         return service.getAllByUserId(userId);
     }
+
     @GetMapping(AdminPaths.EVENT_ROLES + "/event/{eventId}")
     @JsonView(Views.PublicExtended.class)
     List<UserEventRole> getAllByEventId(@PathVariable UUID eventId) {
@@ -37,6 +39,7 @@ public class UserEventRoleController {
     }
 
     @PostMapping(AdminPaths.EVENT_ROLES)
+    @ResponseStatus(HttpStatus.CREATED)
     @JsonView(Views.PublicExtended.class)
     UserEventRole create(@Valid @RequestBody UserEventRoleCreateRequest body) {
         UUID userId = body.getUserId();

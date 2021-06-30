@@ -127,13 +127,14 @@ public class GlobalExceptionHandler {
             throw exception;
         }
 
+        exception.printStackTrace();
+
         ErrorDetails errorDetails = new ErrorDetails(
                 new Date(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 exception.getMessage()
         );
-
         return new ResponseEntity<>(errorDetails, errorDetails.getStatusMessage());
     }
 }

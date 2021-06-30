@@ -10,6 +10,7 @@ import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -51,9 +52,10 @@ public class EventController {
     }
 
     @PostMapping(AuthenticatedPaths.EVENTS)
+    @ResponseStatus(HttpStatus.CREATED)
     @JsonView(Views.PublicExtended.class)
     Event create(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @Valid @RequestBody EventCreateRequest body) {
-        String token = authHeader.split(" ")[1].trim();
+        String token = authHeader.split(" ")[1].trim(); // TODO: prepare token in request filter
         String title = body.getTitle();
         String description = body.getDescription();
         Date startedAt = body.getStartedAt();
