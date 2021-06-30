@@ -1,6 +1,7 @@
 package com.eventify.api.entities.event.controllers;
 
 import com.eventify.api.ApplicationSecurityTestConfig;
+import com.eventify.api.constants.EventRole;
 import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.data.EventRepository;
 import com.eventify.api.entities.event.services.EventService;
@@ -165,7 +166,24 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
-    void inviteById() throws Exception {
+    void inviteByIdWithUserAndUserEventRole() throws Exception {
+        User user = testEntityUtil.createTestUser();
+        Event event = testEntityUtil.createTestEvent();
+        UserEventRole userEventRole = testEntityUtil.createTestUserEventRole(user, event, Map.of("role", EventRole.ATTENDEE));
+
+        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userEventRoleRepository.findByIdUserIdAndIdEventId(user.getId(), event.getId())).thenReturn(Optional.of(userEventRole));
+
+        mockMvc.perform(testRequestUtil.postRequest(
+                "/events/" + event.getId() + "/invite",
+                String.format("{\"email\": \"%s\"}",
+                        user.getEmail()
+                )
+        ))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(event.getTitle()))
+                .andExpect(jsonPath("$.description").value(event.getDescription()));
     }
 
     @Test
