@@ -1,9 +1,16 @@
 package com.eventify.api.entities.event.controllers;
 
 import com.eventify.api.ApplicationSecurityTestConfig;
+import com.eventify.api.EntityTestUtil;
 import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.data.EventRepository;
 import com.eventify.api.entities.event.services.EventService;
+import com.eventify.api.entities.user.data.User;
+import com.eventify.api.entities.user.data.UserRepository;
+import com.eventify.api.entities.user.services.UserService;
+import com.eventify.api.entities.usereventrole.data.UserEventRole;
+import com.eventify.api.entities.usereventrole.data.UserEventRoleRepository;
+import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,12 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,11 +44,23 @@ class EventControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private EntityTestUtil entityTestUtil;
+
     @InjectMocks
     private EventService eventService;
-
     @MockBean
     private EventRepository eventRepository;
+
+    @InjectMocks
+    private UserService userService;
+    @MockBean
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserEventRoleService userEventRoleService;
+    @MockBean
+    private UserEventRoleRepository userEventRoleRepository;
 
     @BeforeEach
     void setUp() {
@@ -50,33 +70,82 @@ class EventControllerTest {
     void tearDown() {
     }
 
+    /*
+    Cannot operate on reflectively inserted IDs, according to:
+    https://stackoverflow.com/questions/46671472/illegal-reflective-access-by-org-springframework-cglib-core-reflectutils1
+     */
+
+    @Test
+    @WithMockUser
+    void getMyEvents() throws Exception {
+        String token = entityTestUtil.createTestToken();
+        User user = entityTestUtil.createTestUser();
+        Event event = entityTestUtil.createTestEvent();
+        List<UserEventRole> userEventRoles = List.of(entityTestUtil.createTestUserEventRole(user, event, Map.of("_", "_")));
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userEventRoleRepository.findAllByIdUserId(user.getId())).thenReturn(userEventRoles);
+
+        mockMvc.perform(
+                get("/me/events/").secure(true)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", Matchers.is(1)))
+                .andExpect(jsonPath("$[0].title").value(event.getTitle()))
+                .andExpect(jsonPath("$[0].description").value(event.getDescription()));
+    }
+
     @Test
     @WithMockUser
     void getAll() throws Exception {
-        Event event = Event.builder()
-                .title("Test Title")
-                .description("Test Description")
-                .build();
+        Event event = entityTestUtil.createTestEvent();
+
         when(eventRepository.findAll()).thenReturn(List.of(event));
 
-        mockMvc.perform(get("/events").secure(true))
+        mockMvc.perform(
+                get("/events").secure(true)
+        )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", Matchers.is(1)))
-                .andExpect(jsonPath("$[0].id").value(event.getId()));
+                .andExpect(jsonPath("$[0].title").value(event.getTitle()))
+                .andExpect(jsonPath("$[0].description").value(event.getDescription()));
     }
 
     @Test
     @WithMockUser
     void getById() throws Exception {
-        UUID uuid = UUID.randomUUID();
-        Event event = Event.builder()
-                .title("Test Title")
-                .description("Test Description")
-                .build();
+        Event event = entityTestUtil.createTestEvent();
+        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
 
-        when(eventRepository.findById(uuid)).thenReturn(Optional.of(event));
-
-        mockMvc.perform(get("/events/" + uuid).secure(true))
-                .andExpect(jsonPath("$.id").value(event.getId()));
+        mockMvc.perform(get("/events/" + event.getId()).secure(true))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(event.getTitle()))
+                .andExpect(jsonPath("$.description").value(event.getDescription()));
     }
+
+//    @Test
+//    @WithMockUser
+//    void create() throws Exception {
+//    }
+//
+//    @Test
+//    @WithMockUser
+//    void updateById() throws Exception {
+//    }
+//
+//    @Test
+//    @WithMockUser
+//    void inviteById() throws Exception {
+//    }
+//
+//    @Test
+//    @WithMockUser
+//    void leaveById() throws Exception {
+//    }
+//
+//    @Test
+//    @WithMockUser
+//    void bounceById() throws Exception {
+//    }
 }
