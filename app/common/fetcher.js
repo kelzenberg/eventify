@@ -1,6 +1,6 @@
 import * as stateKeeper from "./stateKeeper";
 
-const apiHost = "https://localhost:8443/";
+const apiHost = process.env.API_URL;
 
 class FetchError extends Error {
     constructor(msg, code) {

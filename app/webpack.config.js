@@ -41,6 +41,10 @@ let config = {
                 { from: "assets/favicon/favicon.ico", to: "favicon.ico" }
             ],
         }),
+        new Dotenv({
+            path: "../local.env",
+            safe: "../.env.example", // also load .env.example to verify all keys are set
+        })
     ],
     devServer: {
         contentBase: path.join(__dirname, "dist"),
@@ -64,10 +68,7 @@ module.exports = (env, argv) => {
         config.plugins.push(new webpack.HotModuleReplacementPlugin());
     } else {
         // production mode
-        config.plugins.push(new Dotenv({
-            path: "../local.env",
-            safe: "../.env.example", // also load .env.example to verify all keys are set
-        }));
+        // config.plugins.push();
     }
 
     return config;
