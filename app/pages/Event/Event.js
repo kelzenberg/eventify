@@ -26,7 +26,9 @@ export default function EventPage() {
     let history = useHistory();
     let { eventID } = useParams();
 
-    React.useEffect(() => {
+    React.useEffect(fetchEvent, []);
+
+    function fetchEvent() {
         api.getEvent(eventID)
         .then(event => {
             setEvent(event);
@@ -39,7 +41,7 @@ export default function EventPage() {
                 setErrorMessage("An internal error occurred that prevented us from showing you the event. Please try again.");
             }
         })
-    }, []);
+    }
 
     // for changes in the editing mode
     function handleChange(newEvent) {
@@ -142,7 +144,7 @@ export default function EventPage() {
                 </div>
                 <div className="col">
                     <div hidden={visibleContent != "modules"}>
-                        <ModuleList event={event} onEventChanged={handleEventUpdate} setVisibleContent={setVisibleContent} onErrorMessage={setErrorMessage}/>
+                        <ModuleList event={event} onEventChanged={handleEventUpdate} setVisibleContent={setVisibleContent} onErrorMessage={setErrorMessage} refreshEvent={fetchEvent}/>
                     </div>
                     <div hidden={visibleContent != "members"}>
                         <FullMembers event={event} onEventChanged={handleEventUpdate} setVisibleContent={setVisibleContent} onErrorMessage={setErrorMessage}/>
@@ -214,7 +216,7 @@ function ModuleList(props) {
                     icon={ModuleComponent.icon}
                     title={moduleInstance.title}
                 >
-                <ModuleComponent moduleData={moduleInstance} event={props.event} htmlID={`${moduleType}_${i}_module`}/>
+                <ModuleComponent moduleData={moduleInstance} event={props.event} refreshEvent={props.refreshEvent} htmlID={`${moduleType}_${i}_module`}/>
             </ModuleCard>)
             moduleComponents = moduleComponents.concat(instances);
         }

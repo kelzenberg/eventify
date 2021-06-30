@@ -27,7 +27,7 @@ make setup # declare environment values (required once)
 
 make db-run # start PostgreSQL database in a Docker container
 make api-run # build and run the Spring API
-make app-run # install frontend app dependencies & start it in development mode
+make app-watch # install frontend app dependencies & start it in development mode with live preview
 ```
 
 To run the Spring API in IntelliJ IDEA please see the [`/api/README.md`](https://github.com/kelzenberg/eventify/blob/master/api/README.md).

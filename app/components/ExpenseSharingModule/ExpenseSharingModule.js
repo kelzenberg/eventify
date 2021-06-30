@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { Accordion, AccordionContext, useAccordionButton } from 'react-bootstrap';
 import { InfoDialog } from '../Dialog/Dialog';
+import { BalanceModal } from './BalanceSheet';
 import * as stateKeeper from '../../common/stateKeeper';
 import * as api from '../../common/api';
 
@@ -10,12 +11,16 @@ export default function ExpenseSharingModule(props) {
     const [moduleData, setModuleData] = React.useState(props.moduleData);
     const [editorOpen, setEditorOpen] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState(null);
+    const [balanceVisible, setBalanceVisible] = React.useState(false);
 
     React.useEffect(() => {
         if(props.moduleData.id != moduleData.id) {
             setModuleData(props.moduleData);
             setEditorOpen(false);
             setErrorMessage(null);
+        }
+        if(props.moduleData.payments.length > moduleData.payments.length) {
+            setModuleData(props.moduleData);
         }
     }, [props.moduleData]);
 
@@ -48,7 +53,11 @@ export default function ExpenseSharingModule(props) {
     }
 
     return <>
-        <p className="my-2">{moduleData.description}</p>
+        <div className="d-flex flex-row justify-content-between">
+            <p className="my-2">{moduleData.description}</p>
+            <a role="button" className="mx-3 link-primary fw-bold" onClick={() => setBalanceVisible(true)}>Create Balance</a>
+            {/* <button className="btn btn-outline-primary">Create Balance</button> */}
+        </div>
         <Accordion defaultActiveKey="0" flush className="container-fluid gx-1 my-2">
             {moduleData.payments === null ? null : 
                 moduleData.payments.map(payment => <Payment payment={payment} key={payment.id} onDelete={deletePayment}/>)
@@ -66,6 +75,14 @@ export default function ExpenseSharingModule(props) {
             onHide={() => setErrorMessage(null)}
             title="Expense Sharing Module"
             message={errorMessage}
+        />
+        <BalanceModal
+            show={balanceVisible}
+            onHide={() => setBalanceVisible(false)}
+            moduleData={moduleData}
+            refreshEvent={() => {
+                props.refreshEvent()
+            }}
         />
     </>
 }

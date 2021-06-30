@@ -19,7 +19,7 @@ app-install:
 	cd ./app && npm install
 
 app-watch: app-install
-	cd ./app && npm run watch-server
+	cd ./app && npm run build-dev && npm run watch-server
 
 app-build: app-install
 	cd ./app && npm run build-prod
