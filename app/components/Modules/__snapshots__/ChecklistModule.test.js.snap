@@ -1,0 +1,247 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot 1`] = `
+<div>
+  <table
+    class="table table-borderless table-hover align-middle"
+  >
+    <thead>
+      <tr>
+        <th
+          scope="col"
+          style="width: 15px;"
+        />
+        <th
+          scope="col"
+        >
+          List Item
+        </th>
+        <th
+          class="text-end"
+          scope="col"
+        >
+          Assignees
+        </th>
+        <th
+          scope="col"
+          style="width: 15px;"
+        />
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        aria-labelledby="SomeID_name"
+      >
+        <th
+          scope="row"
+        >
+          <input
+            aria-label="Item Done"
+            class="form-check-input"
+            type="checkbox"
+          />
+        </th>
+        <td>
+          <span
+            id="SomeID_name"
+            style="font-weight: 500;"
+          >
+            Toothpaste
+          </span>
+          <br />
+          <span>
+            The fresh-minty one!
+          </span>
+        </td>
+        <td
+          class="text-end"
+        >
+          <div
+            aria-label="Unassign Calliope"
+            class="iconBox iconBox-removable me-2"
+            role="button"
+            style="background-image: url(/assets/icons/user-image.svg);"
+            title="Unassign Calliope"
+          />
+          <div
+            aria-label="Unassign Heinz-Dieter"
+            class="iconBox iconBox-removable me-2"
+            role="button"
+            style="background-image: url(/assets/icons/user-image.svg);"
+            title="Unassign Heinz-Dieter"
+          />
+          <div
+            aria-label="Assign Attendee"
+            class="iconBox"
+            role="button"
+            style="background-image: url(/assets/icons/add.svg);"
+            title="Assign Attendee"
+          />
+        </td>
+        <td>
+          <img
+            aria-label="Remove Item"
+            class="p-2"
+            role="button"
+            src="/assets/icons/remove.svg"
+            title="Remove Item"
+          />
+        </td>
+      </tr>
+      <tr
+        aria-labelledby="SomeID_name"
+      >
+        <th
+          scope="row"
+        >
+          <input
+            aria-label="Item Done"
+            class="form-check-input"
+            type="checkbox"
+          />
+        </th>
+        <td>
+          <span
+            id="SomeID_name"
+            style="font-weight: 500;"
+          >
+            Sunscreen
+          </span>
+          <br />
+          <span>
+            I am burning already...
+          </span>
+        </td>
+        <td
+          class="text-end"
+        >
+          <div
+            aria-label="Assign Attendee"
+            class="iconBox"
+            role="button"
+            style="background-image: url(/assets/icons/add.svg);"
+            title="Assign Attendee"
+          />
+        </td>
+        <td>
+          <img
+            aria-label="Remove Item"
+            class="p-2"
+            role="button"
+            src="/assets/icons/remove.svg"
+            title="Remove Item"
+          />
+        </td>
+      </tr>
+      <tr
+        aria-labelledby="SomeID_name"
+      >
+        <th
+          scope="row"
+        >
+          <input
+            aria-label="Item Done"
+            class="form-check-input"
+            type="checkbox"
+          />
+        </th>
+        <td>
+          <span
+            id="SomeID_name"
+            style="font-weight: 500;"
+          >
+            Music Speaker
+          </span>
+          <br />
+          <span>
+            Let's listen to Genesis
+          </span>
+        </td>
+        <td
+          class="text-end"
+        >
+          <div
+            aria-label="Unassign Elliot"
+            class="iconBox iconBox-removable me-2"
+            role="button"
+            style="background-image: url(/assets/icons/user-image.svg);"
+            title="Unassign Elliot"
+          />
+          <div
+            aria-label="Assign Attendee"
+            class="iconBox"
+            role="button"
+            style="background-image: url(/assets/icons/add.svg);"
+            title="Assign Attendee"
+          />
+        </td>
+        <td>
+          <img
+            aria-label="Remove Item"
+            class="p-2"
+            role="button"
+            src="/assets/icons/remove.svg"
+            title="Remove Item"
+          />
+        </td>
+      </tr>
+      <tr
+        aria-labelledby="SomeID_name"
+      >
+        <th
+          scope="row"
+        >
+          <input
+            aria-label="Item Done"
+            class="form-check-input"
+            type="checkbox"
+          />
+        </th>
+        <td>
+          <span
+            id="SomeID_name"
+            style="font-weight: 500;"
+          >
+            Snorkel Equipment
+          </span>
+          <br />
+          <span />
+        </td>
+        <td
+          class="text-end"
+        >
+          <div
+            aria-label="Assign Attendee"
+            class="iconBox"
+            role="button"
+            style="background-image: url(/assets/icons/add.svg);"
+            title="Assign Attendee"
+          />
+        </td>
+        <td>
+          <img
+            aria-label="Remove Item"
+            class="p-2"
+            role="button"
+            src="/assets/icons/remove.svg"
+            title="Remove Item"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div
+    aria-label="Add new Item"
+    class="rounded border-dashed border-gray w-100 p-3 text-center text-primary"
+    role="button"
+  >
+    <img
+      alt=""
+      class="pe-2"
+      src="/assets/icons/add.svg"
+      style="vertical-align: sub;"
+    />
+    ADD NEW ITEM
+  </div>
+</div>
+`;

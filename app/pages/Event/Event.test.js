@@ -1,11 +1,10 @@
 import React from 'react';
-import {fireEvent, render, act, waitFor, findByText, getByAltText} from '@testing-library/react';
+import {fireEvent, render, act, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom/extend-expect";
 import { Router, Route } from "react-router-dom";
 import { createMemoryHistory } from "history";
 import update from 'immutability-helper';
 import EventPage from "./Event";
-import BootstrapModalMock from "../../__mocks__/bootstrapModalMock";
 import * as api from "../../common/api";
 import Timespan from "../../components/Timespan/Timespan";
 import fetcher from '../../common/fetcher';
@@ -47,7 +46,7 @@ const event = {
 describe('ModuleCard', () => {
     test('Normal', async () => {
         let Child = jest.fn(() => null);
-        let { container, getByText } = render(
+        let { getByText } = render(
             <ModuleCard htmlID="" icon="icon.svg" title="Module Name">
                 <Child/>
                 <span>Content Stuff</span>
@@ -117,7 +116,7 @@ describe('ModuleList', () => {
     test('Module Creator', () => {
         let changeHandler = jest.fn();
         let eventWithoutModules = update(event, {expenseSharingModules: {$set: []}});
-        let { container, getByText } = render(
+        let { getByText } = render(
             <ModuleList onEventChanged={changeHandler} event={eventWithoutModules}/>
         );
         // click button to create new module
@@ -146,7 +145,7 @@ describe('ModuleList', () => {
 
     test('Expense Sharing Module', () => {
         let changeHandler = jest.fn();
-        let { container, getByText } = render(
+        let { getByText } = render(
             <ModuleList onEventChanged={changeHandler} event={event}/>
         );
         expect(getByText("new module", {exact: false})).toBeVisible();
@@ -180,7 +179,7 @@ describe('ModuleList', () => {
 describe('Details', () => {
     test('Normal', () => {
         let changeHandler = jest.fn();
-        let { container, rerender, getByText, getByLabelText } = render(
+        let { rerender, getByText, getByLabelText } = render(
             <Details event={event} onChange={changeHandler} editing={false}/>
         );
 
@@ -304,7 +303,7 @@ describe('EventPage', () => {
         const history = createMemoryHistory();
         history.push('/you/event/' + event.id);
 
-        let { container, findByText, getByText } = render(
+        let { container } = render(
             <Router history={history}>
                 <Route path="/you/event/:eventID">
                     <EventPage/>
@@ -321,7 +320,7 @@ describe('EventPage', () => {
         const history = createMemoryHistory();
         history.push('/you/event/' + event.id);
 
-        let { container, findByText, getByText } = render(
+        let { getByText } = render(
             <Router history={history}>
                 <Route path="/you/event/:eventID">
                     <EventPage/>
@@ -453,7 +452,7 @@ describe('EventPage', () => {
         const history = createMemoryHistory();
         history.push('/you/event/' + event.id);
 
-        let { container, findByText, getByText } = render(
+        let { getByText } = render(
             <Router history={history}>
                 <Route path="/you/event/:eventID">
                     <EventPage/>
