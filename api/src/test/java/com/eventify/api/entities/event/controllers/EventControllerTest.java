@@ -248,6 +248,19 @@ class EventControllerTest {
     @Test
     @WithMockUser
     void leaveById() throws Exception {
+        User user = testEntityUtil.createTestUser();
+        Event event = testEntityUtil.createTestEvent();
+        UserEventRole userEventRole = testEntityUtil.createTestUserEventRole(user, event, Map.of("role", EventRole.ATTENDEE));
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        mockMvc.perform(testRequestUtil.postRequest(
+                "/events/" + event.getId() + "/leave",
+                ""
+        ))
+                .andExpect(status().isOk());
+
+        verify(userEventRoleRepository, times(1)).deleteByIdUserIdAndIdEventId(user.getId(), event.getId());
     }
 
     @Test
