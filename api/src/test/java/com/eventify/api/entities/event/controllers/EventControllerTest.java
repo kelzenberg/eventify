@@ -265,6 +265,21 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
-    void bounceById() throws Exception {
+    void bounceByIdAsAttendee() throws Exception {
+        User actor = testEntityUtil.createTestUser();
+        User bounceUser = testEntityUtil.createTestUser();
+        Event event = testEntityUtil.createTestEvent();
+        UserEventRole userEventRole = testEntityUtil.createTestUserEventRole(actor, event, Map.of("role", EventRole.ATTENDEE));
+
+        when(userRepository.findByEmail(actor.getEmail())).thenReturn(Optional.of(actor));
+        when(userEventRoleRepository.findByIdUserIdAndIdEventId(actor.getId(), event.getId())).thenReturn(Optional.of(userEventRole));
+
+        mockMvc.perform(testRequestUtil.postRequest(
+                "/events/" + event.getId() + "/bounce",
+                String.format("{\"userId\": \"%s\"}",
+                        bounceUser.getId()
+                )
+        ))
+                .andExpect(status().isForbidden());
     }
 }
