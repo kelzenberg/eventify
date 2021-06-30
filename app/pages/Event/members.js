@@ -14,7 +14,7 @@ export function SmallMembers({event, onEventChanged, setVisibleContent}) {
                 <div className="d-flex">
                     <p className="fw-bold me-auto">
                         Attendees 
-                        <img src="/assets/icons/member-add.svg" className="ps-2" onClick={() => setShowDialog(true)} style={{cursor: "pointer"}}/>
+                        <img src="/assets/icons/member-add.svg" className="ps-2" role="button" aria-label="Add new member" data-testid="add member button" onClick={() => setShowDialog(true)}/>
                     </p>
                     <p className="fw-bold text-muted">
                         {event.users.length}
@@ -27,7 +27,7 @@ export function SmallMembers({event, onEventChanged, setVisibleContent}) {
                     </div>
                     <span className="align-middle">{u.displayName}</span>
                 </div>)}
-                <a className="link-primary fw-bold d-block m-2" role="button" onClick={() => setVisibleContent("members")}>More...</a>
+                <a className="link-primary fw-bold d-block m-2" role="button" onClick={() => setVisibleContent("members")} data-testid="show more button">More...</a>
             </div>
         </div>
         <AddMemberDialog show={showDialog} onHide={() => setShowDialog(false)} eventID={event.id} onEventChanged={onEventChanged}/>
@@ -61,12 +61,12 @@ export function FullMembers(props) {
     }
 
     return <>
-        <a className="link-primary fw-bold d-block m-2" role="button" onClick={() => props.setVisibleContent("modules")}>&lt; Go back to all modules</a>
+        <a className="link-primary fw-bold d-block m-2" role="button" onClick={() => props.setVisibleContent("modules")} data-testid="close full members button">&lt; Go back to all modules</a>
         <div className="card mb-3">
             <div className="card-body">
                 <div className="d-flex">
                     <p className="fw-bold me-auto fs-5">All {props.event.users.length} Attendees: </p>
-                    <button type="button" className="btn btn-outline-primary" onClick={() => setAddUserVisible(true)} aria-label="Invite User">Invite...</button>
+                    <button type="button" className="btn btn-outline-primary" onClick={() => setAddUserVisible(true)} aria-label="Invite User" data-testid="add member button">Invite...</button>
                 </div>
                 <div>
                     {props.event.users.map(u => <div className="my-3 d-flex align-items-center" key={u.id}>
@@ -74,7 +74,7 @@ export function FullMembers(props) {
                             {/* <img src={`/api/users/${m.id}/image`}/> */}
                         </div>
                         <span className="me-auto">{u.displayName}</span>
-                        <button hidden={localUserInfo.id == u.id} type="button" className="btn-close text-end me-2" aria-label="Remove Attendee" onClick={() => setBounceUser(u)}/>
+                        <button hidden={localUserInfo.id == u.id} type="button" role="button" className="btn-close text-end me-2" aria-label="Remove Attendee" onClick={() => setBounceUser(u)} data-testid="remove member button"/>
                     </div>)}
                 </div>
             </div>
@@ -117,7 +117,6 @@ function AddMemberDialog(props) {
             return;
         }
 
-        console.log(props.eventID);
         api.inviteToEvent(props.eventID, emailAddress)
         .then(eventData => {
             props.onEventChanged(eventData);
@@ -138,11 +137,11 @@ function AddMemberDialog(props) {
     >
         <form className={showValidation ? "was-validated" : ""}>
             <div className="mb-3">
-                <label htmlFor="newMemberMail" className="form-label">E-Mail</label>
-                <input type="email" className="form-control" id="newMemberMail" required value={emailAddress} onChange={e => setEmailAddress(e.target.value)}/>
+                <label htmlFor={props.eventID + "_newMemberMail"} className="form-label">E-Mail</label>
+                <input type="email" className="form-control" id={props.eventID + "newMemberMail"} required value={emailAddress} onChange={e => setEmailAddress(e.target.value)} data-testid="email input"/>
                 <div className="form-text">Enter the E-Mail Address of the person you want to invite.</div>
             </div>
         </form>
-        <span className="text-warning fw-bold" hidden={errorMessage === null}>{errorMessage}</span>
+        <span className="text-warning fw-bold" hidden={errorMessage === null} data-testid="error message">{errorMessage}</span>
     </Dialog>;
 }

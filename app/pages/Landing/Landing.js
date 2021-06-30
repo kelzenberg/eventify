@@ -37,6 +37,7 @@ function UserLogin() {
                 window.location = "/you";
             })
             .catch(() => {
+                stateKeeper.clearLogin();
                 setShowLogin(true);
             })
         } else {

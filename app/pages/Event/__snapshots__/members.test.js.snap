@@ -1,0 +1,515 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Add Member Dialog Visibility 1`] = `
+<div>
+  <div>
+    Mock Dialog: 
+    <form
+      class=""
+    >
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="123456789_newMemberMail"
+        >
+          E-Mail
+        </label>
+        <input
+          class="form-control"
+          data-testid="email input"
+          id="123456789newMemberMail"
+          required=""
+          type="email"
+          value=""
+        />
+        <div
+          class="form-text"
+        >
+          Enter the E-Mail Address of the person you want to invite.
+        </div>
+      </div>
+    </form>
+    <span
+      class="text-warning fw-bold"
+      data-testid="error message"
+      hidden=""
+    />
+  </div>
+</div>
+`;
+
+exports[`Full Members Basic 1`] = `
+<div>
+  <a
+    class="link-primary fw-bold d-block m-2"
+    data-testid="close full members button"
+    role="button"
+  >
+    &lt; Go back to all modules
+  </a>
+  <div
+    class="card mb-3"
+  >
+    <div
+      class="card-body"
+    >
+      <div
+        class="d-flex"
+      >
+        <p
+          class="fw-bold me-auto fs-5"
+        >
+          All 
+          7
+           Attendees: 
+        </p>
+        <button
+          aria-label="Invite User"
+          class="btn btn-outline-primary"
+          data-testid="add member button"
+          type="button"
+        >
+          Invite...
+        </button>
+      </div>
+      <div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 1
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 2
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            hidden=""
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 3
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 4
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 5
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 6
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 7
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Full Members Remove member and succeed 1`] = `
+<div>
+  <a
+    class="link-primary fw-bold d-block m-2"
+    data-testid="close full members button"
+    role="button"
+  >
+    &lt; Go back to all modules
+  </a>
+  <div
+    class="card mb-3"
+  >
+    <div
+      class="card-body"
+    >
+      <div
+        class="d-flex"
+      >
+        <p
+          class="fw-bold me-auto fs-5"
+        >
+          All 
+          7
+           Attendees: 
+        </p>
+        <button
+          aria-label="Invite User"
+          class="btn btn-outline-primary"
+          data-testid="add member button"
+          type="button"
+        >
+          Invite...
+        </button>
+      </div>
+      <div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 1
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 2
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            hidden=""
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 3
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 4
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 5
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 6
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+        <div
+          class="my-3 d-flex align-items-center"
+        >
+          <div
+            class="iconBox iconBox-gray me-2"
+            style="background-image: url(/assets/icons/user-image.svg);"
+          />
+          <span
+            class="me-auto"
+          >
+            User 7
+          </span>
+          <button
+            aria-label="Remove Attendee"
+            class="btn-close text-end me-2"
+            data-testid="remove member button"
+            role="button"
+            type="button"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Small Members 1`] = `
+<div>
+  <div
+    class="card"
+  >
+    <div
+      class="card-body"
+    >
+      <div
+        class="d-flex"
+      >
+        <p
+          class="fw-bold me-auto"
+        >
+          Attendees
+          <img
+            aria-label="Add new member"
+            class="ps-2"
+            data-testid="add member button"
+            role="button"
+            src="/assets/icons/member-add.svg"
+          />
+        </p>
+        <p
+          class="fw-bold text-muted"
+        >
+          7
+          <img
+            class="ps-2"
+            src="/assets/icons/members.svg"
+          />
+        </p>
+      </div>
+      <div
+        class="my-3"
+      >
+        <div
+          class="iconBox iconBox-gray me-2"
+          style="background-image: url(/assets/icons/user-image.svg);"
+        />
+        <span
+          class="align-middle"
+        >
+          User 1
+        </span>
+      </div>
+      <div
+        class="my-3"
+      >
+        <div
+          class="iconBox iconBox-gray me-2"
+          style="background-image: url(/assets/icons/user-image.svg);"
+        />
+        <span
+          class="align-middle"
+        >
+          User 2
+        </span>
+      </div>
+      <div
+        class="my-3"
+      >
+        <div
+          class="iconBox iconBox-gray me-2"
+          style="background-image: url(/assets/icons/user-image.svg);"
+        />
+        <span
+          class="align-middle"
+        >
+          User 3
+        </span>
+      </div>
+      <div
+        class="my-3"
+      >
+        <div
+          class="iconBox iconBox-gray me-2"
+          style="background-image: url(/assets/icons/user-image.svg);"
+        />
+        <span
+          class="align-middle"
+        >
+          User 4
+        </span>
+      </div>
+      <div
+        class="my-3"
+      >
+        <div
+          class="iconBox iconBox-gray me-2"
+          style="background-image: url(/assets/icons/user-image.svg);"
+        />
+        <span
+          class="align-middle"
+        >
+          User 5
+        </span>
+      </div>
+      <a
+        class="link-primary fw-bold d-block m-2"
+        data-testid="show more button"
+        role="button"
+      >
+        More...
+      </a>
+    </div>
+  </div>
+</div>
+`;
