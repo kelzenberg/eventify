@@ -20,6 +20,10 @@ We are using Java 14 with language level 11.
 
 **The API will run on [https://localhost:8443](https://localhost:8443), with a self signed certificate.**
 
-## Entities Schema
+## Database Schema
 
-![Data Layer](../.github/data_layer.svg)
+![Data Layer](../.github/database_schema.png)
+
+## Java Entities Schema
+
+![Data Layer](../.github/entities_schema.png)
