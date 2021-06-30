@@ -17,4 +17,4 @@ export const TimespanEditor = jest.fn((props) => {
     return <span>Mock TimespanEditor from {props.from.toISOString()} to {props.from.toISOString()}</span>
 });
 
-export const PrepDatetimeDate = jest.fn(actualTimespan.PrepDatetimeDate);
+export const prepDatetimeDate = jest.fn(actualTimespan.prepDatetimeDate);

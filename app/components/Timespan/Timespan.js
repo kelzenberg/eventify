@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes, { func } from 'prop-types';
 import Datetime from 'react-datetime';
 import "./Datetime.scss";
+import moment from 'moment';
 
 export default function Timespan(props) {
     if(props.editing === true) {
@@ -76,7 +77,8 @@ Timespan.propTypes = {
     to: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]),
     editing: PropTypes.bool,
     onChangeFrom: PropTypes.func,
-    onChangeTo: PropTypes.func
+    onChangeTo: PropTypes.func,
+    htmlID: PropTypes.string
 }
 
 export function TimespanEditor(props) {
@@ -89,25 +91,27 @@ export function TimespanEditor(props) {
 
     return <div className="mb-3">
         <div className="mb-1">
-            <label className="form-label">Von</label>
+            <label className="form-label" htmlFor={props.htmlID + "_timespan_editor_from"}>From</label>
             <Datetime
                 {...commonDateProps}
+                inputProps={{id: props.htmlID + "_timespan_editor_from"}}
                 value={fromDate}
-                onChange={momDate => props.onChangeFrom(PrepDatetimeDate(momDate))}
+                onChange={momDate => props.onChangeFrom(prepDatetimeDate(momDate))}
             />
         </div>
         <div>
-            <label className="form-check-label">Bis</label>
+            <label className="form-check-label" htmlFor={props.htmlID + "_timespan_editor_to"}>To</label>
             <Datetime 
                 {...commonDateProps}
+                inputProps={{id: props.htmlID + "_timespan_editor_to"}}
                 value={toDate}
-                onChange={momDate => props.onChangeTo(PrepDatetimeDate(momDate))}
+                onChange={momDate => props.onChangeTo(prepDatetimeDate(momDate))}
             />
         </div>
     </div>
 }
 
-export function PrepDatetimeDate(momentDate) {
+export function prepDatetimeDate(momentDate) {
     if(momentDate === "") return null;
     return new Date(momentDate);
 }

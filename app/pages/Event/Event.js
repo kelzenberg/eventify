@@ -184,7 +184,7 @@ function Details({event, onChange, editing}) {
                 <label htmlFor={`${event.id}_details_name`}>Name</label>
                 <input type="text" id={`${event.id}_details_name`} className="form-control" value={event.title} onChange={handleChangeName}/>
             </div>
-            <Timespan from={event.startedAt} to={event.endedAt} editing={editing} onChangeFrom={handleChangeStartDate} onChangeTo={handleChangeEndDate}/>
+            <Timespan from={event.startedAt} to={event.endedAt} editing={editing} onChangeFrom={handleChangeStartDate} onChangeTo={handleChangeEndDate} htmlID={event.id}/>
 
             <p className="mt-3" hidden={editing}>{event.description}</p>
             <div hidden={!editing}>

@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import Datetime from 'react-datetime';
 import Header from "../../components/Header/Header";
-import Timespan, { PrepDatetimeDate } from '../../components/Timespan/Timespan';
+import Timespan, { prepDatetimeDate } from '../../components/Timespan/Timespan';
 import Title from "../../components/Title/Title";
 import * as api from '../../common/api';
 import "./EventsOverview.scss";
@@ -60,7 +60,7 @@ function Event({event}) {
             <h5 className="card-title fw-bolder fs-4 mb-4">{event.title}</h5>
             <h6 className="card-subtitle mb-2 text-muted">
                 <div className="d-flex">
-                    <Timespan from={event.startedAt} to={event.endedAt}/>
+                    <Timespan from={event.startedAt} to={event.endedAt} htmlID={event.id}/>
                     <div className="text-end pt-2">
                         <span>{event.amountOfUsers}</span>
                         <img src="/assets/icons/members.svg" alt="attendees" className="ms-1"/>
@@ -151,7 +151,7 @@ function NewEvent(props) {
                             inputProps={{id:"newEventStart"}}
                             locale={navigator.language}
                             value={startDate}
-                            onChange={momDate => setStartDate(PrepDatetimeDate(momDate))}
+                            onChange={momDate => setStartDate(prepDatetimeDate(momDate))}
                         />
                     </div>
                 </form>
