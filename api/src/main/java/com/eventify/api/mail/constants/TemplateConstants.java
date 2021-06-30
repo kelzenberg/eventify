@@ -18,6 +18,7 @@ public class TemplateConstants {
     @Value("${public.name}")
     private String publicName;
     public static String STATIC_PUBLIC_NAME;
+    public static String SENDER_MAIL_ADDRESS;
 
     @Value("${public.name}")
     private void setPublicNameStatic(String name) {
@@ -42,7 +43,11 @@ public class TemplateConstants {
         TemplateConstants.STATIC_PUBLIC_URL = name;
     }
 
-    public static final String SENDER_MAIL_ADDRESS = "noreply@eventify.com";
+    @Value("${spring.mail.address}")
+    private void setMailAddressStatic(String address) {
+        TemplateConstants.SENDER_MAIL_ADDRESS = address;
+    }
+    
     public static final SimpleDateFormat HUMAN_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
 
     public static String getBaseTemplate() {
