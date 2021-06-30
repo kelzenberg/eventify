@@ -34,6 +34,21 @@
       "name": "admin.password",
       "type": "java.lang.String",
       "description": "Clear string password of the API admin"
+    },
+    {
+      "name": "spring.mail.address",
+      "type": "java.lang.String",
+      "description": "Sender email address"
+    },
+    {
+      "name": "spring.mail.smtp.auth",
+      "type": "java.lang.Boolean",
+      "description": "Activate SMTP authentication"
+    },
+    {
+      "name": "spring.mail.smtp.starttls.enable",
+      "type": "java.lang.Boolean",
+      "description": "Activiate SMTP StartTLS"
     }
   ]
 }
