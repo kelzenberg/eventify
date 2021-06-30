@@ -21,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,8 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -62,12 +65,16 @@ class EventControllerTest {
     @MockBean
     private UserEventRoleRepository userEventRoleRepository;
 
+    String token = "";
+
     @BeforeEach
     void setUp() {
+        token = entityTestUtil.createTestToken();
     }
 
     @AfterEach
     void tearDown() {
+        token = "";
     }
 
     /*
@@ -78,7 +85,6 @@ class EventControllerTest {
     @Test
     @WithMockUser
     void getMyEvents() throws Exception {
-        String token = entityTestUtil.createTestToken();
         User user = entityTestUtil.createTestUser();
         Event event = entityTestUtil.createTestEvent();
         List<UserEventRole> userEventRoles = List.of(entityTestUtil.createTestUserEventRole(user, event, Map.of("_", "_")));
@@ -116,36 +122,64 @@ class EventControllerTest {
     @WithMockUser
     void getById() throws Exception {
         Event event = entityTestUtil.createTestEvent();
+
         when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
 
-        mockMvc.perform(get("/events/" + event.getId()).secure(true))
+        mockMvc.perform(
+                get("/events/" + event.getId()).secure(true)
+        )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(event.getTitle()))
                 .andExpect(jsonPath("$.description").value(event.getDescription()));
     }
 
-//    @Test
-//    @WithMockUser
-//    void create() throws Exception {
-//    }
-//
-//    @Test
-//    @WithMockUser
-//    void updateById() throws Exception {
-//    }
-//
-//    @Test
-//    @WithMockUser
-//    void inviteById() throws Exception {
-//    }
-//
-//    @Test
-//    @WithMockUser
-//    void leaveById() throws Exception {
-//    }
-//
-//    @Test
-//    @WithMockUser
-//    void bounceById() throws Exception {
-//    }
+    @Test
+    @WithMockUser
+    void create() throws Exception {
+        User user = entityTestUtil.createTestUser();
+        Event event = entityTestUtil.createTestEvent();
+        UserEventRole userEventRole = entityTestUtil.createTestUserEventRole(user, event, Map.of("_", "_"));
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(eventRepository.save(any(Event.class))).thenReturn(event);
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
+        when(userEventRoleRepository.save(any(UserEventRole.class))).thenReturn(userEventRole);
+
+        mockMvc.perform(
+                post("/events").secure(true)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                String.format("{\"title\": \"%s\", \"description\": \"%s\"}",
+                                        event.getTitle(),
+                                        event.getDescription()
+                                )
+                        )
+        )
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value(event.getTitle()))
+                .andExpect(jsonPath("$.description").value(event.getDescription()));
+    }
+
+    @Test
+    @WithMockUser
+    void updateById() throws Exception {
+    }
+
+    @Test
+    @WithMockUser
+    void inviteById() throws Exception {
+    }
+
+    @Test
+    @WithMockUser
+    void leaveById() throws Exception {
+    }
+
+    @Test
+    @WithMockUser
+    void bounceById() throws Exception {
+    }
 }
