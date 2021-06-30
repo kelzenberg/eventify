@@ -69,7 +69,7 @@ function Event({event}) {
             </h6>
             <p className="card-text">{event.description}</p>
         </div>
-        <div className="card-footer">
+        <div className="card-footer" hidden>
             <Link to={`/you/event/${event.id}`}>
                 <button className="btn btn-primary me-3" aria-label="Edit Event">
                     Edit

@@ -47,6 +47,7 @@ exports[`Event Card Snapshot 1`] = `
     </div>
     <div
       class="card-footer"
+      hidden=""
     >
       <a
         href="/you/event/123456789"
