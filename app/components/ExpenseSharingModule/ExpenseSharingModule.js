@@ -116,7 +116,7 @@ function Payment({payment, onDelete}) {
 
     return <div>
         <div onClick={showDetails} className="row hover-accent p-2 gx-0 cursor-default">
-            <div className="col-1 text-primary fw-slightly-bold">
+            <div className="col-1 text-primary text-center fw-slightly-bold">
                 <div>{date.getDate()}</div>
                 <div>{months[date.getMonth()]}</div>
             </div>
@@ -561,3 +561,4 @@ function splitRealMoney(value) {
         value - Math.floor(value)
     ];
 }
+

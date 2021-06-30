@@ -1,6 +1,8 @@
 setup:
 	cp .env.example local.env
 
+test: api-test app-test
+
 docker:
 	docker-compose --env-file local.env up
 
@@ -14,20 +16,25 @@ db-reset:
 	docker-compose --env-file local.env up --force-recreate --remove-orphans --build postgres
 
 app-install:
-	cd ./app && npm install && npm run build-dev
+	cd ./app && npm install
 
-app-watch:
+app-watch: app-install
 	cd ./app && npm run watch-server
 
-app-run:
-	cd ./app && npm install && npm run build-dev && npm run watch-server
+app-build: app-install
+	cd ./app && npm run build-prod
 
 app-reset:
 	cd ./app && npm run clean
-	make app-install
+	$(MAKE) app-install
+
+app-test: app-install
+	cd ./app && npm test
 
 api-clean:
 	cd ./api && mvn clean:clean
 
 api-run:
 	cd ./api && ./mvnw spring-boot:run
+
+api-test:
