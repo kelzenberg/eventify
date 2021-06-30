@@ -69,7 +69,7 @@ class EventControllerTest {
     @MockBean
     private UserRepository userRepository;
 
-    @InjectMocks
+    @SpyBean
     private UserEventRoleService userEventRoleService;
     @MockBean
     private UserEventRoleRepository userEventRoleRepository;
@@ -180,8 +180,8 @@ class EventControllerTest {
         User user = testEntityUtil.createTestUser();
         Event event = testEntityUtil.createTestEvent();
 
-        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
         when(userRepository.findByEmail(user.getEmail())).thenThrow(new EntityNotFoundException("Test"));
+        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
         doNothing().when(mailUtil).sendMessagesInBatches(any());
 
         mockMvc.perform(testRequestUtil.postRequest(
@@ -194,6 +194,33 @@ class EventControllerTest {
                 .andExpect(jsonPath("$").doesNotExist());
 
         verify(mailServiceSpy, times(1)).sendInviteMail(any());
+    }
+
+    @Test
+    @WithMockUser
+    void inviteByIdWithUserWithoutUserEventRole() throws Exception {
+        User user = testEntityUtil.createTestUser();
+        Event event = testEntityUtil.createTestEvent();
+        UserEventRole userEventRole = testEntityUtil.createTestUserEventRole(user, event, Map.of("role", EventRole.ATTENDEE));
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userEventRoleRepository.findByIdUserIdAndIdEventId(user.getId(), event.getId())).thenThrow(new EntityNotFoundException("Test"));
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
+        when(userEventRoleRepository.save(any(UserEventRole.class))).thenReturn(userEventRole);
+
+        mockMvc.perform(testRequestUtil.postRequest(
+                "/events/" + event.getId() + "/invite",
+                String.format("{\"email\": \"%s\"}",
+                        user.getEmail()
+                )
+        ))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(event.getTitle()))
+                .andExpect(jsonPath("$.description").value(event.getDescription()));
+
+        verify(userEventRoleService, times(1)).create(user.getId(), event.getId(), EventRole.ATTENDEE);
     }
 
     @Test
