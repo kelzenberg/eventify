@@ -11,6 +11,9 @@ import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.data.UserEventRoleRepository;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
+import com.eventify.api.handlers.exceptions.EntityNotFoundException;
+import com.eventify.api.mail.services.MailService;
+import com.eventify.api.mail.utils.MailUtil;
 import com.eventify.api.utils.TestEntityUtil;
 import com.eventify.api.utils.TestRequestUtil;
 import org.hamcrest.Matchers;
@@ -20,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,6 +52,12 @@ class EventControllerTest {
 
     @Autowired
     private TestRequestUtil testRequestUtil;
+
+    @SpyBean
+    private MailService mailServiceSpy;
+
+    @MockBean
+    private MailUtil mailUtil;
 
     @InjectMocks
     private EventService eventService;
@@ -162,6 +172,28 @@ class EventControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(updatedEvent.getTitle()))
                 .andExpect(jsonPath("$.description").value(updatedEvent.getDescription()));
+    }
+
+    @Test
+    @WithMockUser
+    void inviteByIdWithoutUser() throws Exception {
+        User user = testEntityUtil.createTestUser();
+        Event event = testEntityUtil.createTestEvent();
+
+        when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
+        when(userRepository.findByEmail(user.getEmail())).thenThrow(new EntityNotFoundException("Test"));
+        doNothing().when(mailUtil).sendMessagesInBatches(any());
+
+        mockMvc.perform(testRequestUtil.postRequest(
+                "/events/" + event.getId() + "/invite",
+                String.format("{\"email\": \"%s\"}",
+                        user.getEmail()
+                )
+        ))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").doesNotExist());
+
+        verify(mailServiceSpy, times(1)).sendInviteMail(any());
     }
 
     @Test
