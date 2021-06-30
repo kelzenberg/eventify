@@ -57,12 +57,12 @@ public class PaymentContributionService {
             UUID expenseSharingId,
             String title,
             Double amount,
-            UUID userId,
+            UUID payerId,
             ShareType shareType,
             List<RequestCostShare> shares
     ) throws EntityNotFoundException {
         ExpenseSharingModule expenseModule = expenseSharingService.getById(expenseSharingId);
-        User payer = userService.getById(userId);
+        User payer = userService.getById(payerId);
         double trimmedAmount = paymentsUtil.trimDoubleToDecimal(amount);
         List<RequestCostShare> trimmedShares = paymentsUtil.trimSharesToDecimal(shares);
 

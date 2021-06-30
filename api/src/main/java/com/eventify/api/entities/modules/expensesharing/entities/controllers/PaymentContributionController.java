@@ -37,10 +37,10 @@ public class PaymentContributionController {
     PaymentContribution create(@PathVariable UUID expenseSharingId, @Valid @RequestBody PaymentContributionCreateRequest body) {
         String title = body.getTitle();
         Double amount = body.getAmount();
+        UUID payerId = body.getUserId();
         ShareType shareType = body.getShareType();
-        UUID userId = body.getUserId();
         List<RequestCostShare> shares = body.getShares();
-        return paymentContributionService.create(expenseSharingId, title, amount, userId, shareType, shares);
+        return paymentContributionService.create(expenseSharingId, title, amount, payerId, shareType, shares);
     }
 
     @DeleteMapping(AuthenticatedPaths.PAYMENT_CONTRIBUTION + "/{paymentContributionId}")
