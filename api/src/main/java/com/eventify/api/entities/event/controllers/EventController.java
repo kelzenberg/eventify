@@ -55,7 +55,7 @@ public class EventController {
     @ResponseStatus(HttpStatus.CREATED)
     @JsonView(Views.PublicExtended.class)
     Event create(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @Valid @RequestBody EventCreateRequest body) {
-        String token = authHeader.split(" ")[1].trim();
+        String token = authHeader.split(" ")[1].trim(); // TODO: prepare token in request filter
         String title = body.getTitle();
         String description = body.getDescription();
         Date startedAt = body.getStartedAt();

@@ -1,8 +1,5 @@
 package com.eventify.api.utils;
 
-import com.eventify.api.utils.TestEntityUtil;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,18 +16,6 @@ public class TestRequestUtil {
 
     @Autowired
     private TestEntityUtil testEntityUtil;
-
-    String token = "";
-
-    @BeforeEach
-    void setUp() {
-        token = "Bearer " + testEntityUtil.createTestToken();
-    }
-
-    @AfterEach
-    void tearDown() {
-        token = "";
-    }
 
     public MockHttpServletRequestBuilder getRequest(String url) {
         return requestBuilder(HttpMethod.GET, url, Optional.empty());
@@ -49,6 +34,8 @@ public class TestRequestUtil {
     }
 
     private MockHttpServletRequestBuilder requestBuilder(HttpMethod method, String url, Optional<String> content) {
+        String token = "Bearer " + testEntityUtil.createTestToken();
+
         switch (method) {
             case GET:
                 return get(url).secure(true).header(HttpHeaders.AUTHORIZATION, token);
