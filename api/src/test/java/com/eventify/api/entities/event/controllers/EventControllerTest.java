@@ -1,8 +1,6 @@
 package com.eventify.api.entities.event.controllers;
 
 import com.eventify.api.ApplicationSecurityTestConfig;
-import com.eventify.api.utils.TestEntityUtil;
-import com.eventify.api.utils.TestRequestUtil;
 import com.eventify.api.entities.event.data.Event;
 import com.eventify.api.entities.event.data.EventRepository;
 import com.eventify.api.entities.event.services.EventService;
@@ -12,6 +10,8 @@ import com.eventify.api.entities.user.services.UserService;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.data.UserEventRoleRepository;
 import com.eventify.api.entities.usereventrole.services.UserEventRoleService;
+import com.eventify.api.utils.TestEntityUtil;
+import com.eventify.api.utils.TestRequestUtil;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -142,20 +142,25 @@ class EventControllerTest {
     @WithMockUser
     void updateById() throws Exception {
         Event event = testEntityUtil.createTestEvent();
+        Event updatedEvent = testEntityUtil.createTestEvent(Map.of(
+                "title", "Test Event 1",
+                "description", "Test Event Description"
+                )
+        );
 
         when(eventRepository.getOne(event.getId())).thenReturn(event);
-        when(eventRepository.save(any(Event.class))).thenReturn(event);
+        when(eventRepository.save(any(Event.class))).thenReturn(updatedEvent);
 
         mockMvc.perform(testRequestUtil.putRequest(
-                "/events",
+                "/events/" + event.getId(),
                 String.format("{\"title\": \"%s\", \"description\": \"%s\"}",
-                        event.getTitle(),
-                        event.getDescription()
+                        updatedEvent.getTitle(),
+                        updatedEvent.getDescription()
                 )
         ))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title").value(event.getTitle()))
-                .andExpect(jsonPath("$.description").value(event.getDescription()));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(updatedEvent.getTitle()))
+                .andExpect(jsonPath("$.description").value(updatedEvent.getDescription()));
     }
 
     @Test
