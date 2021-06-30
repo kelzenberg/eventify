@@ -9,6 +9,7 @@ import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentCon
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContributionRepository;
 import com.eventify.api.entities.modules.expensesharing.entities.services.PaymentContributionService;
 import com.eventify.api.entities.modules.expensesharing.services.ExpenseSharingService;
+import com.eventify.api.entities.modules.expensesharing.utils.DistributionUtil;
 import com.eventify.api.entities.modules.expensesharing.utils.PaymentsUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.user.data.UserRepository;
@@ -57,6 +58,9 @@ class PaymentContributionControllerTest {
 
     @MockBean
     private PaymentsUtil paymentsUtil;
+
+    @Autowired
+    DistributionUtil distributionUtil;
 
     @InjectMocks
     private PaymentContributionService paymentService;
@@ -111,9 +115,9 @@ class PaymentContributionControllerTest {
 
         when(expenseRepository.findById(expenseModule.getId())).thenReturn(Optional.of(expenseModule));
         when(userRepository.findById(payer.getId())).thenReturn(Optional.of(payer));
+        doNothing().when(paymentsUtil).validateUserIds(expenseModule, payer, shares);
         when(paymentRepository.save(any(PaymentContribution.class))).thenReturn(payment);
         when(costShareRepository.saveAll(anyList())).thenReturn(payment.getShares());
-        doNothing().when(paymentsUtil).validateUserIds(expenseModule, payer, shares);
 
         mockMvc.perform(testRequestUtil.postRequest("/modules/expense-sharing/ " + expenseModule.getId() + "/payments",
                 String.format("{\"title\": \"%s\", \"amount\": %s, \"userId\": \"%s\", \"shareType\": \"%s\", \"shares\": ",

@@ -9,6 +9,7 @@ import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModul
 import com.eventify.api.entities.modules.expensesharing.entities.controllers.RequestCostShare;
 import com.eventify.api.entities.modules.expensesharing.entities.data.CostShare;
 import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContribution;
+import com.eventify.api.entities.modules.expensesharing.utils.PaymentsUtil;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.data.UserEventRoleId;
@@ -25,6 +26,9 @@ public class TestEntityUtil {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private PaymentsUtil paymentsUtil;
 
     public String createTestToken() {
         UserDetails userDetails = new MockUserDetailsWrapper("user@test.de", "password123", "ADMIN");
