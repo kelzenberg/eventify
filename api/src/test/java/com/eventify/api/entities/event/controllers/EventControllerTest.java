@@ -28,7 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = ApplicationSecurityTestConfig.class
+        classes = ApplicationSecurityTestConfig.class,
+        properties = {"command.line.runner.enabled=false"}
 )
 class EventControllerTest {
 
