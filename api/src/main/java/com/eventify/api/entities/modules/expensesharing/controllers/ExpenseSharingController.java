@@ -6,6 +6,7 @@ import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModul
 import com.eventify.api.entities.modules.expensesharing.services.ExpenseSharingService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,6 +32,7 @@ public class ExpenseSharingController {
     }
 
     @PostMapping(AuthenticatedPaths.EXPENSE_SHARING)
+    @ResponseStatus(HttpStatus.CREATED)
     @JsonView(Views.PublicExtended.class)
     ExpenseSharingModule create(@Valid @RequestBody ExpenseSharingCreateRequest body) {
         String title = body.getTitle();
