@@ -24,7 +24,7 @@ public class PayHelper {
     private final boolean isSettled;
 
     private int convertDecimalToInt(double value) {
-        return (int) (value * 100);
+        return (int) Math.round(value * 100);
     }
 
     private int[] convertToIntArray(ShareType shareType, List<RequestCostShare> shares) throws EntityIsInvalidException {
@@ -38,7 +38,7 @@ public class PayHelper {
                 return new int[shares.size()];
             case PERCENTAGE:
                 return shares.stream()
-                        .mapToInt(share -> (int) share.getAmount()) // % to #: amount * (percentage / 100)
+                        .mapToInt(share -> (int) Math.round(share.getAmount())) // % to #: amount * (percentage / 100)
                         .toArray();
             default:
                 throw new EntityIsInvalidException("Payment contribution share type is invalid.");
