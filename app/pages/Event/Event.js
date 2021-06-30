@@ -181,15 +181,15 @@ function Details({event, onChange, editing}) {
         <div className="card-body">
             <p className="fw-bold">Event Details</p>
             <div hidden={!editing} className="mb-1">
-                <label>Name</label>
-                <input type="text" className="form-control" value={event.title} onChange={handleChangeName}/>
+                <label htmlFor={`${event.id}_details_name`}>Name</label>
+                <input type="text" id={`${event.id}_details_name`} className="form-control" value={event.title} onChange={handleChangeName}/>
             </div>
             <Timespan from={event.startedAt} to={event.endedAt} editing={editing} onChangeFrom={handleChangeStartDate} onChangeTo={handleChangeEndDate}/>
 
             <p className="mt-3" hidden={editing}>{event.description}</p>
             <div hidden={!editing}>
-                <label>Description</label>
-                <textarea className="form-control" style={{minHeight: "100px"}} value={event.description} onChange={handleDescriptionChange}></textarea>
+                <label htmlFor={`${event.id}_details_description`}>Description</label>
+                <textarea id={`${event.id}_details_description`} className="form-control" style={{minHeight: "100px"}} value={event.description} onChange={handleDescriptionChange}></textarea>
             </div>
         </div>
     </div>

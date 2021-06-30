@@ -1,0 +1,106 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EventPage Normal 1`] = `
+Array [
+  <Link
+    to="/you/events"
+  >
+    <button
+      className="btn btn-outline-primary"
+      hidden={false}
+    >
+      GO BACK
+    </button>
+  </Link>,
+  <button
+    className="btn btn-outline-secondary"
+    hidden={false}
+    onClick={[Function]}
+  >
+    EDIT
+  </button>,
+  <button
+    className="btn btn-outline-secondary"
+    hidden={true}
+    onClick={[Function]}
+  >
+    CANCEL
+  </button>,
+  <button
+    className="btn btn-primary"
+    hidden={true}
+    onClick={[Function]}
+  >
+    SAVE
+  </button>,
+  <button
+    className="btn btn-primary"
+    disabled={true}
+    hidden={true}
+  >
+    <span
+      className="pe-2"
+    >
+      Saving...
+    </span>
+    <span
+      aria-hidden="true"
+      className="spinner-border spinner-border-sm"
+      role="status"
+    />
+  </button>,
+  <DropdownButton
+    as={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "defaultProps": Object {
+          "role": "group",
+          "vertical": false,
+        },
+        "render": [Function],
+      }
+    }
+    title="..."
+    variant="outline-secondary"
+  >
+    <DropdownItem
+      as={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        }
+      }
+      disabled={false}
+      onClick={[Function]}
+    >
+      Leave
+    </DropdownItem>
+  </DropdownButton>,
+]
+`;
+
+exports[`ModuleList Empty 1`] = `
+<div>
+  <h4
+    class="text-center"
+  >
+    This event does not have any modules yet.
+  </h4>
+  <div
+    aria-label="Add new Item"
+    class="rounded border-dashed border-gray w-100 p-3 text-center text-primary"
+    role="button"
+  >
+    <img
+      alt=""
+      class="pe-2"
+      src="/assets/icons/add.svg"
+      style="vertical-align: sub;"
+    />
+    ADD NEW MODULE
+  </div>
+  <div>
+    Mocked Module Creator
+  </div>
+</div>
+`;

@@ -1,110 +1,194 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Event Card Snapshot 1`] = `
-<div
-  className="card h-100"
->
+<div>
   <div
-    className="card-body p-4 eventCardBody"
-    onClick={[Function]}
+    class="card h-100"
   >
-    <h5
-      className="card-title fw-bolder fs-4 mb-4"
+    <div
+      class="card-body p-4 eventCardBody"
     >
-      Event Title
-    </h5>
-    <h6
-      className="card-subtitle mb-2 text-muted"
-    >
-      <div
-        className="d-flex"
+      <h5
+        class="card-title fw-bolder fs-4 mb-4"
+      >
+        Event Title
+      </h5>
+      <h6
+        class="card-subtitle mb-2 text-muted"
       >
         <div
-          className="text-left me-auto"
-        >
-          <span
-            className="text-primary"
-          >
-            28.6.2021
-          </span>
-          <br />
-          <span
-            className="text-primary fw-light"
-          >
-            01:38 - 01:38
-          </span>
-        </div>
-        <div
-          className="text-end pt-2"
+          class="d-flex"
         >
           <span>
-            5
+            Mock Timespan from 
+            2021-06-27T23:38:43.000Z
+             to 
+            2021-06-27T23:38:43.000Z
           </span>
-          <img
-            alt="attendees"
-            className="ms-1"
-            src="/assets/icons/members.svg"
-          />
+          <div
+            class="text-end pt-2"
+          >
+            <span>
+              5
+            </span>
+            <img
+              alt="attendees"
+              class="ms-1"
+              src="/assets/icons/members.svg"
+            />
+          </div>
         </div>
-      </div>
-    </h6>
-    <p
-      className="card-text"
+      </h6>
+      <p
+        class="card-text"
+      >
+        Event Description
+      </p>
+    </div>
+    <div
+      class="card-footer"
     >
-      Event Description
-    </p>
+      <a
+        href="/you/event/123456789"
+      >
+        <button
+          aria-label="Edit Event"
+          class="btn btn-primary me-3"
+        >
+          Edit
+        </button>
+      </a>
+      <button
+        aria-label="Delete Event"
+        class="btn btn-outline-secondary btn-icon"
+      >
+        <img
+          src="/assets/icons/trash.svg"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Events Overview Page Loading 1`] = `
+<div>
+  <div>
+    Mocked Header Component
+  </div>
+  <div>
+    Mocked Title Component: 
   </div>
   <div
-    className="card-footer"
+    class="container mb-5"
   >
-    <a
-      href="/you/event/123456789"
-      onClick={[Function]}
+    <div
+      class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3"
     >
-      <button
-        aria-label="Edit Event"
-        className="btn btn-primary me-3"
+      <div
+        class="col"
       >
-        Edit
-      </button>
-    </a>
-    <button
-      aria-label="Delete Event"
-      className="btn btn-outline-secondary btn-icon"
+        <div
+          class="d-flex justify-content-center"
+        >
+          <div
+            class="spinner-border"
+            role="status"
+          >
+            <span
+              class="visually-hidden"
+            >
+              Loading...
+            </span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="col"
+      >
+        <span>
+          Mocked NewEvent
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Events Overview Page Normal 1`] = `
+<div>
+  <div>
+    Mocked Header Component
+  </div>
+  <div>
+    Mocked Title Component: 
+  </div>
+  <div
+    class="container mb-5"
+  >
+    <div
+      class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3"
     >
-      <img
-        src="/assets/icons/trash.svg"
-      />
-    </button>
+      <div
+        class="col"
+        hidden=""
+      >
+        <div
+          class="d-flex justify-content-center"
+        >
+          <div
+            class="spinner-border"
+            role="status"
+          >
+            <span
+              class="visually-hidden"
+            >
+              Loading...
+            </span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="col"
+      >
+        <span>
+          Mocked Event
+        </span>
+      </div>
+      <div
+        class="col"
+      >
+        <span>
+          Mocked NewEvent
+        </span>
+      </div>
+    </div>
   </div>
 </div>
 `;
 
 exports[`NewEvent Card Snapshot 1`] = `
-<div
-  aria-label="Create New Event"
-  className="card-outline h-100"
-  onClick={[Function]}
->
+<div>
   <div
-    className="card-body p-4 h-100 d-flex justify-content-center align-items-center flex-direction-column"
+    aria-label="Create New Event"
+    class="card-outline h-100"
   >
     <div
-      className="text-center"
+      class="card-body p-4 h-100 d-flex justify-content-center align-items-center flex-direction-column"
     >
-      <span
-        className="iconBox"
-        style={
-          Object {
-            "backgroundImage": "url(/assets/icons/add.svg)",
-          }
-        }
-      />
-      <p
-        className="mt-3 text-primary fw-bold"
+      <div
+        class="text-center"
       >
-        CREATE NEW EVENT
-      </p>
+        <span
+          class="iconBox"
+          style="background-image: url(/assets/icons/add.svg);"
+        />
+        <p
+          class="mt-3 text-primary fw-bold"
+        >
+          CREATE NEW EVENT
+        </p>
+      </div>
     </div>
   </div>
 </div>
