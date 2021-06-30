@@ -1,5 +1,6 @@
-package com.eventify.api;
+package com.eventify.api.utils;
 
+import com.eventify.api.MockUserDetailsWrapper;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.constants.EventRole;
 import com.eventify.api.entities.event.data.Event;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class EntityTestUtil {
+public class TestEntityUtil {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
