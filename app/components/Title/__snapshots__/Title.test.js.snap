@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Title 1`] = `
+<div>
+  <div
+    class="container-lg mb-4 mt-5 title"
+  >
+    <span
+      class="text-muted"
+    >
+      <span>
+        one
+      </span>
+       &gt; 
+      <a
+        href="/linkToTwo"
+      >
+        two
+      </a>
+       &gt; 
+      <span />
+    </span>
+    <div
+      class="d-flex"
+    >
+      <h1
+        class="fw-bolder me-auto"
+      >
+        Test Title
+      </h1>
+      <div
+        class=""
+      >
+        <span>
+          child content
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Title 2`] = `
+<div>
+  <div
+    class="container-lg mb-4 mt-5 title"
+  >
+    <span
+      class="text-muted"
+    />
+    <div
+      class="d-flex"
+    >
+      <h1
+        class="fw-bolder me-auto"
+      >
+        Test Title
+      </h1>
+      <div
+        class=""
+      >
+        <span>
+          child content
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;

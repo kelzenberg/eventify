@@ -1,13 +1,6 @@
 import React from 'react';
-import {fireEvent, render, act, waitFor } from '@testing-library/react';
+import {fireEvent, render} from '@testing-library/react';
 import "@testing-library/jest-dom/extend-expect";
-import { Router, Route } from "react-router-dom";
-import { createMemoryHistory } from "history";
-import update from 'immutability-helper';
-import * as api from "../../common/api";
-import fetcher from '../../common/fetcher';
-import Title from '../../components/Title/Title';
-import { InfoDialog } from '../../components/Dialog/Dialog';
 import Timespan, {prepDatetimeDate, TimespanEditor} from './Timespan';
 import moment from 'moment';
 
