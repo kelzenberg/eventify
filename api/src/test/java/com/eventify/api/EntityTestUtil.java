@@ -85,14 +85,11 @@ public class EntityTestUtil {
         EventRole role = (EventRole) Optional.ofNullable(args.get("role")).orElse(EventRole.ORGANISER);
 
         UserEventRoleId id = new UserEventRoleId(user.getId(), event.getId());
-        UserEventRole userEventRole = UserEventRole.builder()
+        return UserEventRole.builder()
                 .id(id)
                 .user(user)
                 .event(event)
                 .role(role)
                 .build();
-
-//        ReflectionTestUtils.setField(userEventRole, "id", id);
-        return userEventRole;
     }
 }
