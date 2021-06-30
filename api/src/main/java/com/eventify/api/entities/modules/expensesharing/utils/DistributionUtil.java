@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 @Component
 public class DistributionUtil {
     private static final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
-    protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##", symbols);
+    public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##", symbols);
 
     private double[] shuffleArray(double[] arr) {
         Random random = new Random();
