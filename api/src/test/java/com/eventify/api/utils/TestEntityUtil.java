@@ -4,6 +4,11 @@ import com.eventify.api.MockUserDetailsWrapper;
 import com.eventify.api.auth.utils.JwtTokenUtil;
 import com.eventify.api.constants.EventRole;
 import com.eventify.api.entities.event.data.Event;
+import com.eventify.api.entities.modules.expensesharing.constants.ShareType;
+import com.eventify.api.entities.modules.expensesharing.data.ExpenseSharingModule;
+import com.eventify.api.entities.modules.expensesharing.entities.controllers.RequestCostShare;
+import com.eventify.api.entities.modules.expensesharing.entities.data.CostShare;
+import com.eventify.api.entities.modules.expensesharing.entities.data.PaymentContribution;
 import com.eventify.api.entities.user.data.User;
 import com.eventify.api.entities.usereventrole.data.UserEventRole;
 import com.eventify.api.entities.usereventrole.data.UserEventRoleId;
@@ -12,10 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class TestEntityUtil {
@@ -92,5 +95,73 @@ public class TestEntityUtil {
                 .event(event)
                 .role(role)
                 .build();
+    }
+
+    public ExpenseSharingModule createTestExpenseModule(Event event, List<User> users) {
+        return createTestExpenseModule(event, Map.of(
+                "title", "Test Expense Module 1",
+                "description", "Test Module Description"
+        ));
+    }
+
+    public ExpenseSharingModule createTestExpenseModule(Event event, Map<String, Object> args) {
+        UUID id = (UUID) Optional.ofNullable(args.get("id")).orElse(UUID.randomUUID());
+        String title = (String) Optional.ofNullable(args.get("title")).orElse("Test Expense Module 1");
+        String description = (String) Optional.ofNullable(args.get("description")).orElse("Test Module Description");
+
+        ExpenseSharingModule expenseModule = ExpenseSharingModule.builder()
+                .title(title)
+                .description(description)
+                .event(event)
+                .build();
+
+        ReflectionTestUtils.setField(expenseModule, "id", id);
+        return expenseModule;
+    }
+
+    public PaymentContribution createTestPayment(ExpenseSharingModule expenseModule, User payer, List<User> users, List<RequestCostShare> shares) {
+        return createTestPayment(expenseModule, payer, users, shares, Map.of(
+                "title", "Test Payment 1",
+                "amount", 100.0,
+                "shareType", ShareType.EQUAL
+        ));
+    }
+
+    public PaymentContribution createTestPayment(ExpenseSharingModule expenseModule, User payer, List<User> users, List<RequestCostShare> shares, Map<String, Object> args) {
+        UUID id = (UUID) Optional.ofNullable(args.get("id")).orElse(UUID.randomUUID());
+        String title = (String) Optional.ofNullable(args.get("title")).orElse("Test Payment 1");
+        double amount = (double) Optional.ofNullable(args.get("amount")).orElse(100.0);
+        ShareType shareType = (ShareType) Optional.ofNullable(args.get("shareType")).orElse(ShareType.EQUAL);
+
+        PaymentContribution createdPayment = PaymentContribution.builder()
+                .title(title)
+                .amount(amount)
+                .payer(payer)
+                .expenseModule(expenseModule)
+                .shareType(shareType)
+                .build();
+
+        ReflectionTestUtils.setField(createdPayment, "id", id);
+
+        List<CostShare> createdCostShares = shares.stream()
+                .map(costShare -> {
+                    User shareHolder = users.stream()
+                            .filter(user -> user.getId().equals(costShare.getUserId()))
+                            .collect(Collectors.toList())
+                            .get(0);
+
+                    CostShare share = CostShare.builder()
+                            .amount(costShare.getAmount())
+                            .shareHolder(shareHolder)
+                            .paymentContribution(createdPayment)
+                            .build();
+
+                    ReflectionTestUtils.setField(share, "id", UUID.randomUUID());
+
+                    return share;
+                }).collect(Collectors.toList());
+
+        createdPayment.setShares(createdCostShares);
+        return createdPayment;
     }
 }
