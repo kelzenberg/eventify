@@ -6,6 +6,7 @@ import moment from 'moment';
 
 beforeAll(() => {
     Object.defineProperty(global.navigator, 'language', {value: 'de-de', configurable: true});
+    Date.now = () => (new Date("2021-06-30T01:00:26.000Z")).getTime();
 })
 
 test('Prep Datetime Date', () => {

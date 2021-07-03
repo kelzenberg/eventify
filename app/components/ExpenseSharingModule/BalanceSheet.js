@@ -92,7 +92,7 @@ function BalancePayment(props) {
             </div>
             <div className="col text-end">
                 <span className="fw-slightly-bold me-2">{props.payment.to.displayName}</span>
-                {props.payment.amount}€
+                {roundToDecimalPlaces(props.payment.amount, 2)}€
             </div>
             <div className="col-1 text-center">
                 <input className="form-check-input" type="checkbox" checked={props.checked} onChange={() => {}}/>
@@ -278,4 +278,15 @@ function reverseCopy(arr) {
         out[i] = arr[(len - 1) - i];
     }
     return out;
+}
+
+// rounds the value to the given amount of decimal places
+function roundToDecimalPlaces(value, places) {
+    let offset = Math.pow(10, places);
+    return Math.round(value * offset) / offset;
+}
+
+// Makes a float nicer by removing the small inaccuracies that floating point numbers often have
+function niceFloat(value) {
+    return roundToDecimalPlaces(value, 10);
 }

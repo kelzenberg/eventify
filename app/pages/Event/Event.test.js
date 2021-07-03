@@ -10,6 +10,7 @@ import Timespan from "../../components/Timespan/Timespan";
 import fetcher from '../../common/fetcher';
 import Title from '../../components/Title/Title';
 import { InfoDialog } from '../../components/Dialog/Dialog';
+import { UserContext } from '../../common/stateKeeper';
 
 const ModuleCard = EventPage.__RewireAPI__.__get__("ModuleCard");
 const ModuleList = EventPage.__RewireAPI__.__get__("ModuleList");
@@ -21,6 +22,13 @@ jest.mock("../../components/Title/Title");
 jest.mock("../../components/Timespan/Timespan");
 jest.mock("../../components/Dialog/Dialog");
 
+const userInfo = {
+    id: "localUserID",
+    displayName: "Local User",
+    email: "one@two.three",
+    eventRole: "ORGANISER"
+};
+
 const event = {
     id: "123456789",
     title: "Event Title",
@@ -28,6 +36,7 @@ const event = {
     endedAt: new Date("2021-06-27T23:38:43.000Z"),
     amountOfUsers: 5,
     description: "Event Description",
+    users: [userInfo],
     expenseSharingModules: [
         {
             id: "987654321",
@@ -272,7 +281,9 @@ describe('EventPage', () => {
         let { findByText } = render(
             <Router history={history}>
                 <Route path="/you/event/:eventID">
-                    <EventPage/>
+                    <UserContext.Provider value={userInfo}>
+                        <EventPage/>
+                    </UserContext.Provider>
                 </Route>
             </Router>
         );
@@ -289,7 +300,9 @@ describe('EventPage', () => {
         let { findByText } = render(
             <Router history={history}>
                 <Route path="/you/event/:eventID">
-                    <EventPage/>
+                    <UserContext.Provider value={userInfo}>
+                        <EventPage/>
+                    </UserContext.Provider>
                 </Route>
             </Router>
         );
@@ -306,7 +319,9 @@ describe('EventPage', () => {
         let { container } = render(
             <Router history={history}>
                 <Route path="/you/event/:eventID">
-                    <EventPage/>
+                    <UserContext.Provider value={userInfo}>
+                        <EventPage/>
+                    </UserContext.Provider>
                 </Route>
             </Router>
         );
@@ -323,7 +338,9 @@ describe('EventPage', () => {
         let { getByText } = render(
             <Router history={history}>
                 <Route path="/you/event/:eventID">
-                    <EventPage/>
+                    <UserContext.Provider value={userInfo}>
+                        <EventPage/>
+                    </UserContext.Provider>
                 </Route>
             </Router>
         );
@@ -455,7 +472,9 @@ describe('EventPage', () => {
         let { getByText } = render(
             <Router history={history}>
                 <Route path="/you/event/:eventID">
-                    <EventPage/>
+                    <UserContext.Provider value={userInfo}>
+                        <EventPage/>
+                    </UserContext.Provider>
                 </Route>
             </Router>
         );

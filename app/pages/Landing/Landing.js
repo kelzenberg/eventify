@@ -48,7 +48,7 @@ function UserLogin() {
 
     return <>
         <div className="user" onClick={tryEnterUserSpace}/>
-        <LoginDialog show={showLogin}/>
+        <LoginDialog show={showLogin} onHide={() => setShowLogin(false)}/>
     </>
 }
 

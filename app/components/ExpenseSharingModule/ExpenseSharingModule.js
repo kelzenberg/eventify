@@ -14,6 +14,7 @@ export default function ExpenseSharingModule(props) {
     const [balanceVisible, setBalanceVisible] = React.useState(false);
 
     React.useEffect(() => {
+        if(props.moduleData.payments == null) return;
         if(props.moduleData.id != moduleData.id) {
             setModuleData(props.moduleData);
             setEditorOpen(false);
@@ -60,7 +61,7 @@ export default function ExpenseSharingModule(props) {
         </div>
         <Accordion defaultActiveKey="0" flush className="container-fluid gx-1 my-2">
             {moduleData.payments === null ? null : 
-                moduleData.payments.map(payment => <Payment payment={payment} key={payment.id} onDelete={deletePayment}/>)
+                moduleData.payments.sort(paymentSortFunc).map(payment => <Payment payment={payment} key={payment.id} onDelete={deletePayment}/>)
             }
         </Accordion>
         {!editorOpen ? null :
@@ -141,10 +142,10 @@ function Payment({payment, onDelete}) {
                 <div className="fw-slightly-bold" id={payment.id + "_name"}>{payment.title}</div>
                 <div>{payer} paid {niceFloat(payment.amount)} € for {payment.shares.length} {payment.shares.length == 1 ? "Person" : "People"}</div>
             </div>
-            <div className="col-1 d-flex align-items-center justify-content-end">
+            <div className="col-2 d-flex align-items-center justify-content-end">
                 <img src="/assets/icons/trash.png" onClick={() => onDelete(payment.id)} hidden={payment.payer.id != userInfo.id || detailedPaymentID != payment.id} role="button" aria-label="Delete this payment"/>
             </div>
-            <div className="col-1 text-end">
+            <div className="col-2 text-end">
                 <div>{icon}</div>
                 <div className={`fw-slightly-bold ${textStyle}`}>{niceFloat(balance)} €</div>
             </div>
@@ -160,10 +161,10 @@ function Payment({payment, onDelete}) {
                     <div className="col">
                         {share.shareHolder.displayName}
                     </div>
-                    <div className="col-1">
-                        {niceFloat((share.amount / payment.amount) * 100)} %
+                    <div className="col-2">
+                        {roundToDecimalPlaces((share.amount / payment.amount) * 100, 2)} %
                     </div>
-                    <div className="col-1">
+                    <div className="col-2">
                         {share.amount} €
                     </div>
                 </div>)}
@@ -579,3 +580,6 @@ function splitRealMoney(value) {
     ];
 }
 
+function paymentSortFunc(a, b) {
+    return (new Date(a.createdAt).getTime()) > (new Date(b.createdAt)).getTime();
+}

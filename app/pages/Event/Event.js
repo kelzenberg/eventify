@@ -13,8 +13,10 @@ import { SmallMembers, FullMembers } from "./members";
 import * as api from "../../common/api";
 import fetcher from '../../common/fetcher';
 import { InfoDialog } from '../../components/Dialog/Dialog';
+import { UserContext } from '../../common/stateKeeper';
 
 export default function EventPage() {
+    const userInfo = React.useContext(UserContext);
     const [originalEvent, setOriginalEvent] = React.useState(null); // backup data in case that the user aborts editing
     const [event, setEvent] = React.useState(null);
     const [errorMessage, setErrorMessage] = React.useState(null);
@@ -113,11 +115,13 @@ export default function EventPage() {
         </>
     }
 
+    let isOrganizer = event.users.findIndex(user => user.id == userInfo.id && user.eventRole == "ORGANISER") != -1;
+
     return <>
         <Header/>
         <Title title={event.title} breadcrumbs={[{name: "Events", link: "/you"}, event.title]}>
             <Link to="/you/events"><button className="btn btn-outline-primary" hidden={editing || saving}>GO BACK</button></Link>
-            <button className="btn btn-outline-secondary" onClick={startEditing} hidden={editing || saving}>EDIT</button>
+            <button className="btn btn-outline-secondary" onClick={startEditing} hidden={!isOrganizer || editing || saving}>EDIT</button>
             <button className="btn btn-outline-secondary" onClick={abortEditing} hidden={!editing}>CANCEL</button>
             <button className="btn btn-primary" onClick={save} hidden={!editing}>SAVE</button>
             <button className="btn btn-primary" disabled hidden={!saving}>
@@ -142,7 +146,7 @@ export default function EventPage() {
                         </div>
                     </div>
                 </div>
-                <div className="col">
+                <div className="col mb-5">
                     <div hidden={visibleContent != "modules"}>
                         <ModuleList event={event} onEventChanged={handleEventUpdate} setVisibleContent={setVisibleContent} onErrorMessage={setErrorMessage} refreshEvent={fetchEvent}/>
                     </div>
